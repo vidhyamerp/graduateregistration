@@ -1,0 +1,8 @@
+/* You can add global styles to this file, and also import other style files */
+
+body,span,p,div{
+    font-family: serif;
+    font-size: 17px;
+    font-weight: normal;
+  }
+  

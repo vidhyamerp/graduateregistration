@@ -1,0 +1,127 @@
+
+<div>
+    <app-header></app-header>
+    <div class="text-center">
+<h2>Registered Successfully!</h2><br>
+<button type="button" class="btn btn-primary p-1" (click)="downloadAsPDF()">
+    Download pdf
+</button>
+  </div> 
+</div>
+
+ <!-- <div id="pdfTable" #pdfTable>
+    <div>
+        <h2 style="padding-left: 50%;">Bharathiyar University</h2>
+        <h5 style="padding-left: 35%;">Coimbatore- 641046,TamilNadu,India</h5>
+
+        <h5 style="font-size:10px;padding-left:50px;">State university | Re-accredited with "A" Grade By NACC | Ranked
+            13th among Indian Universities by MHRD-NIRF</h5>
+        <h2 style="padding-left: 32%;">Online Graduate Registration</h2>
+    </div>
+    <table >
+    <tr>
+        <td>Application No</td>
+        <td>
+            OGR{{url.application_no}}
+        </td>
+    </tr>
+    <tr>
+        <td>Name in full(as entered in the
+            degree certificate) Change of name, if any,recognized by the university should alos be entered with
+            the number
+            and date of the communication permitting the changes.</td>
+        <td colspan="2">
+            {{url.name}}
+            <div *ngIf="url.photo">
+                <img src="{{url.photo}}" height=150 width=150>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td >Father's/Husband's Name</td>
+        <td colspan="2">
+            {{url.father_or_husband_name }}
+        </td>
+    </tr>
+    <tr>
+        <td >Aadhar Card Number</td>
+        <td colspan="2">
+            {{url.aadhar_no}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">Educational Qualification</td>
+    </tr>
+    <tr>
+        <td>Name of the Degree</td>
+        <td>Name of the University</td>
+        <td>Year of Passing</td>
+    </tr>
+    <tr>
+        <td> {{url.degree_name}}</td>
+        <td> {{url.university}}</td>
+        <td> {{url.year_of_passing}}</td>
+    </tr>
+    <tr>
+        <td>Occupation</td>
+        <td colspan="2">
+            {{url.occupation}}
+        </td>
+    </tr>
+    <tr>
+        <td>Mobile Number</td>
+        <td colspan="2">
+            {{url.mobile_no}}
+        </td>
+    </tr>
+    <tr>
+        <td >Whether,the original cerificate
+            or copy of the degree Cerificate or provisional certificate duly attested by gazetted
+            officer,Syndicate/Senate Member of Barathiyar university in proof of qualification is attested.</td>
+            <td colspan="2">
+                <div *ngIf="url.deg_provitional_cerificate == 1">
+                      Yes
+                </div>
+                <div *ngIf="url.deg_provitional_cerificate == 0">
+                    No
+              </div>
+            </td>
+    </tr>
+    <tr>
+        <td>Signature</td>
+        <td colspan="2">
+            <div *ngIf="url.signature">
+                <img src="{{url.signature}}" height=150 width=150>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Aadhar Proof</td>
+        <td colspan="2">
+            <div *ngIf="url.aadhar_proof">
+                <img src="{{url.aadhar_proof}}" height=150 width=150>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td >Address Proof</td>
+        <td colspan="2">
+            <div *ngIf="url.address_proof">
+                <img src="{{url.address_proof}}" height=150 width=150>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>Degree/Provitional Certificate</td>
+        <td colspan="2">
+            <div *ngIf="url.deg_provitional_cerificate">
+                <img src="{{url.deg_provitional_cerificate
+}}" height=150 width=150>
+            </div>
+        </td>
+    </tr>
+  </table>
+  </div>
+  
+  <div> <button  (click)="downloadAsPDF()">Export To PDF</button></div>
+   -->

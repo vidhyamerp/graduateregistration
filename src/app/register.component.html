@@ -1,0 +1,553 @@
+<app-header></app-header>
+<div>
+  <div class="container">
+    <!-- <button (click)="click('error')">test</button> -->
+    <form [formGroup]="form" class="mb-4" (ngSubmit)="submitform()">
+      <nz-form-item  style=" font-size: 18px !important;font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Name in full <br> (as entered in the
+          degree certificate) <br>Change of name, if any , recognized by the university should also be entered with the
+          number
+          and date of the communication permitting the changes.</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" nzErrorTip="Name is Required!">
+          <input nz-input formControlName="name" type="text"  style='text-transform:uppercase'>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Father's/Husband's Name</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" nzErrorTip="Father's/Husband's Name is Required!">
+          <input nz-input formControlName="father_or_husband_name" type="text" style='text-transform:uppercase'>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Aadhar Card Number</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" [nzErrorTip]="AadharError" [nzValidateStatus]="showtick" nzHasFeedback>
+          <input nz-input formControlName="aadhar_number" type="text" minlength="12" maxlength="12">
+        </nz-form-control>
+      </nz-form-item>
+      <ng-template #AadharError let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          Aadhar Number is Required!
+        </ng-container>
+        <ng-container *ngIf="control.hasError('minlength')">
+          Not a valid Aadhar Number!
+        </ng-container>
+        <!-- <ng-container *ngIf="control.hasError('pattern')">
+              Not a valid pattern!
+            </ng-container> -->
+      </ng-template>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify mb-2"><span class="text-danger"><b>*</b></span>Gender</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" nzErrorTip="Gender Information is Required!">
+          <nz-radio-group formControlName="gender" style="padding-left: 3px;" nzName="radiogroup"
+            (ngModelChange)="triggerdetails($event)">
+            <label nz-radio nzValue="male">Male</label>
+            <label nz-radio nzValue="female">Female</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify mb-2"><span class="text-danger"><b>*</b></span>Date of Birth</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" nzErrorTip="Date Of Birth is Required!">
+          <input nz-input class="space" placeholder="Date" formControlName="date_of_birth" type="date">
+        </nz-form-control>
+      </nz-form-item> -->
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div style="width:93%;">
+          <nz-table [nzData]="['']" [nzShowPagination]="false">
+            <thead>
+              <tr>
+                <th style="padding-left: 33px;">Name of Degree</th>
+                <th style="padding-left: 33px;">Name of the University</th>
+                <th style="padding-left: 33px;">Year of passing</th>
+                <th style="padding-left: 33px;">Action</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="qualification">
+              <tr *ngFor="let quantity of qualification().controls; let i=index" [formGroupName]="i">
+                <td> <input nz-input formControlName="degree_name" type="text" required style='text-transform:uppercase'></td>
+                <td> <input nz-input formControlName="university_name" type="text" required style='text-transform:uppercase'></td>
+                <td> <input nz-input formControlName="year_passing" type="number" required style='text-transform:uppercase'></td>
+                <td>
+                  <div class="d-flex mb-2">
+                    <button (click)="addQuantity()" type="button" class="btn btn-primary"><strong>+</strong></button>
+                    <button (click)="removeQuantity(i)" type="button"
+                      class="btn btn-danger ml-2"><strong>-</strong></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Present Occupation</div>
+        <div class="col-md-1"></div>
+      <nz-form-control class="col-md-4" nzErrorTip="Present Occupation is Required!">
+        <nz-select class="space align mb-4" nzAllowClear nzPlaceHolder="Select Occupation"
+          formControlName="occupation">
+          <nz-option class="mb-4" nzLabel="Principal" nzValue="principal"></nz-option>
+          <nz-option class="mb-4" nzLabel="Professor" nzValue="professor"></nz-option>
+          <nz-option class="mb-4" nzLabel="MLA" nzValue="mla"></nz-option>
+          <nz-option class="mb-4" nzLabel="MP" nzValue="mp"></nz-option>
+          <nz-option class="mb-4" nzLabel="others" nzValue="others"></nz-option>
+        </nz-select>
+      </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Residential Address</div>
+        <div class="col-md-1"></div>
+        <div formArrayName="residential_add" class="col-md-4">
+          <div *ngFor="let add of ResAddress().controls; let i=index" [formGroupName]="i">
+            <nz-form-control nzErrorTip="Door No is Required">
+              <input class="mb-4" nz-input placeholder="Door No." formControlName="same_address_1" type="text" required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="Street Name is required">
+              <input class="mb-4" nz-input placeholder="Street Name" formControlName="same_address_2" type="text"
+                required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="City Name is Required!">
+              <input class="mb-4" nz-input placeholder="City Name" formControlName="same_city" type="text" required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="District is Required!">
+              <nz-select class="space align mb-4" nzAllowClear nzPlaceHolder="Select District"
+                formControlName="same_district">
+                <nz-option class="mb-4" nzLabel="Coimbatore" nzValue="coimbatore"></nz-option>
+                <nz-option class="mb-4" nzLabel="Erode" nzValue="erode"></nz-option>
+                <nz-option class="mb-4" nzLabel="The Nilgiris" nzValue="nilgiris"></nz-option>
+                <nz-option class="mb-4" nzLabel="Tirupur" nzValue="tirupur"></nz-option>
+              </nz-select>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="State is Required!">
+              <input class="mb-4" nz-input placeholder="select State" formControlName="same_state" type="text" required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="Pincode is Required!">
+              <input class="mb-4" nz-input placeholder="Pin code" formControlName="same_pincode" type="number" required>
+            </nz-form-control>
+          </div>
+        </div>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="d-flex">
+          <input nz-checkbox formControlName="same_add" type="checkbox" id="same_add" (ngModelChange)="trigger($event)">
+          <span>
+            &nbsp; &nbsp; &nbsp;Same as Residential Address
+          </span>
+        </div>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Address to which communication
+          are
+          to be sent</div>
+        <div class="col-md-1"></div>
+        <div formArrayName="present_address" class="col-md-4">
+          <div *ngFor="let add of presentAddress().controls; let i=index" [formGroupName]="i">
+            <nz-form-control nzErrorTip="Door No is Required">
+              <input class="mb-4" nz-input placeholder="Door no." formControlName="address_1" type="text" required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="Street Name is required">
+              <input class="mb-4" nz-input placeholder="Street Name" formControlName="address_2" type="text" required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="City Name is Required!">
+              <input class="mb-4" nz-input placeholder="City Name" formControlName="city" type="text" required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="District is Required!">
+              <nz-select class="space align mb-4" nzAllowClear nzPlaceHolder="Select District"
+                formControlName="district">
+                <nz-option class="mb-4" nzLabel="Coimbatore" nzValue="coimbatore"></nz-option>
+                <nz-option class="mb-4" nzLabel="Erode" nzValue="erode"></nz-option>
+                <nz-option class="mb-4" nzLabel="The Nilgiris" nzValue="nilgiris"></nz-option>
+                <nz-option class="mb-4" nzLabel="Tirupur" nzValue="tirupur"></nz-option>
+              </nz-select>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="State is Required!">
+              <input class="mb-4" nz-input placeholder="Select State" formControlName="state" type="text" required style='text-transform:uppercase'>
+            </nz-form-control>
+            <nz-form-control nzErrorTip="Pincode is Required!">
+              <input class="mb-4" nz-input placeholder="Pin code" formControlName="pincode" type="number" required>
+            </nz-form-control>
+          </div>
+        </div>
+      </nz-form-item>
+      <nz-form-item style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify mb-4"><span class="text-danger"><b>*</b></span>Mobile No</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" [nzSpan]="14" [nzErrorTip]="MobileError" [nzValidateStatus]="showtick"
+          nzHasFeedback>
+          <input nz-input class="space" formControlName="mobile_no" type="text" id="mobile_no" minlength=10
+            maxlength=10 style='text-transform:uppercase'>
+        </nz-form-control>
+      </nz-form-item>
+      <ng-template #MobileError let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          Mobile Number is Required!
+        </ng-container>
+        <ng-container *ngIf="control.hasError('minlength')">
+          Not a valid Mobile Number!
+        </ng-container>
+      </ng-template>
+      <nz-form-item style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify mb-4"><span class="text-danger"><b>*</b></span>Mail id</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" [nzSpan]="14" [nzErrorTip]="emailerror" [nzValidateStatus]="showtick"
+          nzHasFeedback>
+          <input nz-input class="space" formControlName="mail_id" type="text" style='text-transform:uppercase'>
+        </nz-form-control>
+      </nz-form-item>
+      <ng-template #emailerror let-control>
+        <ng-container *ngIf="control.hasError('required')">
+          Email is Required!
+        </ng-container>
+        <ng-container *ngIf="control.hasError('email')">
+          Not a valid Email!
+        </ng-container>
+      </ng-template>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify mb-2"><span class="text-danger"></span>Whether Bank Draft for
+          Rs.25/- towards the registration fee is attested</div>
+        <nz-radio-group formControlName="dd_check" style="padding-left: 115px;" nzName="radiogroup"
+          (ngModelChange)="triggerdetails($event)">
+          <label nz-radio nzValue="1">Yes</label>
+          <label nz-radio nzValue="0">No</label>
+        </nz-radio-group>
+      </nz-form-item>
+      <div *ngIf="show_dd_details" class="mt-3 justify-content-center">
+        <div class="d-flex">
+          <div class="col-md-4">
+            <input nz-input class="space" placeholder="Challon No" formControlName="challan_no" type="number"
+              class="mr-3">
+          </div>
+          <div class="col-md-4">
+            <input nz-input class="space" placeholder="Amount" formControlName="amount" type="number">
+          </div>
+        </div>
+        <div class="d-flex mt-3">
+          <div class="col-md-4">
+            <input nz-input class="space" placeholder="Date" formControlName="date" type="date" class="mr-3">
+          </div>
+          <div class="col-md-4">
+            <input nz-input class="space" placeholder="Bank" formControlName="bank_name" type="text">
+          </div>
+        </div>
+      </div>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Whether,the original cerificate
+          or copy of the degree Cerificate or provisional certificate duly attested by gazetted
+          officer,Syndicate/Senate Member of Barathiyar university in proof of qualification is attested.</div>
+        <nz-radio-group formControlName="certificate_decl" style="padding-left:115px;" nzName="radiogroup">
+          <label nz-radio nzValue="1">Yes</label>
+          <label nz-radio nzValue="0">No</label>
+        </nz-radio-group>
+      </nz-form-item>
+      <!-- <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Whether,Copy of the Addhar card
+          is uploaded</div>
+        <nz-radio-group formControlName="aadhar_decl" style="padding-left: 115px;" nzName="radiogroup">
+          <label nz-radio nzValue="1">Yes</label>
+          <label nz-radio nzValue="0">No</label>
+        </nz-radio-group>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Whether,the signature is
+          uploaded</div>
+        <nz-radio-group formControlName="sign_decl" style="padding-left: 115px;" nzName="radiogroup">
+          <label nz-radio nzValue="1">Yes</label>
+          <label nz-radio nzValue="0">No</label>
+        </nz-radio-group>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Residential Address only Address
+          proof must be enclosed</div>
+        <nz-radio-group formControlName="residential_decl" style="padding-left: 115px;" nzName="radiogroup">
+          <label nz-radio nzValue="1">Yes</label>
+          <label nz-radio nzValue="0">No</label>
+        </nz-radio-group>
+      </nz-form-item> -->
+      <div class="col-md-12 text-justify"><strong>Documents to be Uploaded:</strong></div>
+      <span class="ml-3 text-danger">(Supported Formats jpeg,jpg,png and size should not exceed 50KB)</span>
+      <div style="width:93%;">
+        <nz-table [nzData]="['']" [nzShowPagination]="false" class="mt-3">
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td> Aadhar Card</td>
+              <td>
+                <div class="clearfix text-center">
+                  <label for="aadhar" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
+                  <input id="aadhar" type="file" name="file" (change)="postMethod1($event.target.files)" hidden accept=".png,.jpeg,.jpg">
+                  <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading"></nz-progress>
+                </div>
+              </td>
+              <td>  <img [src]="aadhar" height="100" width="100" *ngIf="aadhar && !uploadloading" style="border: solid #6f6f6f55 2px;"></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td> Residential Address Proof</td>
+              <td>
+                <div class="clearfix text-center">
+                  <label for="address_proof" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
+                  <input id="address_proof" type="file" name="file" (change)="postMethod2($event.target.files)" hidden accept=".png,.jpeg,.jpg" >
+                  <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading2"></nz-progress>
+                </div>
+              </td>
+              <td> <img [src]="address_proof" height="100" width="100" *ngIf="address_proof && !uploadloading2" style="border: solid #6f6f6f55 2px;"></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td> Degree/Provisional Certificate</td>
+              <td>
+                <div class="clearfix text-center">
+                  <label for="degree_cerficate" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
+                  <input id="degree_cerficate" type="file" name="file" (change)="postMethod3($event.target.files)" hidden accept=".png,.jpeg,.jpg" >
+                  <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading3"></nz-progress>                 
+                </div>
+              </td>
+              <td> <img [src]="degree_certificate" height="100" width="100" *ngIf="degree_certificate && !uploadloading3" style="border: solid #6f6f6f55 2px;"></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td> Applicant Signature</td>
+              <td>
+                <div class="clearfix text-center">
+                  <label for="signature" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
+                  <input id="signature" type="file" name="file" (change)="postMethod5($event.target.files)" hidden accept=".png,.jpeg,.jpg" >
+                  <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading5"></nz-progress>                 
+                </div>
+              </td>
+              <td> <img [src]="signature" height="100" width="100" *ngIf="signature && !uploadloading5" style="border: solid #6f6f6f55 2px;"></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td> Applicant Photo</td>
+              <td>
+                <div class="clearfix text-center">
+                  <label for="photo" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
+                  <input id="photo" type="file" name="file" (change)="postMethod4($event.target.files)" hidden accept=".png,.jpeg,.jpg">
+                  <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading4"></nz-progress>                 
+                </div>
+              </td>
+             <td> <img [src]="photo" height="100" width="100" *ngIf="photo && !uploadloading4" style="border: solid #6f6f6f55 2px;"></td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+      <div class="mt-3">
+        <span><b>Self Declaration:</b></span>
+        <div class="d-flex mt-2">
+          <input formControlName="declaration" type="checkbox" id="declaration" (ngModelChange)="Dectrigger($event)">
+          <span  style="font-size: 17px; font-family: serif;">
+            &nbsp; &nbsp; &nbsp; <b>I hereby declare that I have not Registered as a Graduate of the Bharathiar University
+            previously and I request you to kindly register my name. If it is found that I have registered earlier my
+            previous and present registration may be cancelled. I will abide by the rules and regulations of the
+            Bharathiar University
+          </b></span>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-4">
+        <button type="button" class="btn btn-primary" style="padding: 4px;" (click)="showModal()" >Preview</button>
+        <button type="submit" class="btn btn-primary ml-3" style="padding: 4px;" [disabled]="form.invalid">Submit</button>
+      </div>
+      <!-- <ng-template #indicatorTemplate><i nz-icon nzType="loading"  *ngIf="uploadloading"></i></ng-template>
+      <nz-spin nzSimple [nzIndicator]="indicatorTemplate"> </nz-spin> -->
+    </form>
+  </div>
+</div>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Application Form Preview" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+  [nzFooter]="modalFooter" [nzWidth]="1000">
+  <ng-container *nzModalContent>
+    <form [formGroup]="form" class="mb-4" (ngSubmit)="submitform()">
+      <nz-form-item >
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Name in full(as entered in the
+          degree certificate) Change of name, if any,recognized by the university should alos be entered with the number
+          and date of the communication permitting the changes.</div>
+           <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14"  class="col-md-6">
+          <div class="ml-4"><strong>{{form.controls.name.value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" >
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Father's/Husband Name</div>
+        <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14"  class="col-md-6">
+          <div class="ml-4"><strong>{{form.controls.father_or_husband_name.value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Aadhar Card Number</div>
+        <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14" class="col-md-6">
+          <!-- <input nz-input formControlName="aadhar_no" type="text"> -->
+          <div class="ml-4"><strong>{{form.controls.aadhar_number.value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" >
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Gender</div>
+        <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14" class="col-md-6" >
+          <!-- <input nz-input formControlName="aadhar_no" type="text"> -->
+          <div class="ml-4"><strong>{{form.controls.gender.value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" >
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>DOB:</div>
+        <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14" class="col-md-6">
+          <!-- <input nz-input formControlName="aadhar_no" type="text"> -->
+          <div class="ml-4"><strong>{{form.controls.date_of_birth.value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" >
+        <div style="width:93%;">
+          <nz-table [nzData]="['']" [nzShowPagination]="false">
+            <thead>
+              <tr>
+                <th style="padding-left: 33px;">Name of Degree</th>
+                <th style="padding-left: 33px;">Name of the University</th>
+                <th style="padding-left: 33px;">Year of passing</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="qualification">
+              <tr *ngFor="let quantity of qualification().controls; let i=index">
+                <td>
+                  <div class="ml-4"><strong>{{quantity.get('degree_name').value}}</strong></div>
+                </td>
+                <td>
+                  <div class="ml-4"><strong>{{quantity.get('university_name').value}}</strong></div>
+                </td>
+                <td>
+                  <div class="ml-4"><strong>{{quantity.get('year_passing').value}}</strong></div>
+                </td>
+                <td>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+      </nz-form-item>
+      <nz-form-item class="mt-3" >
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Present Occupation</div>
+        <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14" class="col-md-6">
+          <div class="ml-4"><strong>{{form.controls.occupation.value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Residential Address</div>
+        <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14" class="col-md-6">
+          <div class="ml-4"><strong>{{presentaddress.get('address_1').value}}</strong></div>
+          <div class="ml-4"><strong>{{presentaddress.get('address_2').value}}</strong></div>
+          <div class="ml-4"><strong>{{presentaddress.get('city').value}}</strong></div>
+          <div class="ml-4"><strong>{{presentaddress.get('state').value}}</strong></div>
+          <div class="ml-4"><strong>{{presentaddress.get('pincode').value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" >
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Address to which communication
+          are
+          to be sent</div>
+          <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14" class="col-md-6">
+          <div class="ml-4"><strong>{{sameaddress.get('same_address_1').value}}</strong></div>
+          <div class="ml-4"><strong>{{sameaddress.get('same_address_2').value}}</strong></div>
+          <div class="ml-4"><strong>{{sameaddress.get('same_city').value}}</strong></div>
+          <div class="ml-4"><strong>{{sameaddress.get('same_state').value}}</strong></div>
+          <div class="ml-4"><strong>{{sameaddress.get('same_pincode').value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item >
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Mobile No</div>
+        <div class="col-md-2"></div>
+        <nz-form-control [nzSpan]="14" class="col-md-6">
+          <div class="ml-4"><strong>{{form.controls.mobile_no.value}}</strong></div>
+        </nz-form-control>
+      </nz-form-item>
+      <div class="col-md-4 text-justify"><strong>Upload Documents:</strong></div>
+      <div style="width:100%;">
+        <div class="d-flex">
+          <div class="clearfix" *ngIf="aadhar">
+            <h5>Aadhar</h5><br/>
+            <img [src]="aadhar" height="100" width="100" *ngIf="aadhar" style="border: solid #6f6f6f55 2px;">
+          </div>
+          <div class="clearfix ml-4" *ngIf="address_proof">
+            <h5>Address Proof</h5><br/>
+            <img [src]="address_proof" height="100" width="100" *ngIf="address_proof" style="border: solid #6f6f6f55 2px;">
+          </div>
+        </div>
+        <div class="d-flex text-center mt-3">
+          <div class="clearfix" *ngIf="degree_certificate">
+            <h5>Degree Cerficate</h5><br/>
+            <img [src]="degree_certificate" height="100" width="100" *ngIf="degree_certificate" style="border: solid #6f6f6f55 2px;">
+          </div>
+          <div class="text-center">
+            <div class="clearfix ml-4" *ngIf="signature">
+              <h5>Signature</h5><br/>
+              <img [src]="signature" height="100" width="100" *ngIf="signature" style="border: solid #6f6f6f55 2px;">
+            </div>
+          </div>
+        </div>
+        <div class="d-flex text-center mt-3">
+          <div class="clearfix" *ngIf="photo">
+            <h5>Photo</h5><br/>
+            <img [src]="photo" height="100" width="100" *ngIf="photo" style="border: solid #6f6f6f55 2px;">
+          </div>
+        </div>
+      </div>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify mb-2"><span class="text-danger"></span>Whether Bank Draft for
+          Rs.25/- towards the registration fee is attested</div>
+          <div class="col-md-2"></div>
+          <div class="col-md-6">
+        <div class="ml-4" *ngIf="form.controls.dd_check.value == 0"><strong>No</strong></div>
+        <div class="ml-4" *ngIf="form.controls.dd_check.value == 1"><strong>Yes</strong></div>
+        <div *ngIf="show_dd_details" class="mt-3">
+          <div class="d-flex">
+            <div class="ml-4">Challon No : <strong>{{form.controls.challan_no.value}}</strong></div>
+            <div class="ml-4">Amount : <strong>{{form.controls.amount.value}}</strong></div>
+          </div>
+          <div class="d-flex">
+            <div class="ml-4">Date : <strong>{{form.controls.date.value}}</strong></div>
+            <div class="ml-4">Bank Name : <strong>{{form.controls.bank_name.value}}</strong></div>
+          </div>
+        </div>
+        </div>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Whether,the original cerificate
+          or copy of the degree Cerificate or provisional certificate duly attested by gazetted
+          officer,Syndicate/Senate Member of Barathiyar university in proof of qualification is attested.</div>
+          <div class="col-md-2"></div>
+          <div class="col-md-6">
+        <div class="ml-4" *ngIf="form.controls.certificate_decl.value == 0"><strong>No</strong></div>
+        <div class="ml-4" *ngIf="form.controls.certificate_decl.value == 1"><strong>Yes</strong></div>
+        </div>
+      </nz-form-item>
+      <!-- <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Whether,Copy of the Addhar card
+          is uploaded</div>
+        <div class="ml-4" *ngIf="form.controls.aadhar_decl.value == 0"><strong>No</strong></div>
+        <div class="ml-4" *ngIf="form.controls.aadhar_decl.value == 1"><strong>Yes</strong></div>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Whether,the signature is
+          uploaded</div>
+        <div class="ml-4" *ngIf="form.controls.sign_decl.value == 0"><strong>No</strong></div>
+        <div class="ml-4" *ngIf="form.controls.sign_decl.value == 1"><strong>Yes</strong></div>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"></span>Residential Address only Address
+          proof must be enclosed</div>
+        <div class="ml-4" *ngIf="form.controls.residential_decl.value == 0"><strong>No</strong></div>
+        <div class="ml-4" *ngIf="form.controls.residential_decl.value == 1"><strong>Yes</strong></div>
+      </nz-form-item> -->
+    </form>
+  </ng-container>
+
+</nz-modal>
+<ng-template #modalFooter>
+  <button nz-button class="btn btn-primary" style="padding:5px" (click)="handleOk()">Ok</button>
+</ng-template>

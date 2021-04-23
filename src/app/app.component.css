@@ -1,0 +1,202 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,600,400italic);
+@import url(https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css);
+@import url(https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js);
+@import url(https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js);
+@import url(https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  -o-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.container {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  padding-bottom:20px;
+}
+
+form {
+  margin: 10px;
+  padding: 38px;
+}
+.space {
+  margin-bottom: 15px;
+}
+
+.bg {
+  background-color: #fff;
+}
+th {
+  font-size: 15px  !important;
+  font-weight: bold !important;
+  text-align: center !important;
+}
+td {
+  text-align: center;
+  font-weight: bold;
+}
+input {
+  padding: 6px;
+  
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.align{
+  padding-left: 10px;
+  width: 102%;
+}
+
+/* .input[type='radio'], .ant-form-item input[type='checkbox'] {
+  width: 30px !important;
+  height: 18px  !important;
+} */
+
+
+.mystyle {
+  border: solid #e6e6e6 1px;
+    padding: 20px;
+    width: 93%;
+    border-radius: 12px;
+}
+
+body,span,p,div{
+  font-family: serif;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+:host ::ng-deep .upload-list-inline .ant-upload-list-item {
+  float: left;
+  width: 150px;
+  margin-right: 8px;
+}
+:host ::ng-deep .upload-list-inline [class*='-upload-list-rtl'] .ant-upload-list-item {
+  float: right;
+}
+:host ::ng-deep .upload-list-inline .ant-upload-animate-enter {
+  animation-name: uploadAnimateInlineIn;
+}
+:host ::ng-deep .upload-list-inline .ant-upload-animate-leave {
+  animation-name: uploadAnimateInlineOut;
+}
+
+.design {
+  border-color: #c7c7c7 !important;
+}
+
+nz-button-group {
+  margin: 0 12px 12px 0;
+}
+
+body#LoginForm{ background-image:url("https://hdwallsource.com/img/2014/9/blur-26347-27038-hd-wallpapers.jpg"); background-repeat:no-repeat; background-position:center; background-size:cover; padding:10px;}
+
+.form-heading { color:#fff; font-size:23px;}
+.panel h2{ color:#444444; font-size:18px; margin:0 0 8px 0;}
+.panel p { color:#777777; font-size:14px; margin-bottom:30px; line-height:24px;}
+
+
+.main-div {
+  background: #ffffff none repeat scroll 0 0;
+  border-radius: 2px;
+  margin: 10px auto 30px;
+  max-width: 33%;
+  padding: 38px 25px -1px 25px;
+  border-radius: 10px;
+  height: 400px;
+  background-color: #fff;
+  box-shadow:0 2.8px 20px 20px rgb(0 0 0 / 6%), 0 6.7px 5.3px rgb(0 0 0 / 7%), 0 12.5px 10px rgb(0 0 0 / 6%), 0 22.3px 17.9px rgb(0 0 0 / 7%), 0 41.8px 33.4px rgb(0 0 0 / 9%), 0 100px 80px rgb(0 0 0 / 11%);
+}
+form[_ngcontent-ohj-c1] {
+  margin: 10px  !important;
+  padding: 16px !important;
+}
+.ant-input-affix-wrapper {
+  border: 1px solid #0088d6 !important;
+  border-right: none !important;
+  border-left: none !important;
+  border-top: none !important;
+}
+/* h1,h2,h3,h4,h5{
+  font-weight: bold;
+} */
+h6{
+  font-weight: bold;
+}
+li{
+  font-weight: normal;
+  padding-left:5px;
+  padding-right:5px;
+}
+ul{
+  font-weight: normal;
+}
+i {
+  font-size: 24px;
+}
+.login-form-forgot {
+  float: right;
+}
+
+.login-form-button {
+  width: 47%;
+  height: 40px;
+}
+
+.ant-input-affix-wrapper > input.ant-input {
+  padding: 0;
+  border: none;
+  outline: none;
+  margin-top: 11px !important;
+}
+
+.bg-blue {
+background-color: #1265A8;
+padding:20px;
+padding: 13px;
+}
+
+nz-form-control{
+  border-radius: 5px !important;
+  margin-bottom: 15px  !important;
+}
+
+.bg-black{
+  background-color: rgba(0,0,0,0.2);
+  text-shadow: 1px 1px 1px rgb(0 0 0 / 10%);
+  padding: 25px 0;
+  font-size: 13px;
+  display: block;
+}
+
+cls-label{
+  display: inline-block;
+  background-color: indigo;
+  color: white;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+#chart {
+  max-width: 380px;
+  margin: 35px auto;
+  padding: 0;
+}
+
+nz-progress {
+  margin-right: 8px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+

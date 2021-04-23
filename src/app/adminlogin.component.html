@@ -1,0 +1,62 @@
+<div>
+  <app-header></app-header>
+  <div class="container mt-4">
+    <div class="main-div">
+      <div class="text-center pt-4">
+        <h3>University Login</h3>
+      </div>
+      <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+        <nz-form-item >
+          <nz-form-control [nzErrorTip]="emailerr" style=" font-size: 18px !important;font-family: serif;">
+            <nz-input-group nzPrefixIcon="user" style="font-size: 1.53em;">
+              <input type="text" nz-input formControlName="email" placeholder="Username" style=" font-size: 18px !important;font-family: serif;"/>
+            </nz-input-group>
+            <!-- <div *ngIf="emailerror" class="text-danger">Invalid Email!</div> -->
+          </nz-form-control>
+        </nz-form-item>
+        <ng-template #emailerr let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Please input your username!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('emailExists')">
+           Invalid Email!
+          </ng-container>
+          <!-- <ng-container *ngIf="control.hasError('pattern')">
+                Not a valid pattern!
+              </ng-container> -->
+        </ng-template>
+        <nz-form-item >
+          <nz-form-control [nzErrorTip]="passerr" style=" font-size: 18px !important;font-family: serif;">
+            <nz-input-group nzPrefixIcon="lock"  style="font-size: 1.23em;">
+              <input type="password" nz-input formControlName="password" placeholder="Password" style=" font-size: 18px !important;font-family: serif;" />
+            </nz-input-group>
+            <!-- <div *ngIf="emailerror" class="text-danger">Invalid Password!</div> -->
+          </nz-form-control>
+        </nz-form-item>
+        <ng-template #passerr let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Please input your Password!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('passExists')">
+           Invalid Password!
+          </ng-container>
+          <!-- <ng-container *ngIf="control.hasError('pattern')">
+                Not a valid pattern!
+              </ng-container> -->
+        </ng-template>
+        <div class="d-flex mt-3">
+          <nz-form-item >
+            <div class="text-left flex-fill">
+              <input nz-checkbox formControlName="remember" type="checkbox" id="remember">
+              <span>&nbsp;&nbsp;&nbsp;Remember me</span>
+            </div>
+          </nz-form-item>
+        </div>
+        <div class="text-center mt-4 pb-4">
+          <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
+            type="submit" style="border-radius:6px;font-size:17px"><b>Login</b></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
