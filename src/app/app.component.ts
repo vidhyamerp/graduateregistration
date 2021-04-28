@@ -1,10 +1,10 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Component, Injectable, Input, ViewChild, ViewEncapsulation, SecurityContext, ElementRef } from '@angular/core';
-import { AbstractControl, Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Injectable, Input, ViewChild, ViewEncapsulation, SecurityContext, ElementRef, AfterViewInit, ViewChildren, QueryList, HostListener, Renderer2 } from '@angular/core';
+import { AbstractControl, Form, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { RequestOptions } from '@angular/http';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NzUploadChangeParam, NzUploadFile } from 'ng-zorro-antd/upload';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -12,6 +12,8 @@ import { ApexChart, ApexNonAxisChartSeries, ApexResponsive, ChartComponent } fro
 import { DomSanitizer } from '@angular/platform-browser';
 import { Selected } from './database/database.object';
 // import {jsPDF} from 'jspdf';
+import {myFunction} from '../assets/js/custom.js';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -32,10 +34,11 @@ export class AppComponent {
   templateUrl: './home.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class HomeComponent {
   agreedata = new FormControl('', [Validators.required]);
   // api: string;
-  constructor(private fb: FormBuilder, private router: Router, private httpClient: HttpClient) {
+  constructor(private fb: FormBuilder, private router: Router, private httpClient: HttpClient,private elRef: ElementRef, private renderer: Renderer2) {
     // this.api = `${environment.api_url}/upload`
   }
   async register() {
@@ -54,11 +57,29 @@ export class HomeComponent {
     }
     console.log('else')
   }
-
+ 
   ngOnInit() {
 
   }
+  isShow = true;
+  @HostListener('click', ['$event']) toggleOpen() {
+    const nextEl = this.renderer.nextSibling(this.elRef.nativeElement);
+    this.isShow = !this.isShow;
+    if (this.isShow) {
+      this.renderer.addClass(nextEl, 'toggled');
+    } else {
+      this.renderer.removeClass(nextEl, 'toggled');
+    }
+  }
 }
+@Component({
+  selector: 'app-innerheader',
+  templateUrl: './innerheader.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class InnerHeaderComponent  {
+
+}                                           
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -68,24 +89,16 @@ export class HeaderComponent {
   adminlogin: any;
   showbutton: boolean = false
   register: any;
+  href: string;
   constructor(private router: Router, private route: ActivatedRoute) {
-    this.adminlogin = this.route.snapshot.paramMap.get('adminlogin');
-    this.register = this.route.snapshot.paramMap.get('registration');
-    if (this.adminlogin) {
-      this.showbutton = true
-      console.log(this.showbutton)
-    }
-    if (this.register) {
-      this.showbutton = true
-      console.log(this.showbutton)
-    }
-    else {
-      this.showbutton = false
-      console.log(this.showbutton)
+    this.href = this.router.url;
+    console.log(this.router.url);
+    if(this.href === '/home'){
+      this.showbutton = true;
     }
   }
   redirect() {
-    this.router.navigate(['/adminlogin'])
+    this.router.navigate(['/login'])
   }
   back() {
     this.router.navigate([''])
@@ -99,14 +112,17 @@ export class HeaderComponent {
   templateUrl: './adminlogin.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AdminLoginComponent {
   validateForm = new FormGroup({})
   emailerror: boolean = false;
   passerror: boolean = false;
-  constructor(private fb: FormBuilder, private router: Router) {
+  response: any;
+  id: any;
+  constructor(private fb: FormBuilder,private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService) {
     this.validateForm = this.fb.group({
-      email: ['', [Validators.required, this.ValidateEmail]],
-      password: ['', [Validators.required, this.ValidatePassword]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
       remember: [true]
     });
   }
@@ -117,26 +133,39 @@ export class AdminLoginComponent {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
     }
-    if (this.validateForm.valid) {
-      this.router.navigate(['/studentdetails'])
-    } else {
-      return
-    }
+    // if (this.validateForm.valid) {
+    //   this.router.navigate(['/studentdetails'])
+    // } else {
+    //   return
+    // }
     console.log(this.validateForm.value)
-  }
-  ValidateEmail(control: AbstractControl) {
-    if (control.value === 'adminbu@gmail.com') {
-      return false;
-    } else {
-      return { emailExists: true };
-    }
-  }
-  ValidatePassword(control: AbstractControl) {
-    if (control.value === 'bu@1234') {
-      return false;
-    } else {
-      return { passExists: true };
-    }
+    let url = `${environment.api_url}/api/login`;
+    this.http.post(url, this.validateForm.value).subscribe((res: any) => {
+      this.response = res
+      console.log("response", this.response)
+      if (this.response.data) {
+        this.id = this.response
+        this.router.navigate(['/home'])
+      }
+      if (this.response.falied) {
+        this.response = this.response.falied
+      }
+    });
+  
+  // ValidateEmail(control: AbstractControl) {
+  //   if (control.value === 'adminbu@gmail.com') {
+  //     return false;
+  //   } else {
+  //     return { emailExists: true };
+  //   }
+  // }
+  // ValidatePassword(control: AbstractControl) {
+  //   if (control.value === 'bu@1234') {
+  //     return false;
+  //   } else {
+  //     return { passExists: true };
+  //   }
+  // }
   }
 }
 @Component({
@@ -195,6 +224,7 @@ export class RegisterComponent {
   uploadloading4: boolean = false
   uploadloading5: boolean = false
   id: any;
+  Pattern = '^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$';
   constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService) {
     // private uploader: UploaderService
     this.form = this.fb.group({
@@ -245,6 +275,16 @@ export class RegisterComponent {
     }
     console.log(this.form.controls)
   }
+  Trigger(){
+    myFunction(this.form.controls.aadhar_number.value);
+  }
+  //  ValidateAadhar(control: AbstractControl) {
+  //     if (control.value === 'adminbu@gmail.com') {
+  //       return false;
+  //     } else {
+  //       return { emailExists: true };
+  //     }
+  //   }
   triggerdetails(e: any) {
     console.log(e)
     if (e === '1') {
@@ -935,3 +975,89 @@ export class StudentDetailsComponent {
   }
 }
 
+@Component({
+  selector: 'app-newuser',
+  templateUrl: './newuser.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class NewUserComponent {
+  validateForm: FormGroup;
+  response: any;
+  id: any;
+  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient, private notification: NzNotificationService) {
+    this.validateForm = this.fb.group({
+      name: ['', [Validators.required], [this.userNameAsyncValidator]],
+      email: ['', [Validators.email, Validators.required]],
+      mobile_no: ['', [Validators.required]],
+      password: ['', [Validators.required]],
+      confirm: ['', [this.confirmValidator]],
+    });
+  }
+  submitForm() {
+    for (const key in this.validateForm.controls) {
+      this.validateForm.controls[key].markAsDirty();
+      this.validateForm.controls[key].updateValueAndValidity();
+    }
+    console.log(this.validateForm.value)
+    let url = `${environment.api_url}/api/storeuser`;
+    this.http.post(url, this.validateForm.value).subscribe((res: any) => {
+      this.response = res
+      console.log("response", this.response)
+      if (this.response.data) {
+        this.id = this.response
+      }
+      if (res.errors) {
+        let errormessage = ''
+        if (res.errors.mobile_no) {
+          errormessage = res.errors.mobile_no
+        }
+        if (res.errors.email) {
+          errormessage = res.errors.email
+        }
+        let type: string = 'error'
+        console.log('oops', res.errors)
+        this.notification.create(
+          type,
+          'Error!!',
+          errormessage)
+      }
+    });
+  }
+
+  // resetForm(e: MouseEvent): void {
+  //   e.preventDefault();
+  //   this.validateForm.reset();
+  //   for (const key in this.validateForm.controls) {
+  //     this.validateForm.controls[key].markAsPristine();
+  //     this.validateForm.controls[key].updateValueAndValidity();
+  //   }
+  // }
+
+  validateConfirmPassword(): void {
+    setTimeout(() => this.validateForm.controls.confirm.updateValueAndValidity());
+  }
+
+  userNameAsyncValidator = (control: FormControl) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      setTimeout(() => {
+        if (control.value === 'JasonWood') {
+          // you have to return `{error: true}` to mark it as an error event
+          observer.next({ error: true, duplicated: true });
+        } else {
+          observer.next(null);
+        }
+        observer.complete();
+      }, 1000);
+    });
+
+  confirmValidator = (control: FormControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { error: true, required: true };
+    } else if (control.value !== this.validateForm.controls.password.value) {
+      return { confirm: true, error: true };
+    }
+    return {};
+  };
+
+  
+}

@@ -1,0 +1,72 @@
+<div>
+    <app-header></app-header>
+    <div class="container mt-4">
+        <div class="main-div1">
+            <div class="text-center pt-4">
+                <h3>User Registration</h3>
+              </div>
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-label [nzSpan]="9" nzRequired>Username</nz-form-label>
+      <nz-form-control [nzSpan]="12" >
+        <input nz-input formControlName="name" placeholder="User Name" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="9" nzRequired>E-mail</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="emailErrorTpl">
+        <input nz-input formControlName="email" placeholder="email" type="email" />
+        <ng-template #emailErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('email')">
+           Not a valid Email!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            Please Enter E-mail!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="9" nzRequired>Mobile No</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="mobileTpl">
+          <input nz-input formControlName="mobile_no" placeholder="Mobile No" type="text" />
+          <ng-template #mobileTpl let-control>
+            <ng-container *ngIf="control.hasError('max')">
+              Not a Valid Mobile No!
+            </ng-container>
+            <ng-container *ngIf="control.hasError('required')">
+              Please input your Mobile No!
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="9" nzRequired>Password</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback nzErrorTip="Please input your password!">
+        <input nz-input type="password" formControlName="password" (ngModelChange)="validateConfirmPassword()" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="9" nzRequired>Confirm Password</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="passwordErrorTpl">
+        <input nz-input type="password" formControlName="confirm" placeholder="confirm your password" />
+        <ng-template #passwordErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Please confirm your password!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('confirm')">
+            Password is inconsistent!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control class="text-center">
+        <button class="btn btn-primary" [disabled]="!validateForm.valid">Submit</button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  </div>
+  </div>
+  </div>

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { AppRoutingModule } from './app-routing.module';
-import { AdminLoginComponent, AppComponent, DownloadComponent, HeaderComponent, HomeComponent, RegisterComponent,RelectedStudentDetailsComponent,StudentDetailsComponent } from './app.component';
+import { AdminLoginComponent, AppComponent, DownloadComponent, HeaderComponent, HomeComponent, InnerHeaderComponent, NewUserComponent, RegisterComponent,RelectedStudentDetailsComponent,StudentDetailsComponent } from './app.component';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormBuilder, FormsModule,ReactiveFormsModule } from '@angular/forms';
@@ -37,7 +37,7 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
 
 @NgModule({
   declarations: [
-    AppComponent,RegisterComponent,AdminLoginComponent,HomeComponent,HeaderComponent,DownloadComponent,StudentDetailsComponent,RelectedStudentDetailsComponent,FilterlistPipe
+    AppComponent,RegisterComponent,AdminLoginComponent,HomeComponent,NewUserComponent,HeaderComponent,DownloadComponent,StudentDetailsComponent,RelectedStudentDetailsComponent,FilterlistPipe,InnerHeaderComponent
   ],
   imports: [
     BrowserModule,

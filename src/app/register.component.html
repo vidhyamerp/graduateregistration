@@ -24,15 +24,32 @@
         <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Aadhar Card Number</div>
         <div class="col-md-1"></div>
         <nz-form-control class="col-md-4" [nzErrorTip]="AadharError" [nzValidateStatus]="showtick" nzHasFeedback>
-          <input nz-input formControlName="aadhar_number" type="text" minlength="12" maxlength="12">
+          <input nz-input formControlName="aadhar_number" type="text" minlength="12" maxlength="12" id="adharNo">
         </nz-form-control>
+        <p id="result"></p>
+        <button class="btn btn-primary" (click)="Trigger()" type="button">Validate</button>
       </nz-form-item>
+      <script type="text/javascript" src="https://sachink23.github.io/adhar-number-validation/validateAdhar.js"></script>
+      <script>
+          function ButtonClickValidate() {
+              var adharNo = document.getElementById("adharNo").value;
+              if(validate_adhar(adharNo) == true) {
+                  document.getElementById("result").innerHTML="<span style='color:green'>Valid Adhar Number</span>";
+              }
+              else {
+                  document.getElementById("result").innerHTML="<span style='color:red'>Invalid Adhar Number</span>";
+              }
+          }
+      </script>
       <ng-template #AadharError let-control>
         <ng-container *ngIf="control.hasError('required')">
           Aadhar Number is Required!
         </ng-container>
         <ng-container *ngIf="control.hasError('minlength')">
           Not a valid Aadhar Number!
+        </ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">
+        not a pttern
         </ng-container>
         <!-- <ng-container *ngIf="control.hasError('pattern')">
               Not a valid pattern!
