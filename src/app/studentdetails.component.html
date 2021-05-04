@@ -1,5 +1,79 @@
+
+<div class="page-wrapper chiller-theme toggled">
+  <app-innerheader></app-innerheader>
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#" id="show">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <a style="font-size:20px">Applicant</a>
+
+        <!-- <div id="close-sidebar">
+          <button id ="close"><i class="fa fa-close"></i></button>
+        </div> -->
+      </div>
+      <div class="sidebar-header">
+        <div class="user-pic">
+          <i class="fa fa-user" style="font-size:40px"></i>
+        </div>
+        <div class="user-info">
+          <span class="user-name">
+            <strong style="font-size:20px">{{getuser.name | uppercase}}</strong>
+          </span>
+          <span class="user-status">
+            <i class="fa fa-circle"></i>
+            <span style="font-size:12px">Online</span>
+          </span>
+        </div>
+      </div>
+      <div class="sidebar-menu">
+        <ul >
+          <li *ngIf="getuser.role != 'authority'">
+            <a>
+              <i class="fa"  style="font-size:20px"><b>A</b></i>
+              <span>Application</span>
+            </a>
+              <ul style="padding-left: 55px;">
+                <li class="submenu">
+                  <a [routerLink]="['/registration']" > Entry
+                  </a>
+                </li>
+                <li class="submenu">
+                  <a [routerLink]="['/viewdetails']"> View
+                  </a>
+                </li>
+                <li>
+                  <a [routerLink]="['/downloadpdf']" > Print</a>
+                </li>
+              </ul>
+          </li>
+          <li *ngIf="getuser.role === 'authority'">
+              <a>
+                <i class="fa"  style="font-size:20px"><b>A</b></i>
+                <span>View Details</span>
+              </a>
+                <ul style="padding-left: 55px;">
+                  <li class="submenu">
+                    <a [routerLink]="['/studentdetails']"> Registered List
+                    </a>
+                  </li>
+                 </ul>
+            </li>
+          <li>
+            <a (click)="logout()">
+              <i class="fa fa-power-off" style="font-size:20px"></i>
+              <span>Logout</span>
+            </a> 
+            </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 <div>
-  <app-header></app-header>
+<div>
+  <div style="padding-left:300px;">
+<div>
   <div class="mt-4 col-md-12">
     <!-- <div class="ml-2 mb-2">
       <button nz-button type="button" nzType="primary" (click)="download()">Download All Data(Zip)</button>
@@ -235,4 +309,5 @@
       </nz-tabset>
     </div>
   </div>
+</div>
 </div>

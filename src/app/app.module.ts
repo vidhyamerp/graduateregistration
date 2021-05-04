@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { AppRoutingModule } from './app-routing.module';
-import { AdminLoginComponent, AppComponent, DownloadComponent, HeaderComponent, HomeComponent, InnerHeaderComponent, NewUserComponent, RegisterComponent,RelectedStudentDetailsComponent,StudentDetailsComponent } from './app.component';
+import { AdminLoginComponent, AppComponent, DownloadComponent, HeaderComponent, HomeComponent, InnerHeaderComponent, NewUserComponent, RegisterComponent,RelectedStudentDetailsComponent,StudentDetailsComponent, ViewPDfComponent } from './app.component';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormBuilder, FormsModule,ReactiveFormsModule } from '@angular/forms';
@@ -34,10 +34,11 @@ import { FilterlistPipe } from './pipe/filter.pipe';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
-
+import { GlobalService } from 'src/service/global.service';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 @NgModule({
   declarations: [
-    AppComponent,RegisterComponent,AdminLoginComponent,HomeComponent,NewUserComponent,HeaderComponent,DownloadComponent,StudentDetailsComponent,RelectedStudentDetailsComponent,FilterlistPipe,InnerHeaderComponent
+    AppComponent,RegisterComponent,AdminLoginComponent,HomeComponent,NewUserComponent,HeaderComponent,DownloadComponent,StudentDetailsComponent,RelectedStudentDetailsComponent,FilterlistPipe,InnerHeaderComponent,ViewPDfComponent
   ],
   imports: [
     BrowserModule,
@@ -69,9 +70,10 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
     ChartsModule,
     NzNotificationModule,
     NgApexchartsModule,
-    NzProgressModule 
+    NzProgressModule,
+    NzPopconfirmModule
   ],
-  providers: [FormBuilder,
+  providers: [FormBuilder,GlobalService,
   {provide: NZ_I18N, useValue: en_US}],
   bootstrap: [AppComponent]
 })
