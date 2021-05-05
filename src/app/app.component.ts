@@ -11,9 +11,10 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ApexChart, ApexNonAxisChartSeries, ApexResponsive, ChartComponent } from "ng-apexcharts";
 import { DomSanitizer } from '@angular/platform-browser';
 import { Selected } from './database/database.object';
-// import {jsPDF} from 'jspdf';
+import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 declare function myFunction(aadhar:any):any ;
 import { GlobalService } from 'src/service/global.service';
+import { formatDate } from '@angular/common';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -155,7 +156,11 @@ export class AdminLoginComponent {
          console.log(res)
          if(res.data){
           this.router.navigate(['/registration'])
-         }else{
+         }
+        //  if(res.data.is_submit === 1){
+        //   this.router.navigate(['/viewdetails'])
+        //  }
+         else{
           this.router.navigate(['/home'])
          }
         });
@@ -253,13 +258,16 @@ export class RegisterComponent {
   signature_img: any;
   photo_img: any;
   file_name: any;
-  constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService,private activatedRoute: ActivatedRoute) {
+  filetrue: boolean = false;
+  isEnglish = false;
+  constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService,private activatedRoute: ActivatedRoute,private i18n: NzI18nService) {
     this.user = localStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     console.log('loggeduserreg',this.getuser)
     this.form = this.fb.group({
       id:[''],
       name: ['', Validators.required],
+      dob: ['', [Validators.required]],
       aadhar_number: ['', Validators.required],
       father_or_husband_name: ['', Validators.required],
       present_address: this.fb.array([]),
@@ -289,16 +297,26 @@ export class RegisterComponent {
       original_add1: [''],
       original_add2: [''],
       districts: [''],
-      date_of_birth: [''],
       name_of_degree: [''],
       name_of_university: [''],
       year_of_passing: [''],
       user_id:[''],
-      zip_password:['']
     });
     this.addQuantity()
     this.addAddress()
     this.addResAddress()
+  }
+  onChange(result: Date): void {
+    console.log('onChange: ', result);
+  }
+
+  getWeek(result: Date): void {
+    console.log('week: ', getISOWeek(result));
+  }
+
+  changeLanguage(): void {
+    this.i18n.setLocale(this.isEnglish ? zh_CN : en_US);
+    this.isEnglish = !this.isEnglish;
   }
   ngOnInit() {
     this.presentaddress.get('state').setValue('Tamil Nadu')
@@ -369,7 +387,7 @@ export class RegisterComponent {
         this.form.controls.signature.setValue(this.fetch.signature)
         this.form.controls.photo.setValue(this.fetch.photo)
          this.form.controls.districts.setValue(this.fetch.districts)
-         this.form.controls.date_of_birth.setValue(this.fetch.date_of_birth)
+         this.form.controls.dob.setValue(this.fetch.dob)
          this.form.controls.name_of_degree.setValue([this.fetch.name_of_degree])
          this.form.controls.name_of_university.setValue([this.fetch.university])
          this.form.controls.year_of_passing.setValue([this.fetch.year_of_passing])
@@ -401,12 +419,29 @@ export class RegisterComponent {
   Trigger(){
     // this.result = myFunction(this.form.controls.aadhar_number.value);
     // console.log('popup',this.result)
+    let params = new HttpParams();
+    params = params.append('file_name', this.file_name);
+    params = params.append('aadhar', this.form.controls.aadhar_number.value);
       let api = `${environment.api_url}/api/extract`;
-      let dd :any = this.file_name;
-      console.log(this.file_name)
-      this.http.get(api,dd).subscribe((res: any) => {
+      this.http.get(api,{params:params}).subscribe((res: any) => {
         this.response = res
         console.log("response", this.response)
+        if(res.data){
+        let type: string = 'success'
+        console.log('oops', res.errors)
+        this.notification.create(
+          type,
+          'Success!!',
+          'Aadhar Verified Successfully!')
+        }
+        else{
+          let type: string = 'error'
+        console.log('oops', res.errors)
+        this.notification.create(
+          type,
+          'Failed!!',
+          'Aadhar Verified Failed!')
+        }
       });
   }
   
@@ -460,7 +495,10 @@ export class RegisterComponent {
     // console.log(files)
     this.http.post(environment.api_url+'/api/aadharupload', aadhar).subscribe((res: any) => {
       console.log(res);
+      if(res){
       this.file_name = res.file_name
+      this.filetrue = true
+      }
       if (res.data) {
         this.aadhar = res.data
         this.form.controls.aadhar_proof.setValue(res.file_name)
@@ -949,7 +987,6 @@ export class RegisterComponent {
         console.log("ele",degree)
       });
       dd = this.result
-
     let url = `${environment.api_url}/api/store`;
     this.http.post(url, this.form.value,dd).subscribe((res: any) => {
       this.response = res
@@ -1398,4 +1435,8 @@ export class ViewPDfComponent {
     localStorage.clear();
   }
  
+}
+
+function getISOWeek(result: Date): any {
+  throw new Error('Function not implemented.');
 }

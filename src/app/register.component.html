@@ -92,6 +92,14 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Date of Birth</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" nzErrorTip="Date of the Birth is Required!">
+          <!-- <input nz-input  type="date" style='text-transform:uppercase'> -->
+          <nz-date-picker formControlName="dob" (ngModelChange)="onChange($event)" style="width: 100%;" nzFormat="dd-mm-yyyy" nzPlaceHolder="Date of Birth"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
         <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Aadhar Card Number</div>
         <div class="col-md-1"></div>
         <nz-form-control class="col-md-4" [nzErrorTip]="AadharError" [nzValidateStatus]="showtick" nzHasFeedback>
@@ -103,16 +111,16 @@
           <div class="clearfix text-center">
             <label for="aadharzip" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
             <input id="aadharzip" type="file" name="file" (change)="aadharpost($event.target.files)" hidden >
-            <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading"></nz-progress>
+            <span *ngIf="filetrue" class="text-success">{{file_name}}</span>
           </div>
+          <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading"></nz-progress>
         </div>
         <div class="col-md-1"></div>
-      <nz-form-control class="col-md-4" >
-        <input nz-input formControlName="zip_password" type="text" >
-      </nz-form-control>
-      <button class="btn btn-primary p-2" (click)="Trigger()" type="button">Validate</button>
+        <div class="col-md-4">
+          <button class="btn btn-primary p-2" (click)="Trigger()" type="button">Validate</button>
+        </div>
     </nz-form-item>
-    <div class="text-danger">Upload the downloaded zip and password of the zip file in above fields.</div>
+    <div class="text-danger">Upload the downloaded zip and password of the zip file from UIADI in above fields.</div>
       <ng-template #AadharError let-control>
         <ng-container *ngIf="control.hasError('required')">
           Aadhar Number is Required!

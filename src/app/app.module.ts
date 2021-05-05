@@ -36,6 +36,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { GlobalService } from 'src/service/global.service';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 @NgModule({
   declarations: [
     AppComponent,RegisterComponent,AdminLoginComponent,HomeComponent,NewUserComponent,HeaderComponent,DownloadComponent,StudentDetailsComponent,RelectedStudentDetailsComponent,FilterlistPipe,InnerHeaderComponent,ViewPDfComponent
@@ -71,7 +72,8 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
     NzNotificationModule,
     NgApexchartsModule,
     NzProgressModule,
-    NzPopconfirmModule
+    NzPopconfirmModule,
+    NzDatePickerModule
   ],
   providers: [FormBuilder,GlobalService,
   {provide: NZ_I18N, useValue: en_US}],
