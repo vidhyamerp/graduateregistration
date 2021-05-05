@@ -58,9 +58,18 @@ export class HomeComponent {
     }
     this.router.navigate(['/registration'])
   }
-  // generatePdf(){
-
-  // }
+  Regsiter(){
+    this.router.navigate(['/registration']);
+  }
+  viewDetails(){
+    this.router.navigate(['/viewdetails']);
+  }
+  download(){
+    this.router.navigate(['/downloadpdf']);
+  }
+  StdDetails(){
+    this.router.navigate(['/studentdetails']);
+  }
   logout(){
     this.router.navigate(['']);
     localStorage.clear();
@@ -260,6 +269,9 @@ export class RegisterComponent {
   file_name: any;
   filetrue: boolean = false;
   isEnglish = false;
+  aadhar_xml: any;
+  savebtn: boolean = true;
+  submitbtn: boolean = true;
   constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService,private activatedRoute: ActivatedRoute,private i18n: NzI18nService) {
     this.user = localStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
@@ -391,6 +403,11 @@ export class RegisterComponent {
          this.form.controls.name_of_degree.setValue([this.fetch.name_of_degree])
          this.form.controls.name_of_university.setValue([this.fetch.university])
          this.form.controls.year_of_passing.setValue([this.fetch.year_of_passing])
+        //  if(this.fetch.is_submit === '1'){
+        //    this.savebtn = false;
+        //    this.submitbtn = false;
+        //    this.form.disable()
+        //  }
          let arr2 = this.fetch.degree_name.split(',')
          console.log(arr2)
       for(var i=0;i<=arr2.length;i++){
@@ -416,35 +433,63 @@ export class RegisterComponent {
          console.log("fetch",this.fetch)
         });
   }
-  Trigger(){
-    // this.result = myFunction(this.form.controls.aadhar_number.value);
-    // console.log('popup',this.result)
+  Fetch(){
     let params = new HttpParams();
     params = params.append('file_name', this.file_name);
+    params = params.append('user_id', this.getuser.id);
     params = params.append('aadhar', this.form.controls.aadhar_number.value);
       let api = `${environment.api_url}/api/extract`;
       this.http.get(api,{params:params}).subscribe((res: any) => {
-        this.response = res
+        this.response = res.data
+        // this.form.controls.name.setValue(this.response.name) 
+         this.form.controls.aadhar_number.setValue(this.response.aadhar_no)
+        //  this.form.controls.dob.setValue(this.response.dob)
+         this.form.controls.father_or_husband_name.setValue(this.response.careof) 
+          this.sameaddress.get('same_address_1').setValue(this.response.house)
+          this.sameaddress.get('same_address_2').setValue(this.response.street)
+          this.sameaddress.get('same_city').setValue(this.response.city)
+          this.sameaddress.get('same_district').setValue(this.response.dist)
+          this.sameaddress.get('same_state').setValue(this.response.state)
+          this.sameaddress.get('same_pincode').setValue(this.response.pc)
+          if(this.response.gender === 'F'){
+            this.form.controls.gender.setValue('female')
+          }
+         else{
+            this.form.controls.gender.setValue('male')
+          }
         console.log("response", this.response)
-        if(res.data){
-        let type: string = 'success'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Success!!',
-          'Aadhar Verified Successfully!')
-        }
-        else{
-          let type: string = 'error'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Failed!!',
-          'Aadhar Verified Failed!')
-        }
+        if(res.validate){
+          let type: string = 'success'
+          this.notification.create(
+            type,
+            'Success!!',
+            'Data Fetched Successfully!')
+          }
+          if(res.failed){
+            let type: string = 'error'
+            this.notification.create(
+              type,
+              'Failed!!',
+              'Please Attach Xml Aadhar File!')
+            }
       });
   }
-  
+  Trigger(){
+    this.result = myFunction(this.form.controls.aadhar_number.value);
+    console.log('popup',this.result)
+  }
+  Regsiter(){
+    this.router.navigate(['/registration']);
+  }
+  viewDetails(){
+    this.router.navigate(['/viewdetails']);
+  }
+  download(){
+    this.router.navigate(['/downloadpdf']);
+  }
+  StdDetails(){
+    this.router.navigate(['/studentdetails']);
+  }
   logout(){
     this.router.navigate(['']);
     localStorage.clear();
@@ -488,20 +533,19 @@ export class RegisterComponent {
   }
 
   aadharpost(files: FileList) {
-    this.uploadloading = true;
+    // this.uploadloading_a = true;
     this.fileToUpload = files.item(0);
-    let aadhar = new FormData();
-    aadhar.append('file', this.fileToUpload, this.fileToUpload.name);
+    let aadhar_xml = new FormData();
+    aadhar_xml.append('file', this.fileToUpload, this.fileToUpload.name);
     // console.log(files)
-    this.http.post(environment.api_url+'/api/aadharupload', aadhar).subscribe((res: any) => {
+    this.http.post(environment.api_url+'/api/aadharupload', aadhar_xml).subscribe((res: any) => {
       console.log(res);
       if(res){
       this.file_name = res.file_name
       this.filetrue = true
       }
       if (res.data) {
-        this.aadhar = res.data
-        this.form.controls.aadhar_proof.setValue(res.file_name)
+        this.aadhar_xml = res.data
         this.uploadloading = false;
         let type: string = 'success'
         console.log('oops', res.errors)
@@ -559,6 +603,7 @@ export class RegisterComponent {
         this.uploadloading2 = false;
         this.address_proof = res.data
         this.form.controls.address_proof.setValue(res.file_name)
+        this.uploadloading2 = false;
         let type: string = 'success'
         this.notification.create(
           type,
@@ -582,7 +627,7 @@ export class RegisterComponent {
     this.http.post(environment.api_url+'/api/upload', degree_certificate).subscribe((res: any) => {
       console.log(res);
       if (!res.data) {
-        this.uploadloading = true;
+        this.uploadloading3 = true;
       }
       if (res.data) {
         this.degree_certificate = res.data
@@ -612,7 +657,7 @@ export class RegisterComponent {
     this.http.post(environment.api_url+'/api/upload', photo).subscribe((res: any) => {
       console.log(res);
       if (!res.data) {
-        this.uploadloading = true;
+        this.uploadloading4 = true;
       }
       if (res.data) {
         this.photo = res.data
@@ -828,6 +873,14 @@ export class RegisterComponent {
     let url = `${environment.api_url}/api/save`;
     this.http.post(url, this.form.value,dd).subscribe((res: any) => {
       this.response = res
+      if(res){
+        let type: string = 'success';
+       let message = 'Data saved Successfully';
+       this.notification.create(
+         type,
+         'Success!!',
+         message)
+       }
       console.log("response", this.response)
       if (this.response.data) {
         this.fetch = this.response.data
@@ -884,13 +937,8 @@ export class RegisterComponent {
        } if(this.fetch.photo){
          this.photo_img = environment.image_url + this.fetch.photo
        }     
-       this.form.controls.address_proof.setValue(this.fetch.address_proof)
-       this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
-       this.form.controls.deg_provitional_cerificate.setValue(this.fetch.deg_provitional_cerificate)
-       this.form.controls.signature.setValue(this.fetch.signature)
-       this.form.controls.photo.setValue(this.fetch.photo)
         this.form.controls.districts.setValue(this.fetch.districts)
-        this.form.controls.date_of_birth.setValue(this.fetch.date_of_birth)
+        this.form.controls.dob.setValue(this.fetch.dob)
         this.form.controls.name_of_degree.setValue(this.fetch.name_of_degree)
         this.form.controls.name_of_university.setValue(this.fetch.university)
         let arr2 = this.fetch.degree_name.split(',')
@@ -917,12 +965,6 @@ export class RegisterComponent {
         this.form.controls.year_of_passing.setValue(this.fetch.year_of_passing)
         console.log("fetch",this.fetch)
         this.id = this.response.data.id
-         let type: string = 'success';
-        let message = 'Data saved Successfully';
-        this.notification.create(
-          type,
-          'Success!!',
-          message)
       }
       if (res.errors) {
         let errormessage = ''
@@ -993,7 +1035,7 @@ export class RegisterComponent {
       console.log("response", this.response)
       if (this.response.data) {
         // console.log("welcome")
-        this.router.navigate(['/downloadpdf/', this.response.data.id])
+        this.router.navigate(['/downloadpdf/'])
         this.id = this.response.data.id
       }
       if (res.errors) {
@@ -1052,6 +1094,18 @@ export class DownloadComponent {
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
       console.log("repsosn",this.url)
     });
+  }
+    Regsiter(){
+    this.router.navigate(['/registration']);
+  }
+  viewDetails(){
+    this.router.navigate(['/viewdetails']);
+  }
+  download(){
+    this.router.navigate(['/downloadpdf']);
+  }
+  StdDetails(){
+    this.router.navigate(['/studentdetails']);
   }
   logout(){
     this.router.navigate(['']);
@@ -1219,6 +1273,18 @@ export class StudentDetailsComponent {
       }
     });
   }
+  Regsiter(){
+    this.router.navigate(['/registration']);
+  }
+  viewDetails(){
+    this.router.navigate(['/viewdetails']);
+  }
+  download(){
+    this.router.navigate(['/downloadpdf']);
+  }
+  StdDetails(){
+    this.router.navigate(['/studentdetails']);
+  }
   logout(){
     this.router.navigate(['']);
     localStorage.clear();
@@ -1296,7 +1362,7 @@ export class StudentDetailsComponent {
       };
     });
   }
-  download() {
+  downloadpdf() {
     let api = `${environment.api_url}/api/bulkdownload`;
     window.open(api)
     // this.httpClient.get(api).subscribe((res: any) => {
@@ -1429,6 +1495,18 @@ export class ViewPDfComponent {
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
       console.log("repsosn",this.url)
     });
+  }
+  Regsiter(){
+    this.router.navigate(['/registration']);
+  }
+  viewDetails(){
+    this.router.navigate(['/viewdetails']);
+  }
+  download(){
+    this.router.navigate(['/downloadpdf']);
+  }
+  StdDetails(){
+    this.router.navigate(['/studentdetails']);
   }
   logout(){
     this.router.navigate(['']);

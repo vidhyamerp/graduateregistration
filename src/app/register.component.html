@@ -35,15 +35,15 @@
             </a>
               <ul style="padding-left: 55px;">
                 <li class="submenu">
-                  <a [routerLink]="['/registration']" > Entry
+                  <a (click)="Regsiter()" > Entry
                   </a>
                 </li>
                 <li class="submenu">
-                  <a [routerLink]="['/viewdetails']"> View
+                  <a (click)="viewDetails()" > View
                   </a>
                 </li>
                 <li>
-                  <a [routerLink]="['/downloadpdf']" > Print</a>
+                  <a (click)="download()" > Print</a>
                 </li>
               </ul>
           </li>
@@ -54,7 +54,7 @@
               </a>
                 <ul style="padding-left: 55px;">
                   <li class="submenu">
-                    <a [routerLink]="['/studentdetails']"> Registered List
+                    <a (click)="StdDetails()" > Registered List
                     </a>
                   </li>
                  </ul>
@@ -85,21 +85,6 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
-        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Father's/Husband's Name</div>
-        <div class="col-md-1"></div>
-        <nz-form-control class="col-md-4" nzErrorTip="Father's/Husband's Name is Required!">
-          <input nz-input formControlName="father_or_husband_name" type="text" style='text-transform:uppercase'>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
-        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Date of Birth</div>
-        <div class="col-md-1"></div>
-        <nz-form-control class="col-md-4" nzErrorTip="Date of the Birth is Required!">
-          <!-- <input nz-input  type="date" style='text-transform:uppercase'> -->
-          <nz-date-picker formControlName="dob" (ngModelChange)="onChange($event)" style="width: 100%;" nzFormat="dd-mm-yyyy" nzPlaceHolder="Date of Birth"></nz-date-picker>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
         <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Aadhar Card Number</div>
         <div class="col-md-1"></div>
         <nz-form-control class="col-md-4" [nzErrorTip]="AadharError" [nzValidateStatus]="showtick" nzHasFeedback>
@@ -117,10 +102,13 @@
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-4">
-          <button class="btn btn-primary p-2" (click)="Trigger()" type="button">Validate</button>
+          <button class="btn btn-primary p-2" (click)="Fetch()" type="button">Fetch Data</button>
+          <button class="btn btn-primary p-2 float-right" (click)="Trigger()" type="button">Validate</button>
         </div>
     </nz-form-item>
-    <div class="text-danger">Upload the downloaded zip and password of the zip file from UIADI in above fields.</div>
+    <div class="text-danger">Upload the downloaded XML file from UIADI websites and uplaod via above button.
+      To download aadhar xml file click here <a href="https://resident.uidai.gov.in/offline-kyc" target="blank">https://resident.uidai.gov.in/offline-kyc</a>
+    </div>
       <ng-template #AadharError let-control>
         <ng-container *ngIf="control.hasError('required')">
           Aadhar Number is Required!
@@ -135,6 +123,21 @@
               Not a valid pattern!
             </ng-container> -->
       </ng-template>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Father's/Husband's Name</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" nzErrorTip="Father's/Husband's Name is Required!">
+          <input nz-input formControlName="father_or_husband_name" type="text" style='text-transform:uppercase'>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+        <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Date of Birth</div>
+        <div class="col-md-1"></div>
+        <nz-form-control class="col-md-4" nzErrorTip="Date of the Birth is Required!">
+          <!-- <input nz-input  type="date" style='text-transform:uppercase'> -->
+          <nz-date-picker formControlName="dob" (ngModelChange)="onChange($event)" style="width: 100%;" nzFormat="dd-MM-yyyy" nzPlaceHolder="Date of Birth"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
       <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
         <div class="col-md-4 text-justify mb-2"><span class="text-danger"><b>*</b></span>Gender</div>
         <div class="col-md-1"></div>
@@ -215,10 +218,10 @@
               <select class="form-control" nzAllowClear nzPlaceHolder="Select District"
                 formControlName="same_district">
                 <option class="mb-4"  value=""></option>
-                <option class="mb-4"  value="coimbatore">Coimbatore</option>
-                <option class="mb-4"  value="erode">Erode</option>
-                <option class="mb-4"  value="nilgiris">The Nilgiris</option>
-                <option class="mb-4"  value="tirupur">Tirupur</option>
+                <option class="mb-4"  value="Coimbatore">Coimbatore</option>
+                <option class="mb-4"  value="Erode">Erode</option>
+                <option class="mb-4"  value="Nilgiris">The Nilgiris</option>
+                <option class="mb-4"  value="Tirupur">Tirupur</option>
               </select>
             </nz-form-control>
             <nz-form-control nzErrorTip="State is Required!">
@@ -258,10 +261,10 @@
               <select class="form-control" nzAllowClear nzPlaceHolder="Select District"
                 formControlName="district">
                 <option class="mb-4"  value="">Select District</option>
-                <option class="mb-4"  value="coimbatore">Coimbatore</option>
-                <option class="mb-4"  value="erode">Erode</option>
-                <option class="mb-4"  value="nilgiris">The Nilgiris</option>
-                <option class="mb-4" value="tirupur">Tirupur</option>
+                <option class="mb-4"  value="Coimbatore">Coimbatore</option>
+                <option class="mb-4"  value="Erode">Erode</option>
+                <option class="mb-4"  value="Nilgiris">The Nilgiris</option>
+                <option class="mb-4" value="Tirupur">Tirupur</option>
               </select>
             </nz-form-control>
             <nz-form-control nzErrorTip="State is Required!">
@@ -437,7 +440,7 @@
         (nzOnCancel)="cancel()"
         nzPopconfirmPlacement="top"
         nz-button 
-      >
+        >
       Submit
       </button>
       </div>

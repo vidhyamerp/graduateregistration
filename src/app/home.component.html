@@ -35,15 +35,15 @@
             </a>
               <ul style="padding-left: 55px;">
                 <li class="submenu">
-                  <a [routerLink]="['/registration']" > Entry
+                  <a (click)="Regsiter()" > Entry
                   </a>
                 </li>
                 <li class="submenu">
-                  <a [routerLink]="['/viewdetails']"> View
+                  <a (click)="viewDetails()" > View
                   </a>
                 </li>
                 <li>
-                  <a [routerLink]="['/downloadpdf']" > Print</a>
+                  <a (click)="download()" > Print</a>
                 </li>
               </ul>
           </li>
@@ -54,7 +54,7 @@
               </a>
                 <ul style="padding-left: 55px;">
                   <li class="submenu">
-                    <a [routerLink]="['/studentdetails']"> Registered List
+                    <a (click)="StdDetails()" > Registered List
                     </a>
                   </li>
                  </ul>
