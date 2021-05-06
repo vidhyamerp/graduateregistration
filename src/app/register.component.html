@@ -88,10 +88,15 @@
         <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Aadhar Card Number</div>
         <div class="col-md-1"></div>
         <nz-form-control class="col-md-4" [nzErrorTip]="AadharError" [nzValidateStatus]="showtick" nzHasFeedback>
-          <input nz-input formControlName="aadhar_number" type="text" minlength="12" maxlength="12" id="adharNo">
+          <input nz-input formControlName="aadhar_number" type="text" minlength="12" maxlength="12" id="adharNo" (keyup)="onKey($event)" >
         </nz-form-control>
       </nz-form-item>
-      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+      <nz-form-item>
+        <div class="col-md-4"></div>
+        <div class="col-md-1"></div>
+        <div class="col-md-4" class="text-success" *ngIf="result === 'success'">Aadhar Number Validated Successfully!</div>
+      </nz-form-item>
+      <!-- <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
         <div class="col-md-4 ">
           <div class="clearfix text-center">
             <label for="aadharzip" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
@@ -105,10 +110,10 @@
           <button class="btn btn-primary p-2" (click)="Fetch()" type="button">Fetch Data</button>
           <button class="btn btn-primary p-2 float-right" (click)="Trigger()" type="button">Validate</button>
         </div>
-    </nz-form-item>
-    <div class="text-danger">Upload the downloaded XML file from UIADI websites and uplaod via above button.
+    </nz-form-item> -->
+    <!-- <div class="text-danger">Upload the downloaded XML file from UIADI websites and uplaod via above button.
       To download aadhar xml file click here <a href="https://resident.uidai.gov.in/offline-kyc" target="blank">https://resident.uidai.gov.in/offline-kyc</a>
-    </div>
+    </div> -->
       <ng-template #AadharError let-control>
         <ng-container *ngIf="control.hasError('required')">
           Aadhar Number is Required!
@@ -135,7 +140,7 @@
         <div class="col-md-1"></div>
         <nz-form-control class="col-md-4" nzErrorTip="Date of the Birth is Required!">
           <!-- <input nz-input  type="date" style='text-transform:uppercase'> -->
-          <nz-date-picker formControlName="dob" (ngModelChange)="onChange($event)" style="width: 100%;" nzFormat="dd-MM-yyyy" nzPlaceHolder="Date of Birth"></nz-date-picker>
+          <input type="date" formControlName="dob" placeholder="Date of Birth"/>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
@@ -169,7 +174,7 @@
             </thead>
             <tbody formArrayName="qualification">
               <tr *ngFor="let quantity of qualification().controls; let i=index" [formGroupName]="i">
-                <td> <input nz-input formControlName="degree_name" type="text" required style='text-transform:uppercase'></td>
+                <td> <input nz-input formControlName="degree_name" type="text" required></td>
                 <td> <input nz-input formControlName="university_name" type="text" required style='text-transform:uppercase'></td>
                 <td> <input nz-input formControlName="year_passing" type="text" required style='text-transform:uppercase'></td>
                 <td>
@@ -298,7 +303,7 @@
         <div class="col-md-1"></div>
         <nz-form-control class="col-md-4" [nzSpan]="14" [nzErrorTip]="emailerror" [nzValidateStatus]="showtick"
           nzHasFeedback>
-          <input nz-input class="space" formControlName="mail_id" type="text" style='text-transform:uppercase' value="{{getuser.email}}" readonly>
+          <input nz-input class="space" formControlName="mail_id" type="text"  value="{{getuser.email}}" readonly>
         </nz-form-control>
       </nz-form-item>
       <ng-template #emailerror let-control>
@@ -361,7 +366,7 @@
                   <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading"></nz-progress>
                 </div>
               </td>
-              <td>  <img [src]="aadhar" height="100" width="100" *ngIf="aadhar && !uploadloading" style="border: solid #6f6f6f55 2px;"></td>
+              <!-- <td>  <img [src]="aadhar" height="100" width="100" *ngIf="aadhar && !uploadloading" style="border: solid #6f6f6f55 2px;"></td> -->
             <td><img *ngIf="aadhar_img" src="{{aadhar_img}}" height="100" width="100"></td>
             </tr>
             <tr>
@@ -370,11 +375,11 @@
               <td>
                 <div class="clearfix text-center">
                   <label for="address_proof" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
-                  <input id="address_proof" type="file" name="file" (change)="postMethod2($event.target.files)" hidden accept=".png,.jpeg,.jpg" >
+                  <input id="address_proof" formControlName="address_proof" type="file" name="file" (change)="postMethod2($event.target.files)" hidden accept=".png,.jpeg,.jpg" >
                   <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading2"></nz-progress>
                 </div>
               </td>
-              <td> <img [src]="address_proof" height="100" width="100" *ngIf="address_proof && !uploadloading2" style="border: solid #6f6f6f55 2px;"></td>
+              <!-- <td> <img [src]="address_proof" height="100" width="100" *ngIf="address_proof && !uploadloading2" style="border: solid #6f6f6f55 2px;"></td> -->
               <td><img *ngIf="address" src="{{address}}" height="100" width="100"></td>
             </tr>
             <tr>
@@ -387,7 +392,7 @@
                   <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading3"></nz-progress>                 
                 </div>
               </td>
-              <td> <img [src]="degree_certificate" height="100" width="100" *ngIf="degree_certificate && !uploadloading3" style="border: solid #6f6f6f55 2px;"></td>
+              <!-- <td> <img [src]="degree_certificate" height="100" width="100" *ngIf="degree_certificate && !uploadloading3" style="border: solid #6f6f6f55 2px;"></td> -->
               <td><img *ngIf="deg_img" src="{{deg_img}}" height="100" width="100"></td>
             </tr>
             <tr>
@@ -400,7 +405,7 @@
                   <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading5"></nz-progress>                 
                 </div>
               </td>
-              <td> <img [src]="signature" height="100" width="100" *ngIf="signature && !uploadloading5" style="border: solid #6f6f6f55 2px;"></td>
+              <!-- <td> <img [src]="signature" height="100" width="100" *ngIf="signature && !uploadloading5" style="border: solid #6f6f6f55 2px;"></td> -->
               <td><img *ngIf="signature_img" src="{{signature_img}}" height="100" width="100"></td>
             </tr>
             <tr>
@@ -413,7 +418,7 @@
                   <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading4"></nz-progress>                 
                 </div>
               </td>
-             <td> <img [src]="photo" height="100" width="100" *ngIf="photo && !uploadloading4" style="border: solid #6f6f6f55 2px;"></td>
+             <!-- <td> <img [src]="photo" height="100" width="100" *ngIf="photo && !uploadloading4" style="border: solid #6f6f6f55 2px;"></td> -->
              <td><img *ngIf="photo_img" src="{{photo_img}}" height="100" width="100"></td>
             </tr>
           </tbody>
@@ -435,7 +440,8 @@
         <button type="button" class="btn btn-primary" style="padding: 4px;" (click)="save()" >Save</button>
         <button class="btn btn-primary float-right"
         nz-popconfirm
-        nzPopconfirmTitle="Are you sure do you want to submit,after successful submission the save option is not available"
+        nzPopconfirmTitle="Once you press 'Submit' button the details in the application cannot be modified
+        Are you sure do you want to submit? "
         (nzOnConfirm)="submitform()"
         (nzOnCancel)="cancel()"
         nzPopconfirmPlacement="top"

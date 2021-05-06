@@ -1,0 +1,35 @@
+<div>
+    <app-header></app-header>
+<div class="container mt-4">
+    <div class="main-div2">
+      <div class="text-center pt-4">
+        <h3>Password Reset</h3>
+      </div>
+      <!-- <div class="text-center pt-3" *ngIf="response">
+        <span class="alert alert-danger">Password Reseted Successfully!!</span>
+      </div> -->
+      <form nz-form [formGroup]="resetform" class="login-form" (ngSubmit)="submitForm()">
+        <nz-form-item >
+          <nz-form-control [nzErrorTip]="emailerr" style=" font-size: 18px !important;font-family: serif;">
+            <nz-input-group nzPrefixIcon="user" style="font-size: 1.53em;">
+              <input type="text" nz-input formControlName="email" placeholder="Email" style=" font-size: 18px !important;font-family: serif;"/>
+            </nz-input-group>
+            <!-- <div *ngIf="emailerror" class="text-danger">Invalid Email!</div> -->
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item >
+          <nz-form-control  style=" font-size: 18px !important;font-family: serif;">
+            <nz-input-group nzPrefixIcon="lock" style="font-size: 1.53em;">
+              <input type="password" nz-input formControlName="reset_pwd" placeholder="Reset Password" style=" font-size: 18px !important;font-family: serif;"/>
+            </nz-input-group>
+            <!-- <div *ngIf="emailerror" class="text-danger">Invalid Email!</div> -->
+          </nz-form-control>     
+         </nz-form-item>
+        <div class="text-center mt-4 pb-4">
+          <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
+            type="submit" style="border-radius:6px;font-size:17px"><b>Reset</b></button>
+        </div>
+      </form>
+    </div>
+  </div>
+  </div>

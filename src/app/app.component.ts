@@ -44,7 +44,7 @@ export class HomeComponent {
   agreedata = new FormControl('', [Validators.required]);
   user:any= {}
   getuser: any;
-  constructor(private fb: FormBuilder, private router: Router, private httpClient: HttpClient,private elRef: ElementRef, private renderer: Renderer2,private currentUser: GlobalService) {
+  constructor( private router: Router, private httpClient: HttpClient,private elRef: ElementRef, private renderer: Renderer2,private currentUser: GlobalService) {
     // this.api = `${environment.api_url}/upload`
     this.user = localStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
@@ -133,6 +133,7 @@ export class AdminLoginComponent {
   passerror: boolean = false;
   response: any;
   id: any;
+  failed: any;
   constructor(private fb: FormBuilder,private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService) {
     this.validateForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -141,6 +142,9 @@ export class AdminLoginComponent {
     });
   }
   ngOnInit() { }
+  Reset(){
+    this.router.navigate(['/passwordreset'])
+  }
   async submitForm() {
     console.log(this.validateForm)
     for (const i in this.validateForm.controls) {
@@ -180,8 +184,8 @@ export class AdminLoginComponent {
         this.router.navigate(['/studentdetails'])
       }
     }
-      if (this.response.falied) {
-        this.response = this.response.falied
+     else {
+        this.failed = this.response.falied
       }
     });
   
@@ -283,7 +287,7 @@ export class RegisterComponent {
       aadhar_number: ['', Validators.required],
       father_or_husband_name: ['', Validators.required],
       present_address: this.fb.array([]),
-      declaration: [false, Validators.required],
+      declaration: [false, Validators.required],              
       mobile_no: ['', Validators.required],
       occupation: ['', Validators.required],
       qualification: this.fb.array([]),
@@ -301,11 +305,11 @@ export class RegisterComponent {
       // photo_decl: [],
       residential_decl: [],
       mail_id: ['', [Validators.email, Validators.required]],
-      address_proof: '',
-      aadhar_proof: [],
-      deg_provitional_cerificate: '',
-      signature: '',
-      photo: '',
+      address_proof: ['',Validators.required],
+      aadhar_proof: ['',Validators.required],
+      deg_provitional_cerificate: ['',Validators.required],
+      signature: ['',Validators.required],
+      photo:['',Validators.required],
       original_add1: [''],
       original_add2: [''],
       districts: [''],
@@ -314,14 +318,22 @@ export class RegisterComponent {
       year_of_passing: [''],
       user_id:[''],
     });
-    this.addQuantity()
+
     this.addAddress()
     this.addResAddress()
   }
   onChange(result: Date): void {
     console.log('onChange: ', result);
   }
-
+  onKey(event: any) { // without type info
+    let value = ''
+   value += event.target.value;
+   console.log(value)
+   if(value != ''){
+   this.result = myFunction(value);
+    console.log('popup',this.result)
+   }
+  }
   getWeek(result: Date): void {
     console.log('week: ', getISOWeek(result));
   }
@@ -347,12 +359,22 @@ export class RegisterComponent {
          this.form.controls.declaration.setValue(this.fetch.declaration)
          this.form.controls.mobile_no.setValue(this.fetch.mobile_no)
          this.form.controls.occupation.setValue(this.fetch.occupation)
-         this.form.controls.same_add.setValue(this.fetch.same_add)
          this.form.controls.challan_no.setValue(this.fetch.challan_no)
          this.form.controls.amount.setValue(this.fetch.amount)
          this.form.controls.bank_name.setValue(this.fetch.bank_name)
          this.form.controls.date.setValue(this.fetch.date)
-         this.form.controls.dd_check.setValue(this.fetch.dd_check)
+         if(this.fetch.dd_check === 0){
+         this.form.controls.dd_check.setValue('0')
+         }
+         if(this.fetch.dd_check === 1){
+          this.form.controls.dd_check.setValue('1')
+          }
+          if(this.fetch.certificate_decl === 0){
+            this.form.controls.certificate_decl.setValue('0')
+            }
+          if(this.fetch.certificate_decl === 1){
+            this.form.controls.certificate_decl.setValue('1')
+            }
          if (this.fetch.present_address.indexOf(',') > -1) 
          { 
           let obj = this.fetch.present_address.split(',');
@@ -375,9 +397,10 @@ export class RegisterComponent {
           this.sameaddress.get('same_state').setValue(obj[4])
           this.sameaddress.get('same_pincode').setValue(obj[5])
         }
-         this.form.controls.certificate_decl.setValue(this.fetch.certificate_decl)
          this.form.controls.gender.setValue(this.fetch.gender)
-         this.form.controls.residential_decl.setValue(this.fetch.residential_decl)
+         if(this.fetch.present_address){
+         this.form.controls.same_add.setValue(true)
+         }
          this.form.controls.mail_id.setValue(this.fetch.mail_id)
          if(this.fetch.address_proof){
           this.address = environment.image_url + this.fetch.address_proof
@@ -400,37 +423,19 @@ export class RegisterComponent {
         this.form.controls.photo.setValue(this.fetch.photo)
          this.form.controls.districts.setValue(this.fetch.districts)
          this.form.controls.dob.setValue(this.fetch.dob)
-         this.form.controls.name_of_degree.setValue([this.fetch.name_of_degree])
-         this.form.controls.name_of_university.setValue([this.fetch.university])
-         this.form.controls.year_of_passing.setValue([this.fetch.year_of_passing])
         //  if(this.fetch.is_submit === '1'){
         //    this.savebtn = false;
         //    this.submitbtn = false;
         //    this.form.disable()
-        //  }
-         let arr2 = this.fetch.degree_name.split(',')
-         console.log(arr2)
-      for(var i=0;i<=arr2.length;i++){
-          let langArr = <FormArray>this.qualifications.controls["degree_name"];
-          langArr.controls[arr2[i]].setValue(true);
-        }
-        let arr = [this.fetch.university]
-          arr.forEach((element:any) => {
-          console.log("univ",element)
-          let obj = element.split(',');
-          // univ.push("obj",obj)
-         
-        });
-        let arr1 = [this.fetch.year_of_passing]
-        arr1.forEach((element:any) => {
-          console.log("univ",element)
-          let obj1 = element.split(',');
-          // univ.push("obj",obj)
-          // (this.form.get("qualification") as FormArray).setValue(obj1)
-           this.qualifications.setValue({year_passing:obj1})
-        });
-         this.form.controls.year_of_passing.setValue(this.fetch.year_of_passing)
-         console.log("fetch",this.fetch)
+        //  
+          let i = res.degree_name.length
+          for(var j=0;j<=i-1;j++){
+            console.log("details",j)
+            this.addQuantity()
+            this.qualifications.get('degree_name').setValue(res.degree_name[j]);
+            this.qualifications.get('university_name').setValue(res.university[j]);
+            this.qualifications.get('year_passing').setValue(res.year_of_passing[j]);
+      }  
         });
   }
   Fetch(){
@@ -474,10 +479,10 @@ export class RegisterComponent {
             }
       });
   }
-  Trigger(){
-    this.result = myFunction(this.form.controls.aadhar_number.value);
-    console.log('popup',this.result)
-  }
+  // Trigger(){
+  //   this.result = myFunction(this.form.controls.aadhar_number.value);
+  //   console.log('popup',this.result)
+  // }
   Regsiter(){
     this.router.navigate(['/registration']);
   }
@@ -573,7 +578,7 @@ export class RegisterComponent {
     this.http.post(environment.api_url+'/api/upload', aadhar).subscribe((res: any) => {
       console.log(res);
       if (res.data) {
-        this.aadhar = res.data
+        this.aadhar_img = res.data
         this.form.controls.aadhar_proof.setValue(res.file_name)
         this.uploadloading = false;
         let type: string = 'success'
@@ -601,7 +606,7 @@ export class RegisterComponent {
       console.log(res);
       if (res.data) {
         this.uploadloading2 = false;
-        this.address_proof = res.data
+        this.address = res.data
         this.form.controls.address_proof.setValue(res.file_name)
         this.uploadloading2 = false;
         let type: string = 'success'
@@ -630,7 +635,7 @@ export class RegisterComponent {
         this.uploadloading3 = true;
       }
       if (res.data) {
-        this.degree_certificate = res.data
+        this.deg_img = res.data
         this.form.controls.deg_provitional_cerificate.setValue(res.file_name)
         this.uploadloading3 = false;
         let type: string = 'success'
@@ -660,7 +665,7 @@ export class RegisterComponent {
         this.uploadloading4 = true;
       }
       if (res.data) {
-        this.photo = res.data
+        this.photo_img = res.data
         this.form.controls.photo.setValue(res.file_name)
         this.uploadloading4 = false;
         let type: string = 'success'
@@ -690,7 +695,7 @@ export class RegisterComponent {
         this.uploadloading5 = true;
       }
       if (res.data) {
-        this.signature = res.data
+        this.signature_img = res.data
         this.form.controls.signature.setValue(res.file_name)
         this.uploadloading5 = false;
         let type: string = 'success'
@@ -859,7 +864,6 @@ export class RegisterComponent {
     let degree: any = []
     let university_name: any = []
     let year_passing: any = []
-   console.log(this.qualifications.get('degree_name').value)
     this.form.controls.qualification.value.forEach((element:any) => {
       degree.push(element.degree_name)
       university_name.push(element.university_name)
@@ -882,90 +886,108 @@ export class RegisterComponent {
          message)
        }
       console.log("response", this.response)
+      if(res.degree_name){
+        this.form.controls.degree_name.setValue(res.degree_name)
+          this.addQuantity()
+          this.qualifications.setValue([
+            { degree_name: "111", university_name: "Mohan", year_passing: "Java"},
+          ]);
+      }
+      if(res.university){
+        this.form.controls.name_of_degree.setValue(res.university)
+        
+      }
+      if(res.year_of_passing){
+        this.form.controls.year_of_passing.setValue(res.year_of_passing)
+      }
+       
       if (this.response.data) {
-        this.fetch = this.response.data
-        this.form.controls.id.setValue(this.fetch.id)
-        this.form.controls.name.setValue(this.fetch.name)
-        this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
-        this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
-        this.form.controls.declaration.setValue(this.fetch.declaration)
-        this.form.controls.mobile_no.setValue(this.fetch.mobile_no)
-        this.form.controls.occupation.setValue(this.fetch.occupation)
-        this.form.controls.same_add.setValue(this.fetch.same_add)
-        this.form.controls.challan_no.setValue(this.fetch.challan_no)
-        this.form.controls.amount.setValue(this.fetch.amount)
-        this.form.controls.bank_name.setValue(this.fetch.bank_name)
-        this.form.controls.date.setValue(this.fetch.date)
-        this.form.controls.dd_check.setValue(this.fetch.dd_check)
-        if (this.fetch.present_address.indexOf(',') > -1) 
-        { 
-         let obj = this.fetch.present_address.split(',');
-         console.log("fext",obj)
-         this.presentaddress.get('address_1').setValue(obj[0])
-         this.presentaddress.get('address_2').setValue(obj[1])
-         this.presentaddress.get('city').setValue(obj[2])
-         this.presentaddress.get('district').setValue(obj[3])
-         this.presentaddress.get('state').setValue(obj[4])
-         this.presentaddress.get('pincode').setValue(obj[5])
-       }
-       if (this.fetch.residential_add.indexOf(',') > -1) 
-        { 
-         let obj = this.fetch.residential_add.split(',');
-         console.log("fext",obj)
-         this.sameaddress.get('same_address_1').setValue(obj[0])
-         this.sameaddress.get('same_address_2').setValue(obj[1])
-         this.sameaddress.get('same_city').setValue(obj[2])
-         this.sameaddress.get('same_district').setValue(obj[3])
-         this.sameaddress.get('same_state').setValue(obj[4])
-         this.sameaddress.get('same_pincode').setValue(obj[5])
-       }
-        this.form.controls.certificate_decl.setValue(this.fetch.certificate_decl)
-        this.form.controls.gender.setValue(this.fetch.gender)
-        this.form.controls.residential_decl.setValue(this.fetch.residential_decl)
-        this.form.controls.mail_id.setValue(this.fetch.mail_id)
-        if(this.fetch.address_proof){
-         this.address = environment.image_url + this.fetch.address_proof
-       }
-       if(this.fetch.aadhar_proof){
-         this.aadhar_img = environment.image_url + this.fetch.aadhar_proof
-       }
-       if(this.fetch.deg_provitional_cerificate){
-         this.deg_img = environment.image_url + this.fetch.deg_provitional_cerificate
-       }
-       if(this.fetch.signature){
-         this.signature_img = environment.image_url + this.fetch.signature
-       } if(this.fetch.photo){
-         this.photo_img = environment.image_url + this.fetch.photo
-       }     
-        this.form.controls.districts.setValue(this.fetch.districts)
-        this.form.controls.dob.setValue(this.fetch.dob)
-        this.form.controls.name_of_degree.setValue(this.fetch.name_of_degree)
-        this.form.controls.name_of_university.setValue(this.fetch.university)
-        let arr2 = this.fetch.degree_name.split(',')
-        console.log(arr2)
-     for(var i=0;i<=arr2.length;i++){
-         let langArr = <FormArray>this.qualifications.controls["degree_name"];
-         langArr.controls[arr2[i]].setValue(true);
-       }
-       let arr = [this.fetch.university]
-         arr.forEach((element:any) => {
-         console.log("univ",element)
-         let obj = element.split(',');
-         // univ.push("obj",obj)
-         this.qualifications.setValue({university_name:obj})
-       });
-       let arr1 = [this.fetch.year_of_passing]
-       arr1.forEach((element:any) => {
-         console.log("univ",element)
-         let obj1 = element.split(',');
-         // univ.push("obj",obj)
-         // (this.form.get("qualification") as FormArray).setValue(obj1)
-          this.qualifications.setValue({year_passing:obj1})
-       });
-        this.form.controls.year_of_passing.setValue(this.fetch.year_of_passing)
-        console.log("fetch",this.fetch)
+        this.fetch  = res.data
+         this.form.controls.name.setValue(this.fetch.name)
+         this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
+         this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
+         this.form.controls.declaration.setValue(this.fetch.declaration)
+         this.form.controls.mobile_no.setValue(this.fetch.mobile_no)
+         this.form.controls.occupation.setValue(this.fetch.occupation)
+         this.form.controls.challan_no.setValue(this.fetch.challan_no)
+         this.form.controls.amount.setValue(this.fetch.amount)
+         this.form.controls.bank_name.setValue(this.fetch.bank_name)
+         this.form.controls.date.setValue(this.fetch.date)
+         if(this.fetch.dd_check === 0){
+         this.form.controls.dd_check.setValue('0')
+         }
+         if(this.fetch.dd_check === 1){
+          this.form.controls.dd_check.setValue('1')
+          }
+          if(this.fetch.certificate_decl === 0){
+            this.form.controls.certificate_decl.setValue('0')
+            }
+          if(this.fetch.certificate_decl === 1){
+            this.form.controls.certificate_decl.setValue('1')
+            }
+         if (this.fetch.present_address.indexOf(',') > -1) 
+         { 
+          let obj = this.fetch.present_address.split(',');
+          console.log("fext",obj)
+          this.presentaddress.get('address_1').setValue(obj[0])
+          this.presentaddress.get('address_2').setValue(obj[1])
+          this.presentaddress.get('city').setValue(obj[2])
+          this.presentaddress.get('district').setValue(obj[3])
+          this.presentaddress.get('state').setValue(obj[4])
+          this.presentaddress.get('pincode').setValue(obj[5])
+        }
+        if (this.fetch.residential_add.indexOf(',') > -1) 
+         { 
+          let obj = this.fetch.residential_add.split(',');
+          console.log("fext",obj)
+          this.sameaddress.get('same_address_1').setValue(obj[0])
+          this.sameaddress.get('same_address_2').setValue(obj[1])
+          this.sameaddress.get('same_city').setValue(obj[2])
+          this.sameaddress.get('same_district').setValue(obj[3])
+          this.sameaddress.get('same_state').setValue(obj[4])
+          this.sameaddress.get('same_pincode').setValue(obj[5])
+        }
+         this.form.controls.gender.setValue(this.fetch.gender)
+         if(this.fetch.present_address){
+         this.form.controls.same_add.setValue(true)
+         }
+         this.form.controls.mail_id.setValue(this.fetch.mail_id)
+         if(this.fetch.address_proof){
+          this.address = environment.image_url + this.fetch.address_proof
+        }
+        if(this.fetch.aadhar_proof){
+          this.aadhar_img = environment.image_url + this.fetch.aadhar_proof
+        }
+        if(this.fetch.deg_provitional_cerificate){
+          this.deg_img = environment.image_url + this.fetch.deg_provitional_cerificate
+        }
+        if(this.fetch.signature){
+          this.signature_img = environment.image_url + this.fetch.signature
+        } if(this.fetch.photo){
+          this.photo_img = environment.image_url + this.fetch.photo
+        }     
+        this.form.controls.address_proof.setValue(this.fetch.address_proof)
+        this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
+        this.form.controls.deg_provitional_cerificate.setValue(this.fetch.deg_provitional_cerificate)
+        this.form.controls.signature.setValue(this.fetch.signature)
+        this.form.controls.photo.setValue(this.fetch.photo)
+         this.form.controls.districts.setValue(this.fetch.districts)
+         this.form.controls.dob.setValue(res.dob)
+        //  if(this.fetch.is_submit === '1'){
+        //    this.savebtn = false;
+        //    this.submitbtn = false;
+        //    this.form.disable()
+        //  
+          let i = res.degree_name.length
+          for(var j=0;j<=i-1;j++){
+            console.log("details",j)
+            this.addQuantity()
+            this.qualifications.get('degree_name').setValue(res.degree_name[j]);
+            this.qualifications.get('university_name').setValue(res.university[j]);
+            this.qualifications.get('year_passing').setValue(res.year_of_passing[j]);
         this.id = this.response.data.id
       }
+    }
       if (res.errors) {
         let errormessage = ''
         if (res.errors.aadhar_number) {
@@ -1048,6 +1070,21 @@ export class RegisterComponent {
         }
         if (res.errors.mail_id) {
           errormessage = res.errors.mail_id
+        }
+        if (res.errors.aadhar_proof) {
+          errormessage = res.errors.aadhar_proof
+        }
+        if (res.errors.address_proof) {
+          errormessage = res.errors.address_proof
+        }
+        if (res.errors.deg_provitional_cerificate) {
+          errormessage = res.errors.deg_provitional_cerificate
+        }
+        if (res.errors.photo) {
+          errormessage = res.errors.photo
+        }
+        if (res.errors.signature) {
+          errormessage = res.errors.signature
         }
         let type: string = 'error'
         console.log('oops', res.errors)
@@ -1517,4 +1554,42 @@ export class ViewPDfComponent {
 
 function getISOWeek(result: Date): any {
   throw new Error('Function not implemented.');
+}
+
+@Component({
+  selector: 'app-forgotpass',
+  templateUrl: './forgotpass.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class ResetPwDComponent {
+  user:any;
+  getuser:any = {};
+  resetform = new FormGroup({})
+  response: any;
+  constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
+    // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
+    this.user = localStorage.getItem('userdata')
+    this.getuser = JSON.parse(this.user); 
+    this.resetform = this.fb.group({
+      reset_pwd: ['', [Validators.required]],
+      email: ['', [Validators.required]],
+    });
+  }
+  async submitForm() {
+
+    let url = `${environment.api_url}/api/resetpwd`;
+    this.http.post(url, this.resetform.value).subscribe((res: any) => {
+      this.response = res
+      console.log("response", this.response)
+      if (this.response) {
+        let type: string = 'success'
+        this.notification.create(
+          type,
+          'Success!!',
+          'PassWord Changed Successfully!')
+        }
+     this.router.navigate([''])
+    });
+  }
+
 }

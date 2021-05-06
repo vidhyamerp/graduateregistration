@@ -35,12 +35,12 @@ function myFunction(data) {
 		})
 	  
 		if(c===0){
-			alert('Aadhar Number Validated Successfully!')
+			// alert('Aadhar Number Validated Successfully!')
 			return 'success';
 		}
 		else{
-			alert('Aadhar Number Validation Failed! Invalid Addhar Number')
-			return 'falied';
+			// alert('Aadhar Number Validation Failed! Invalid Addhar Number')
+			return 'failed';
 		}
 	  
 
