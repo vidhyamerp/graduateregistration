@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent, RegisterComponent,AdminLoginComponent, HomeComponent,DownloadComponent,StudentDetailsComponent, NewUserComponent, ViewPDfComponent, ResetPwDComponent } from './app.component';
+import { AppComponent, RegisterComponent,AdminLoginComponent, HomeComponent,DownloadComponent,StudentDetailsComponent, NewUserComponent, ViewPDfComponent, ResetPwDComponent, SuccessComponent } from './app.component';
 
 
 const routes: Routes = [
@@ -17,7 +17,8 @@ const routes: Routes = [
       { path: 'viewdetails', component: ViewPDfComponent },
       { path: 'newuser', component: NewUserComponent },
       { path: 'home', component: HomeComponent },
-      { path: 'passwordreset', component: ResetPwDComponent }
+      { path: 'passwordreset', component: ResetPwDComponent },
+      { path: 'success', component: SuccessComponent }
     ]},
 // {
 //   path: 'registration',

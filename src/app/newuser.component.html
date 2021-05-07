@@ -62,7 +62,7 @@
     </nz-form-item>
     <nz-form-item>
       <nz-form-control class="text-center">
-        <button class="btn btn-primary p-2" [disabled]="!validateForm.valid">Submit</button>
+        <button class="btn btn-primary p-2" nz-button [nzLoading]="regloading">Submit</button>
       </nz-form-control>
     </nz-form-item>
   </form>

@@ -120,6 +120,12 @@ export class HeaderComponent {
   ngOnInit() {
 
   }
+  Register(){
+    this.router.navigate(['/newuser']);
+  }
+  Login(){
+    this.router.navigate(['']);
+  }
 }
 @Component({
   selector: 'app-adminlogin',
@@ -134,6 +140,7 @@ export class AdminLoginComponent {
   response: any;
   id: any;
   failed: any;
+  loginloading:boolean = false;
   constructor(private fb: FormBuilder,private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService) {
     this.validateForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -145,11 +152,16 @@ export class AdminLoginComponent {
   Reset(){
     this.router.navigate(['/passwordreset'])
   }
+   viewDetails(){
+    this.router.navigate(['/viewdetails']);
+  }
   async submitForm() {
+    this.loginloading = true
     console.log(this.validateForm)
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
+      this.loginloading = false;
     }
     // if (this.validateForm.valid) {
     //   this.router.navigate(['/studentdetails'])
@@ -160,6 +172,7 @@ export class AdminLoginComponent {
     let url = `${environment.api_url}/api/login`;
     this.http.post(url, this.validateForm.value).subscribe((res: any) => {
       this.response = res
+      this.loginloading = false;
       console.log("response", this.response)
       if (this.response.data) {
         this.id = this.response.data
@@ -167,21 +180,24 @@ export class AdminLoginComponent {
         let api = `${environment.api_url}/api/edit/${this.id.id}`;
         this.http.get(api).subscribe((res: any) => {
          console.log(res)
-         if(res.data){
+         if(res.data.is_submit != 1){
           this.router.navigate(['/registration'])
+          this.currentUser.setUser(this.id);
+          localStorage.setItem('userdata', JSON.stringify(this.id));
          }
-        //  if(res.data.is_submit === 1){
-        //   this.router.navigate(['/viewdetails'])
-        //  }
+         if(res.data.is_submit === 1){
+          this.router.navigate(['/success'])
+          this.currentUser.setUser(this.id);
+          localStorage.setItem('userdata', JSON.stringify(this.id));
+         }
          else{
           this.router.navigate(['/home'])
          }
         });
-        this.currentUser.setUser(this.id);
-        localStorage.setItem('userdata', JSON.stringify(this.id));
       }
       else{
         this.router.navigate(['/studentdetails'])
+        localStorage.setItem('userdata', JSON.stringify(this.id));
       }
     }
      else {
@@ -276,6 +292,11 @@ export class RegisterComponent {
   aadhar_xml: any;
   savebtn: boolean = true;
   submitbtn: boolean = true;
+  loading: boolean = false;
+  submitloading:boolean = false;
+  paymentlink:any;
+  uploadloading6: boolean = false;
+  dd_img: any;
   constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService,private activatedRoute: ActivatedRoute,private i18n: NzI18nService) {
     this.user = localStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
@@ -310,6 +331,7 @@ export class RegisterComponent {
       deg_provitional_cerificate: ['',Validators.required],
       signature: ['',Validators.required],
       photo:['',Validators.required],
+      dd_image:[''],
       original_add1: [''],
       original_add2: [''],
       districts: [''],
@@ -321,6 +343,7 @@ export class RegisterComponent {
 
     this.addAddress()
     this.addResAddress()
+    this.paymentlink = environment.api_url + '/api/payment'
   }
   onChange(result: Date): void {
     console.log('onChange: ', result);
@@ -352,6 +375,7 @@ export class RegisterComponent {
     let api = `${environment.api_url}/api/edit/${this.getuser.id}`;
         this.http.get(api).subscribe((res: any) => {
          console.log(res)
+         if(res){
          this.fetch  = res.data
          this.form.controls.name.setValue(this.fetch.name)
          this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
@@ -415,6 +439,9 @@ export class RegisterComponent {
           this.signature_img = environment.image_url + this.fetch.signature
         } if(this.fetch.photo){
           this.photo_img = environment.image_url + this.fetch.photo
+        }  
+        if(this.fetch.dd_image){
+          this.dd_img = environment.image_url + this.fetch.dd_image
         }     
         this.form.controls.address_proof.setValue(this.fetch.address_proof)
         this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
@@ -428,6 +455,7 @@ export class RegisterComponent {
         //    this.submitbtn = false;
         //    this.form.disable()
         //  
+        if(res.degree_name){
           let i = res.degree_name.length
           for(var j=0;j<=i-1;j++){
             console.log("details",j)
@@ -435,7 +463,12 @@ export class RegisterComponent {
             this.qualifications.get('degree_name').setValue(res.degree_name[j]);
             this.qualifications.get('university_name').setValue(res.university[j]);
             this.qualifications.get('year_passing').setValue(res.year_of_passing[j]);
-      }  
+          }
+        }
+      }
+           else{
+              this.addQuantity()
+            }  
         });
   }
   Fetch(){
@@ -568,7 +601,34 @@ export class RegisterComponent {
     });
     return false;
   }
-
+  postMethod6(files: FileList) {
+    this.uploadloading6 = true;
+    this.fileToUpload = files.item(0);
+    let dd = new FormData();
+    dd.append('file', this.fileToUpload, this.fileToUpload.name);
+    // console.log(files)
+    this.http.post(environment.api_url+'/api/upload', dd).subscribe((res: any) => {
+      console.log(res);
+      if (res.data) {
+        this.dd_img = res.data
+        this.form.controls.dd_image.setValue(res.file_name)
+        this.uploadloading6 = false;
+        let type: string = 'success'
+        console.log('oops', res.errors)
+        this.notification.create(
+          type,
+          'Success!!',
+          'File uploaded Successfully!')
+      }
+      else{
+        this.notification.create(
+          'error',
+          'Failed!!',
+          res.errors.file)
+      }
+    });
+    return false;
+  }
   postMethod1(files: FileList) {
     this.uploadloading = true;
     this.fileToUpload = files.item(0);
@@ -841,6 +901,7 @@ export class RegisterComponent {
   //save the data
 
   async save(){
+    this.loading = true;
     this.form.controls.districts.setValue(this.sameaddress.get('same_district').value)
     this.form.controls.user_id.setValue(this.getuser.id)
     this.form.controls.mail_id.setValue(this.getuser.email)
@@ -878,6 +939,7 @@ export class RegisterComponent {
     this.http.post(url, this.form.value,dd).subscribe((res: any) => {
       this.response = res
       if(res){
+        this.loading = false;
         let type: string = 'success';
        let message = 'Data saved Successfully';
        this.notification.create(
@@ -972,7 +1034,7 @@ export class RegisterComponent {
         this.form.controls.signature.setValue(this.fetch.signature)
         this.form.controls.photo.setValue(this.fetch.photo)
          this.form.controls.districts.setValue(this.fetch.districts)
-         this.form.controls.dob.setValue(res.dob)
+         this.form.controls.dob.setValue(this.fetch.dob)
         //  if(this.fetch.is_submit === '1'){
         //    this.savebtn = false;
         //    this.submitbtn = false;
@@ -1012,6 +1074,7 @@ export class RegisterComponent {
   //submit the data
 
   async submitform() {
+    this.submitloading = true
     if (!this.form.controls.declaration.value) {
       window.alert('Please check Agree the self declaration')
       return
@@ -1054,6 +1117,7 @@ export class RegisterComponent {
     let url = `${environment.api_url}/api/store`;
     this.http.post(url, this.form.value,dd).subscribe((res: any) => {
       this.response = res
+      this.submitloading = false
       console.log("response", this.response)
       if (this.response.data) {
         // console.log("welcome")
@@ -1431,6 +1495,7 @@ export class NewUserComponent {
   validateForm: FormGroup;
   response: any;
   id: any;
+  regloading:boolean = false;
   constructor(private fb: FormBuilder, private router: Router, private http: HttpClient, private notification: NzNotificationService) {
     this.validateForm = this.fb.group({
       name: ['', [Validators.required], [this.userNameAsyncValidator]],
@@ -1441,6 +1506,7 @@ export class NewUserComponent {
     });
   }
   submitForm() {
+    this.regloading = true;
     for (const key in this.validateForm.controls) {
       this.validateForm.controls[key].markAsDirty();
       this.validateForm.controls[key].updateValueAndValidity();
@@ -1449,6 +1515,7 @@ export class NewUserComponent {
     let url = `${environment.api_url}/api/storeuser`;
     this.http.post(url, this.validateForm.value).subscribe((res: any) => {
       this.response = res
+      this.regloading = false
       console.log("response", this.response)
       if (this.response.data) {
         this.id = this.response
@@ -1566,30 +1633,98 @@ export class ResetPwDComponent {
   getuser:any = {};
   resetform = new FormGroup({})
   response: any;
+  resetloading:boolean = false
   constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
     this.user = localStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     this.resetform = this.fb.group({
       reset_pwd: ['', [Validators.required]],
-      email: ['', [Validators.required]],
+      otp: [''],
+      email: ['', [Validators.required,Validators.email]],
     });
   }
-  async submitForm() {
-
-    let url = `${environment.api_url}/api/resetpwd`;
-    this.http.post(url, this.resetform.value).subscribe((res: any) => {
-      this.response = res
-      console.log("response", this.response)
-      if (this.response) {
-        let type: string = 'success'
-        this.notification.create(
-          type,
-          'Success!!',
-          'PassWord Changed Successfully!')
+  Getotp() {
+      let url = `${environment.api_url}/api/verifiy`;
+        this.http.post(url,{email:this.resetform.controls.email.value}).subscribe((res: any) => {
+          if(res){
+                if (res.data) {
+                  let type: string = 'success'
+                  this.notification.create(
+                    type,
+                    'Success!!',
+                    'OTP is Send to Your Email!')
+                  }
+               if (res.error) {
+                let type: string = 'error'
+                this.notification.create(
+                  type,
+                  'Failed!!',
+                  res.error)
+                }
+                }
+              });
+    }
+    async submitForm() {
+      this.resetloading = true
+      for (const i in this.resetform.controls) {
+        this.resetform.controls[i].markAsDirty();
+        this.resetform.controls[i].updateValueAndValidity();
+        this.resetloading = false
+      }
+      let url = `${environment.api_url}/api/resetpwd`;
+      this.http.post(url, this.resetform.value).subscribe((res: any) => {
+        this.response = res
+        if(res.data){
+        this.resetloading = false
+        console.log("response", this.response)
+        if (this.response.success) {
+          let type: string = 'success'
+          this.notification.create(
+            type,
+            'Success!!',
+            'PassWord Changed Successfully!')
+          }
+       this.router.navigate([''])
         }
-     this.router.navigate([''])
-    });
-  }
+        if(res.error){
+          let type: string = 'error'
+          this.notification.create(
+            type,
+            'Failed!!',
+            res.error)
+          }
+      });
+    }
+}
 
+@Component({
+  selector: 'app-success',
+  templateUrl: './success.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class SuccessComponent {
+  user: any;
+  getuser: any;
+  
+  constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
+    // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
+    this.user = localStorage.getItem('userdata')
+    this.getuser = JSON.parse(this.user); 
+    console.log('loggeduserreg',this.getuser)
+  }
+  Regsiter(){
+    this.router.navigate(['/registration']);
+  }
+  viewDetails(){
+    this.router.navigate(['/viewdetails']);
+  }
+  download(){
+    this.router.navigate(['/downloadpdf']);
+  }
+ 
+  logout(){
+    this.router.navigate(['']);
+    localStorage.clear();
+  }
 }

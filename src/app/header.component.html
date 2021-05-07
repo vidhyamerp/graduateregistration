@@ -10,7 +10,8 @@
         </h4>
       </div>
       <div class="text-right flex-fill bg-blue">
-        <button class="btn btn-success p-2" *ngIf="showbutton">  <i class="fa fa-power-off" style="font-size:25px"></i></button>
+        <button nz-button class="btn btn-success p-1" (click)="Login()"> Login</button>
+        <button nz-button class="btn btn-light p-1 float-right"  (click)="Register()"> Register</button>
         <!-- <nz-button-group>
           <button nz-button nz-dropdown [nzDropdownMenu]="menu2" nzPlacement="bottomRight">
           

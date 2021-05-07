@@ -57,7 +57,7 @@
         </div>
         <div class="text-center mt-4 pb-4">
           <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
-            type="submit" style="border-radius:6px;font-size:17px"><b>Login</b></button>
+            type="submit" style="border-radius:6px;font-size:17px" [nzLoading]="loginloading"><b>Login</b></button>
         </div>
         <div class="d-flex mt-1">
           <a [routerLink]="['/passwordreset']">Forgot Password</a>
