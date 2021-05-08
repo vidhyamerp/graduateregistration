@@ -194,15 +194,7 @@
         <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Present Occupation</div>
         <div class="col-md-1"></div>
       <nz-form-control class="col-md-4" nzErrorTip="Present Occupation is Required!">
-        <select class="form-control" nzAllowClear nzPlaceHolder="Select Occupation"
-          formControlName="occupation">
-          <option class="mb-4"  value="">Select Occupation</option>
-          <option class="mb-4"  value="principal">Principal</option>
-          <option class="mb-4"  value="professor">Professor</option>
-          <option class="mb-4" value="mla">MLA</option>
-          <option class="mb-4" value="mp">MP</option>
-          <option class="mb-4"  value="others">others</option>
-        </select>
+        <input nz-input formControlName="occupation" type="text" style='text-transform:uppercase'>
       </nz-form-control>
       </nz-form-item>
       <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">

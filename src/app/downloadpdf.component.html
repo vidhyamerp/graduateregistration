@@ -115,6 +115,12 @@
                     </td>
                   </tr>
                   <tr>
+                    <td colspan="2">Aadhar Card Number</td>
+                      <td>
+                        {{url.dob}}
+                      </td>
+                  </tr>
+                  <tr>
                   <td colspan="3" style="text-align: center;">Educational Qualification</td>
                   </tr>
                   <tr colspan="2">
@@ -188,6 +194,12 @@
                         <img *ngIf="url.aadhar_proof" src="{{aadhar_proof}}" height=50 width=60>   
                         </td>
                     </tr>
+                    <tr>
+                      <td colspan="2">Aadhar Proof</td>
+                          <td>                   
+                          <img *ngIf="url.dd_image" src="{{dd_image}}" height=50 width=60>   
+                          </td>
+                      </tr>
                 </tbody>
               </table>
             </div>

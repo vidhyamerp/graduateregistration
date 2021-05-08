@@ -344,7 +344,7 @@ export class RegisterComponent {
       user_id:[''],
       dd_image:[],
     });
-    // this.addQuantity()
+
     this.addAddress()
     this.addResAddress()
     this.paymentlink = environment.api_url + '/api/payment'
@@ -381,7 +381,7 @@ export class RegisterComponent {
          console.log(res)
          if(res.data){
          this.fetch  = res.data
-         this.form.controls.name.setValue(this.fetch.name)
+         this.form.controls.name.setValue(this.getuser.name)
          this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
          this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
          this.form.controls.declaration.setValue(this.fetch.declaration)
@@ -390,6 +390,7 @@ export class RegisterComponent {
          this.form.controls.challan_no.setValue(this.fetch.challan_no)
          this.form.controls.amount.setValue(this.fetch.amount)
          this.form.controls.bank_name.setValue(this.fetch.bank_name)
+         this.form.controls.dob.setValue(this.fetch.dob)
          this.form.controls.date.setValue(this.fetch.date)
          if(this.fetch.dd_check === 0){
          this.form.controls.dd_check.setValue('0')
@@ -480,7 +481,7 @@ export class RegisterComponent {
       let api = `${environment.api_url}/api/extract`;
       this.http.get(api,{params:params}).subscribe((res: any) => {
         this.response = res.data
-        // this.form.controls.name.setValue(this.response.name) 
+        this.form.controls.name.setValue(this.getuser.name) 
          this.form.controls.aadhar_number.setValue(this.response.aadhar_no)
         //  this.form.controls.dob.setValue(this.response.dob)
          this.form.controls.father_or_husband_name.setValue(this.response.careof) 
@@ -955,9 +956,6 @@ export class RegisterComponent {
       if(res.degree_name){
         this.form.controls.degree_name.setValue(res.degree_name)
           this.addQuantity()
-          this.qualifications.setValue([
-            { degree_name: "111", university_name: "Mohan", year_passing: "Java"},
-          ]);
       }
       if(res.university){
         this.form.controls.name_of_degree.setValue(res.university)
@@ -969,7 +967,7 @@ export class RegisterComponent {
        
       if (this.response.data) {
         this.fetch  = res.data
-         this.form.controls.name.setValue(this.fetch.name)
+        //  this.form.controls.name.setValue(this.fetch.name)
          this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
          this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
          this.form.controls.declaration.setValue(this.fetch.declaration)
@@ -978,6 +976,7 @@ export class RegisterComponent {
          this.form.controls.challan_no.setValue(this.fetch.challan_no)
          this.form.controls.amount.setValue(this.fetch.amount)
          this.form.controls.bank_name.setValue(this.fetch.bank_name)
+         this.form.controls.dob.setValue(this.fetch.dob)
          this.form.controls.date.setValue(this.fetch.date)
          if(this.fetch.dd_check === 0){
          this.form.controls.dd_check.setValue('0')
@@ -1114,7 +1113,6 @@ export class RegisterComponent {
       let degree: any = []
       let university_name: any = []
       let year_passing: any = []
-     console.log(this.qualifications.get('degree_name').value)
       this.form.controls.qualification.value.forEach((element:any) => {
         degree.push(element.degree_name)
         university_name.push(element.university_name)
@@ -1188,6 +1186,7 @@ export class DownloadComponent {
   degree:any;
   add_proof:any;
   aadhar_proof:any;
+  dd_image:any;
   @ViewChild('pdfTable', {static: false}) pdfTable!: ElementRef;
   user: any;
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
@@ -1204,6 +1203,7 @@ export class DownloadComponent {
       this.degree = environment.image_url + this.url.deg_provitional_cerificate
       this.add_proof = environment.image_url + this.url.address_proof
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
+      this.dd_image = environment.image_url + this.url.dd_image
       console.log("repsosn",this.url)
     });
   }
@@ -1598,6 +1598,7 @@ export class ViewPDfComponent {
   aadhar_proof:any;
   id!: string | null;
   user: any;
+  dd_image: any;
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
     this.user = localStorage.getItem('userdata')
@@ -1614,6 +1615,7 @@ export class ViewPDfComponent {
       this.degree = environment.image_url + this.url.deg_provitional_cerificate
       this.add_proof = environment.image_url + this.url.address_proof
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
+      this.dd_image = environment.image_url + this.url.dd_image
       console.log("repsosn",this.url)
     });
   }
