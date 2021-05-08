@@ -26,6 +26,21 @@
         </ng-template>
       </nz-form-control>
     </nz-form-item>
+    <nz-form-item class=" mb-2">
+      <nz-form-label [nzSpan]="14">Click here to GET OTP</nz-form-label>
+      <div><button nz-button class="btn btn-primary" type="button" (click) ="Getotp()" [nzLoading]="otploading" >GET OTP</button></div>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="9" nzRequired>Enter OTP</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="emailErrorTpl">
+        <input nz-input formControlName="otp" placeholder="OTP" type="text" />
+        <ng-template #emailErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('otp')">
+          OTP is Required!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
     <nz-form-item>
         <nz-form-label [nzSpan]="9" nzRequired>Mobile No</nz-form-label>
         <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="mobileTpl">

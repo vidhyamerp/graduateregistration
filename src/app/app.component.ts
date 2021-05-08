@@ -1513,15 +1513,40 @@ export class NewUserComponent {
   response: any;
   id: any;
   regloading:boolean = false;
+  otploading: boolean = false;
   constructor(private fb: FormBuilder, private router: Router, private http: HttpClient, private notification: NzNotificationService) {
     this.validateForm = this.fb.group({
       name: ['', [Validators.required], [this.userNameAsyncValidator]],
       email: ['', [Validators.email, Validators.required]],
       mobile_no: ['', [Validators.required]],
+      otp:['',[Validators.required]],
       password: ['', [Validators.required]],
       confirm: ['', [this.confirmValidator]],
     });
   }
+  Getotp() {
+    this.otploading = true
+      let url = `${environment.api_url}/api/reg_otp`;
+        this.http.post(url,{email:this.validateForm.controls.email.value}).subscribe((res: any) => {
+          if(res){
+            this.otploading = false
+                if (res.data) {
+                  let type: string = 'success'
+                  this.notification.create(
+                    type,
+                    'Success!!',
+                    'OTP is Send to Your Email!')
+                  }
+               if (res.failed) {
+                let type: string = 'error'
+                this.notification.create(
+                  type,
+                  'Failed!!',
+                  'Invalid OTP Please Enter Correct OTP!')
+                }
+                }
+              });
+    }
   submitForm() {
     this.regloading = true;
     for (const key in this.validateForm.controls) {
@@ -1538,6 +1563,13 @@ export class NewUserComponent {
         this.id = this.response
         this.router.navigate([''])
       }
+      if(res.success){
+        let type: string = 'success'
+        this.notification.create(
+          type,
+          'Success!!',
+          'Registration Completed Successfully!!')
+      }
       if (res.errors) {
         let errormessage = ''
         if (res.errors.mobile_no) {
@@ -1552,6 +1584,13 @@ export class NewUserComponent {
           type,
           'Error!!',
           errormessage)
+      }
+      if (res.failed) {
+        let type: string = 'error'
+        this.notification.create(
+          type,
+          'Failed!!',
+          'Invalid OTP!')
       }
     });
   }

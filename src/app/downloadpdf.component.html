@@ -46,6 +46,9 @@
                   <li>
                     <a (click)="download()" > Print</a>
                   </li>
+                  <li>
+                    <a (click)="Instruction()" > Instructions</a>
+                  </li>
                 </ul>
             </li>
             <li *ngIf="getuser.role === 'authority'">
@@ -73,7 +76,7 @@
   <div>
   <div>
     <div class="container" style="padding-left:170px;" *ngIf="!url">
-      <h2>Plese Regsiter to View Application</h2>
+      <h2>Plese Register First!</h2>
       </div>
     <div class="container" style="padding-left:170px;" *ngIf="url">
             <div class="text-center">
