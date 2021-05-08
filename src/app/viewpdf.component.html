@@ -72,7 +72,10 @@
     </nav>
   <div>
   <div>
-    <div class="container" style="padding-left:150px;">
+    <div class="container" style="padding-left:170px;" *ngIf="!url">
+    <h2>Plese Regsiter to View Application</h2>
+    </div>
+    <div class="container" style="padding-left:170px;" *ngIf="url">
             <div >
             <table class="table table-bordered" >
                 <tbody>

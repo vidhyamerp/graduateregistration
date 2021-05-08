@@ -45,6 +45,9 @@
                 <li>
                   <a (click)="download()" > Print</a>
                 </li>
+                 <li>
+                  <a (click)="Instruction()" > Instructions</a>
+                </li>
               </ul>
           </li>
           <li *ngIf="getuser.role === 'authority'">
@@ -70,7 +73,7 @@
     </div>
   </nav>
 <div>
- <div class="container mt-4" style="padding-left:120px;">
+ <div class="container mt-4" style="padding-left:160px;">
    <h5><u><b>INSTRUCTIONS FOR ONLINE GRADUATES REGISTRATION </b></u> </h5>
    <ul class="mt-4" style=" padding-left: 50px;">
      <li class="mt-4" style= "list-style: decimal;">
@@ -121,7 +124,7 @@
     </div>
   </div>
    <div class="d-flex justify-content-center mt-4">
-    <button type="submit" class="btn btn-primary ml-3" style="padding: 7px;" (click)="register()">Register</button>
+    <button type="submit" class="btn btn-primary ml-3" style="padding: 7px;" (click)="registernew()">Register</button>
   </div>
  </div>
 

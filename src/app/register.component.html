@@ -432,12 +432,11 @@
               <td> DD Image</td>
               <td>
                 <div class="clearfix text-center">
-                  <label for="photo" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
-                  <input id="dd" type="file" name="file" (change)="postMethod6($event.target.files)" hidden accept=".png,.jpeg,.jpg">
+                  <label for="dd" class="btn btn-primary"><i nz-icon nzType="upload" nzTheme="outline"></i></label>
+                  <input id="dd" type="file" name="file" (change)="postMethod6($event.target.files)" hidden accept=".png,.jpeg,.jpg"><br/>
                   <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading6"></nz-progress>                 
                 </div>
               </td>
-             <!-- <td> <img [src]="photo" height="100" width="100" *ngIf="photo && !uploadloading4" style="border: solid #6f6f6f55 2px;"></td> -->
              <td><img *ngIf="dd_img" src="{{dd_img}}" height="100" width="100"></td>
             </tr>
           </tbody>
@@ -455,7 +454,21 @@
           </b></span>
         </div>
       </div>
-      <div class="mt-4">
+      <div class="mt-4" *ngIf="!fetch">
+        <button type="button"nz-button  class="btn btn-primary" style="padding: 4px;" (click)="save()" [nzLoading]="loading" >Save</button>
+        <button class="btn btn-primary float-right"
+        nz-popconfirm
+        nzPopconfirmTitle="Once you press 'Submit' button the details in the application cannot be modified
+        Are you sure do you want to submit? "
+        (nzOnConfirm)="submitform()"
+        (nzOnCancel)="cancel()"
+        nzPopconfirmPlacement="top"
+        nz-button 
+        [nzLoading]="submitloading">
+      Submit
+      </button>
+      </div>
+      <div class="mt-4" *ngIf="fetch">
         <button type="button"nz-button  class="btn btn-primary" style="padding: 4px;" (click)="save()" [nzLoading]="loading" [disabled]="fetch.is_submit === 1">Save</button>
         <button class="btn btn-primary float-right"
         nz-popconfirm

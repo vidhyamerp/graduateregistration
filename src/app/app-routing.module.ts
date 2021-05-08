@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent, RegisterComponent,AdminLoginComponent, HomeComponent,DownloadComponent,StudentDetailsComponent, NewUserComponent, ViewPDfComponent, ResetPwDComponent, SuccessComponent } from './app.component';
+import { AppComponent, RegisterComponent,AdminLoginComponent, HomeComponent,DownloadComponent,StudentDetailsComponent, NewUserComponent, ViewPDfComponent, ResetPwDComponent } from './app.component';
 
 
 const routes: Routes = [
@@ -11,14 +11,13 @@ const routes: Routes = [
        { path: '', component: AdminLoginComponent },
        { path: 'login', component: AdminLoginComponent },
       { path: 'registration', component: RegisterComponent },
-      { path: 'registration', component: RegisterComponent },
       { path: 'downloadpdf', component: DownloadComponent },
       { path: 'studentdetails', component: StudentDetailsComponent },
       { path: 'viewdetails', component: ViewPDfComponent },
       { path: 'newuser', component: NewUserComponent },
       { path: 'home', component: HomeComponent },
       { path: 'passwordreset', component: ResetPwDComponent },
-      { path: 'success', component: SuccessComponent }
+      // { path: 'success', component: SuccessComponent }
     ]},
 // {
 //   path: 'registration',

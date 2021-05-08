@@ -51,7 +51,7 @@ export class HomeComponent {
     console.log('loggedusermy',this.getuser)
   }
   
-  async register() {
+  async registernew() {
     if (!this.agreedata.value) {
       window.alert('Please Agree to Continue')
       return
@@ -66,6 +66,9 @@ export class HomeComponent {
   }
   download(){
     this.router.navigate(['/downloadpdf']);
+  }
+  Instruction(){
+    this.router.navigate(['/home']);
   }
   StdDetails(){
     this.router.navigate(['/studentdetails']);
@@ -180,23 +183,24 @@ export class AdminLoginComponent {
         let api = `${environment.api_url}/api/edit/${this.id.id}`;
         this.http.get(api).subscribe((res: any) => {
          console.log(res)
-         if(res.data.is_submit != 1){
+         if(res.data){
+            localStorage.setItem('userdata', JSON.stringify(this.id));
           this.router.navigate(['/registration'])
-          this.currentUser.setUser(this.id);
-          localStorage.setItem('userdata', JSON.stringify(this.id));
          }
-         if(res.data.is_submit === 1){
-          this.router.navigate(['/success'])
-          this.currentUser.setUser(this.id);
-          localStorage.setItem('userdata', JSON.stringify(this.id));
-         }
+        //  if(res.data.is_submit === 1){
+        //   this.router.navigate(['/viewdetails'])
+        //  }
          else{
           this.router.navigate(['/home'])
+          localStorage.setItem('userdata', JSON.stringify(this.id));
          }
         });
+        this.currentUser.setUser(this.id);
+        localStorage.setItem('userdata', JSON.stringify(this.id));
       }
       else{
         this.router.navigate(['/studentdetails'])
+        this.currentUser.setUser(this.id);
         localStorage.setItem('userdata', JSON.stringify(this.id));
       }
     }
@@ -331,7 +335,6 @@ export class RegisterComponent {
       deg_provitional_cerificate: ['',Validators.required],
       signature: ['',Validators.required],
       photo:['',Validators.required],
-      dd_image:[''],
       original_add1: [''],
       original_add2: [''],
       districts: [''],
@@ -339,8 +342,9 @@ export class RegisterComponent {
       name_of_university: [''],
       year_of_passing: [''],
       user_id:[''],
+      dd_image:[],
     });
-
+    // this.addQuantity()
     this.addAddress()
     this.addResAddress()
     this.paymentlink = environment.api_url + '/api/payment'
@@ -375,7 +379,7 @@ export class RegisterComponent {
     let api = `${environment.api_url}/api/edit/${this.getuser.id}`;
         this.http.get(api).subscribe((res: any) => {
          console.log(res)
-         if(res){
+         if(res.data){
          this.fetch  = res.data
          this.form.controls.name.setValue(this.fetch.name)
          this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
@@ -439,9 +443,6 @@ export class RegisterComponent {
           this.signature_img = environment.image_url + this.fetch.signature
         } if(this.fetch.photo){
           this.photo_img = environment.image_url + this.fetch.photo
-        }  
-        if(this.fetch.dd_image){
-          this.dd_img = environment.image_url + this.fetch.dd_image
         }     
         this.form.controls.address_proof.setValue(this.fetch.address_proof)
         this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
@@ -525,6 +526,9 @@ export class RegisterComponent {
   download(){
     this.router.navigate(['/downloadpdf']);
   }
+  Instruction(){
+    this.router.navigate(['/home']);
+  }
   StdDetails(){
     this.router.navigate(['/studentdetails']);
   }
@@ -604,10 +608,10 @@ export class RegisterComponent {
   postMethod6(files: FileList) {
     this.uploadloading6 = true;
     this.fileToUpload = files.item(0);
-    let dd = new FormData();
-    dd.append('file', this.fileToUpload, this.fileToUpload.name);
+    let dd_image = new FormData();
+    dd_image.append('file', this.fileToUpload, this.fileToUpload.name);
     // console.log(files)
-    this.http.post(environment.api_url+'/api/upload', dd).subscribe((res: any) => {
+    this.http.post(environment.api_url+'/api/upload', dd_image).subscribe((res: any) => {
       console.log(res);
       if (res.data) {
         this.dd_img = res.data
@@ -938,8 +942,8 @@ export class RegisterComponent {
     let url = `${environment.api_url}/api/save`;
     this.http.post(url, this.form.value,dd).subscribe((res: any) => {
       this.response = res
+      this.loading = false;
       if(res){
-        this.loading = false;
         let type: string = 'success';
        let message = 'Data saved Successfully';
        this.notification.create(
@@ -1049,6 +1053,13 @@ export class RegisterComponent {
             this.qualifications.get('year_passing').setValue(res.year_of_passing[j]);
         this.id = this.response.data.id
       }
+    }
+    else{
+      this.addQuantity()
+      this.loading = false;
+      this.qualifications.get('degree_name').setValue('');
+      this.qualifications.get('university_name').setValue('');
+      this.qualifications.get('year_passing').setValue('');
     }
       if (res.errors) {
         let errormessage = ''
@@ -1204,6 +1215,9 @@ export class DownloadComponent {
   }
   download(){
     this.router.navigate(['/downloadpdf']);
+  }
+  Instruction(){
+    this.router.navigate(['/home']);
   }
   StdDetails(){
     this.router.navigate(['/studentdetails']);
@@ -1382,6 +1396,9 @@ export class StudentDetailsComponent {
   }
   download(){
     this.router.navigate(['/downloadpdf']);
+  }
+  Instruction(){
+    this.router.navigate(['/home']);
   }
   StdDetails(){
     this.router.navigate(['/studentdetails']);
@@ -1609,6 +1626,9 @@ export class ViewPDfComponent {
   download(){
     this.router.navigate(['/downloadpdf']);
   }
+  Instruction(){
+    this.router.navigate(['/home']);
+  }
   StdDetails(){
     this.router.navigate(['/studentdetails']);
   }
@@ -1634,6 +1654,7 @@ export class ResetPwDComponent {
   resetform = new FormGroup({})
   response: any;
   resetloading:boolean = false
+  otploading:boolean= false
   constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
     this.user = localStorage.getItem('userdata')
@@ -1645,9 +1666,11 @@ export class ResetPwDComponent {
     });
   }
   Getotp() {
+    this.otploading = true
       let url = `${environment.api_url}/api/verifiy`;
         this.http.post(url,{email:this.resetform.controls.email.value}).subscribe((res: any) => {
           if(res){
+            this.otploading = false
                 if (res.data) {
                   let type: string = 'success'
                   this.notification.create(
@@ -1655,12 +1678,12 @@ export class ResetPwDComponent {
                     'Success!!',
                     'OTP is Send to Your Email!')
                   }
-               if (res.error) {
+               if (res.failed) {
                 let type: string = 'error'
                 this.notification.create(
                   type,
                   'Failed!!',
-                  res.error)
+                  'Invalid OTP Please Enter Correct OTP!')
                 }
                 }
               });
@@ -1687,44 +1710,68 @@ export class ResetPwDComponent {
           }
        this.router.navigate([''])
         }
-        if(res.error){
+        else{
           let type: string = 'error'
           this.notification.create(
             type,
             'Failed!!',
-            res.error)
+            'InCorrect OTP Please Enter Correct OTP!')
           }
       });
     }
 }
 
-@Component({
-  selector: 'app-success',
-  templateUrl: './success.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class SuccessComponent {
-  user: any;
-  getuser: any;
-  
-  constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
-    // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
-    this.user = localStorage.getItem('userdata')
-    this.getuser = JSON.parse(this.user); 
-    console.log('loggeduserreg',this.getuser)
-  }
-  Regsiter(){
-    this.router.navigate(['/registration']);
-  }
-  viewDetails(){
-    this.router.navigate(['/viewdetails']);
-  }
-  download(){
-    this.router.navigate(['/downloadpdf']);
-  }
- 
-  logout(){
-    this.router.navigate(['']);
-    localStorage.clear();
-  }
-}
+// @Component({
+//   selector: 'app-forgotpass',
+//   templateUrl: './forgotpass.component.html',
+//   styleUrls: ['./app.component.css']
+// })
+// export class ResetProcessComponent {
+//   user:any;
+//   getuser:any = {};
+//  pwdform = new FormGroup({})
+//   response: any;
+//   resetloading:boolean = false
+//   constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
+//     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
+//     this.user = localStorage.getItem('userdata')
+//     this.getuser = JSON.parse(this.user); 
+//     this.pwdform = this.fb.group({
+//       reset_pwd: ['', [Validators.required]],
+//     });
+//   }
+//   async submitForm() {
+//     this.resetloading = true
+//     for (const i in this.pwdform.controls) {
+//       this.pwdform.controls[i].markAsDirty();
+//       this.pwdform.controls[i].updateValueAndValidity();
+//       this.resetloading = false
+//     }
+//     var res = [];
+//     var email =localStorage.getItem('resetemail')
+//     let url = `${environment.api_url}/api/resetpwd`;
+//     res.push(email,url)
+//     this.http.post(url, res).subscribe((res: any) => {
+//       this.response = res
+//       if(res.data){
+//       this.resetloading = false
+//       console.log("response", this.response)
+//       if (this.response.success) {
+//         let type: string = 'success'
+//         this.notification.create(
+//           type,
+//           'Success!!',
+//           'PassWord Changed Successfully!')
+//         }
+//      this.router.navigate([''])
+//       }
+//       if(res.error){
+//         let type: string = 'error'
+//         this.notification.create(
+//           type,
+//           'Failed!!',
+//           res.error)
+//         }
+//     });
+//   }
+// }
