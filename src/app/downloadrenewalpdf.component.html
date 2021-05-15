@@ -80,9 +80,15 @@
   <div>
   <div>
     <div class="container" style="padding-left:170px;" *ngIf="!url || url.is_submit === 0">
-    <h2>Plese Register First!</h2>
-    </div>
+      <h2>Plese Register First!</h2>
+      </div>
     <div class="container" style="padding-left:170px;" *ngIf="url.is_submit === 1">
+            <div class="text-center">
+            <h2 *ngIf="id">Registered Successfully!</h2><br>
+            <button type="button" class="btn btn-primary p-1 mb-4" (click)="downloadAsPDF()">
+                Download pdf
+            </button>
+            </div> 
             <div >
             <table class="table table-bordered" >
                 <tbody>
@@ -116,18 +122,11 @@
                     </td>
                   </tr>
                   <tr>
-                  <td colspan="3" style="text-align: center;">Educational Qualification</td>
+                    <td colspan="2">Aadhar Card Number</td>
+                      <td>
+                        {{url.dob}}
+                      </td>
                   </tr>
-                  <tr colspan="2">
-                    <td>Name of the Degree</td>
-                    <td>Name of the University</td>
-                    <td>Year of Passing</td>
-                 </tr>
-                 <tr colspan="2">
-                    <td> {{url.degree_name}}</td>
-                    <td> {{url.university}}</td>
-                    <td> {{url.year_of_passing}}</td>
-                 </tr>
                  <tr>
                   <td colspan="2">Occupation</td>
                     <td>
@@ -147,21 +146,22 @@
                     </td>
                   </tr>
                   <tr>
-                  <td colspan="2">Whether the Bank Draft for rs.25/- towards the registration fee is attached</td>                     
+                  <td colspan="2">Whether the Bank Draft for rs.10/- towards the registration fee is attached</td>
                   <td><span *ngIf="url.dd_check === 1">YES</span><span *ngIf="url.dd_check === 0">NO</span></td>
                   </tr>
                   <tr *ngIf="url.dd_check === 1">
                     <td colspan="2">Payment Details</td>                     
                     <td><div><span><b>Challan No:</b> {{url.challan_no}}</span>
                       <span style="float:right"><b>Amount:</b>  {{url.amount}}</span></div>
-                      <div><span><b>Date of Payment:</b>  {{url.date}}</span>
+                      <div> <span><b>Date of Payment:</b>  {{url.date}}</span>
                       <span style="float:right"><b>Bank name:</b>  {{url.bank_name}}</span></div></td>
-                    </tr>
+                  </tr>
+                  <tr>
                   <tr>
                   <td colspan="2">Whether,the original cerificate
                           or copy of the degree Cerificate or provisional certificate duly attested by gazetted
                           officer,Syndicate/Senate Member of Barathiyar university in proof of qualification is attested.</td>
-                   <td><span *ngIf="url.certificate_decl === 1">YES</span><span  *ngIf="url.certificate_decl === 0">NO</span></td>
+                          <td><span *ngIf="url.certificate_decl === 1">YES</span><span  *ngIf="url.certificate_decl === 0">NO</span></td>
              
                   </tr>
                   <tr>
@@ -177,12 +177,6 @@
                       <img *ngIf="url.signature" src="{{sign}}" height=50 width=60>   
                     </td>
                   </tr>
-                  <tr>
-                    <td colspan="2">Degree or Provisional Certificate</td>
-                      <td>                   
-                        <img *ngIf="url.deg_provitional_cerificate" src="{{degree}}" height=50 width=60>   
-                      </td>
-                    </tr>
                     <tr>
                     <td colspan="2">Residentails Address Proof</td>
                         <td>                   
@@ -195,6 +189,12 @@
                         <img *ngIf="url.aadhar_proof" src="{{aadhar_proof}}" height=50 width=60>   
                         </td>
                     </tr>
+                    <tr>
+                      <td colspan="2">DD Proof</td>
+                          <td>                   
+                          <img *ngIf="url.dd_image" src="{{dd_image}}" height=50 width=60>   
+                          </td>
+                      </tr>
                 </tbody>
               </table>
             </div>

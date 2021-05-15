@@ -58,7 +58,11 @@
                 </a>
                   <ul style="padding-left: 55px;">
                     <li class="submenu">
-                      <a (click)="StdDetails()" > Registered List
+                      <a (click)="StdDetails()" > New User List
+                      </a>
+                    </li>
+                    <li class="submenu">
+                      <a (click)="StdRewnewalDetails()" > Renewal List
                       </a>
                     </li>
                    </ul>
@@ -75,10 +79,10 @@
     </nav>
   <div>
   <div>
-    <div class="container" style="padding-left:170px;" *ngIf="!url">
+    <div class="container" style="padding-left:170px;" *ngIf="!url || url.is_submit === 0">
       <h2>Plese Register First!</h2>
       </div>
-    <div class="container" style="padding-left:170px;" *ngIf="url">
+    <div class="container" style="padding-left:170px;" *ngIf="url.is_submit === 1">
             <div class="text-center">
             <h2 *ngIf="id">Registered Successfully!</h2><br>
             <button type="button" class="btn btn-primary p-1 mb-4" (click)="downloadAsPDF()">
@@ -174,6 +178,12 @@
              
                   </tr>
                   <tr>
+                    <td colspan="2">Date of Submission</td>
+                      <td>
+                        {{url.date_of_submission}}
+                      </td>
+                    </tr>
+                  <tr>
                   <td colspan="2">Signature</td>
                     <td>                   
                       <img *ngIf="url.signature" src="{{sign}}" height=50 width=60>   
@@ -198,7 +208,7 @@
                         </td>
                     </tr>
                     <tr>
-                      <td colspan="2">Aadhar Proof</td>
+                      <td colspan="2">DD Proof</td>
                           <td>                   
                           <img *ngIf="url.dd_image" src="{{dd_image}}" height=50 width=60>   
                           </td>

@@ -8,95 +8,95 @@
     <i nz-icon nzType="search"></i>
   </ng-template>
   </div>
-<nz-table #basicTable [nzData]="rejected" [nzLoading]="loading" (nzPageIndexChange)="getrejected()"
-  [nzScroll]="{ y: '1150px', x: '240px' }"
-  [nzWidthConfig]="['150px','150px','150px','150px','150px','150px','120px','150px','150px','200px','120px','150px','150px','150px','150px','220px']">
-  <thead>
-    <tr>
-      <th><span>Name</span>
+ <nz-table #basicTable [nzData]="rejected" [nzLoading]="loading" (nzPageIndexChange)="getrejected()"
+ [nzScroll]="{ y: '1150px', x: '240px' }"
+ [nzWidthConfig]="['150px','150px','150px','150px','150px','150px','120px','150px','150px','200px','120px','150px','150px','150px','150px','220px']">
+ <thead>
+   <tr>
+     <th><span>Name</span>
 
-      </th>
-      <th><span>Application No</span>
+     </th>
+     <th><span>Application No</span>
 
-      </th>
-      <th><span>Aadhar Number</span>
+     </th>
+     <th><span>Aadhar Number</span>
 
-      </th>
-      <th><span>Father's/Husband Name</span>
+     </th>
+     <th><span>Father's/Husband Name</span>
 
-      </th>
-      <th><span>Mobile Number</span>
+     </th>
+     <th><span>Mobile Number</span>
 
-      </th>
-      <th><span>Name of the Degree</span>
+     </th>
+     <th><span>Name of the Degree</span>
 
-      </th>
-      <th><span>Name of the University</span>
+     </th>
+     <th><span>Name of the University</span>
 
-      </th>
-      <th><span>Year of Passing</span>
+     </th>
+     <th><span>Year of Passing</span>
 
-      </th>
-      <th><span>Occupation</span>
+     </th>
+     <th><span>Occupation</span>
 
-      </th>
-      <th><span>Address</span></th>
-      <th><span>District</span></th>
-      <th><span>Aadhar proof</span></th>
-      <th><span>Adress Proof</span></th>
-      <th><span>Degree Certificate</span></th>
-      <th><span>Download Application</span></th>
-      <th><span>Remark</span></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data of basicTable.data | filterlist:name||district||applicationNumber">
-      <td><span>{{ data.name }}</span></td>
-      <td><span *ngIf="data.application_no">{{ data.application_no }}</span><span *ngIf="!data.application_no"> -
-        </span></td>
-      <td><span>{{ data.aadhar_number }}</span></td>
-      <td><span>{{ data.father_or_husband_name }}</span></td>
-      <td><span>{{ data.mobile_no }}</span></td>
-      <td><span>{{ data.degree_name}}</span></td>
-      <td><span>{{ data.university}}</span></td>
-      <td><span>{{ data.year_of_passing}}</span></td>
-      <td><span>{{ data.occupation }}</span></td>
-      <td><span>{{ data.present_address }}</span></td>
-      <td><span>{{ data.district }}</span></td>
-      <td><span *ngIf="data.aadhar_proof">
-          <a [href]="getaadhar(data.aadhar_proof)" target="_blank">{{data.aadhar_proof}}</a>
-        </span>
-        <span *ngIf="!data.aadhar_proof">
-          {{'-'}}
-        </span>
-      </td>
-      <td><span *ngIf="data.address_proof">
-          <a [href]="getaadhar(data.address_proof)" target="_blank">{{data.address_proof}}</a>
-        </span>
-        <span *ngIf="!data.address_proof">
-          {{'-'}}
-        </span>
-      </td>
-      <td><span *ngIf="data.deg_provitional_cerificate">
-          <a [href]="getaadhar(data.deg_provitional_cerificate)" target="_blank">{{data.deg_provitional_cerificate}}</a>
-        </span>
-        <span *ngIf="!data.deg_provitional_cerificate">
-          {{'-'}}
-        </span>
-      </td>
-      <td>
-        <span *ngIf="data.pdf"> <a download="{{data.pdf}}" target="_blank" href="{{data.pdf}}">
-            Download
-          </a></span><span *ngIf="!data.pdf"> - </span>
-      </td>
-      <td>
-        <textarea rows="2" nz-input [formControl]="remark" placeholder="Enter Reason Here...">{{data.remark}}</textarea><br/><br/>
-        <nz-switch [ngModel]="true" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate" (ngModelChange)="Switch($event,data.id)"></nz-switch>
-        <ng-template #checkedTemplate><i nz-icon nzType="check"></i></ng-template>
-        <ng-template #unCheckedTemplate><i nz-icon nzType="close"></i></ng-template>
-      </td>
-    </tr>
-  </tbody>
+     </th>
+     <th><span>Address</span></th>
+     <th><span>District</span></th>
+     <th><span>Aadhar proof</span></th>
+     <th><span>Adress Proof</span></th>
+     <th><span>Degree Certificate</span></th>
+     <th><span>Download Application</span></th>
+     <th><span>Remark</span></th>
+   </tr>
+ </thead>
+ <tbody>
+   <tr *ngFor="let data of basicTable.data | filterlist:name||district||applicationNumber">
+     <td><span>{{ data.name }}</span></td>
+     <td><span *ngIf="data.application_no">{{ data.application_no }}</span><span *ngIf="!data.application_no"> -
+       </span></td>
+     <td><span>{{ data.aadhar_number }}</span></td>
+     <td><span>{{ data.father_or_husband_name }}</span></td>
+     <td><span>{{ data.mobile_no }}</span></td>
+     <td><span>{{ data.degree_name}}</span></td>
+     <td><span>{{ data.university}}</span></td>
+     <td><span>{{ data.year_of_passing}}</span></td>
+     <td><span>{{ data.occupation }}</span></td>
+     <td><span>{{ data.present_address }}</span></td>
+     <td><span>{{ data.district }}</span></td>
+     <td><span *ngIf="data.aadhar_proof">
+         <a [href]="getaadhar(data.aadhar_proof)" target="_blank">{{data.aadhar_proof}}</a>
+       </span>
+       <span *ngIf="!data.aadhar_proof">
+         {{'-'}}
+       </span>
+     </td>
+     <td><span *ngIf="data.address_proof">
+         <a [href]="getaadhar(data.address_proof)" target="_blank">{{data.address_proof}}</a>
+       </span>
+       <span *ngIf="!data.address_proof">
+         {{'-'}}
+       </span>
+     </td>
+     <td><span *ngIf="data.deg_provitional_cerificate">
+         <a [href]="getaadhar(data.deg_provitional_cerificate)" target="_blank">{{data.deg_provitional_cerificate}}</a>
+       </span>
+       <span *ngIf="!data.deg_provitional_cerificate">
+         {{'-'}}
+       </span>
+     </td>
+     <td>
+       <span *ngIf="data.pdf"> <a download="{{data.pdf}}" target="_blank" href="{{data.pdf}}">
+           Download
+         </a></span><span *ngIf="!data.pdf"> - </span>
+     </td>
+     <td>
+      <textarea rows="2" nz-input [formControl]="remark" placeholder="Enter Reason Here...">{{data.remark}}</textarea><br/><br/>
+      <nz-switch [ngModel]="true" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate" (ngModelChange)="Switch($event,data.id)"></nz-switch>
+      <ng-template #checkedTemplate><i nz-icon nzType="check"></i></ng-template>
+      <ng-template #unCheckedTemplate><i nz-icon nzType="close"></i></ng-template>
+    </td>
+   </tr>
+ </tbody>
 </nz-table>
 
 <ng-template #indicatorTemplate><i nz-icon nzType="loading"></i></ng-template>

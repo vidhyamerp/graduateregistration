@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { AppRoutingModule } from './app-routing.module';
-import { AdminLoginComponent, AppComponent, DownloadComponent, HeaderComponent, HomeComponent, InnerHeaderComponent, NewUserComponent, RegisterComponent,RelectedStudentDetailsComponent,ResetPwDComponent,StudentDetailsComponent, ViewPDfComponent } from './app.component';
+import { AdminLoginComponent, AppComponent, DownloadComponent, DownloadRenewappComponent, HeaderComponent, HomeComponent, InnerHeaderComponent, NewUserComponent, RegisterComponent,RejectedRenewalComponent,RelectedStudentDetailsComponent,RenewalComponent,RenewalDetailsComponent,RenewalLoginComponent,RenewalUserComponent,RenewHomeComponent,ResetPwDComponent,StudentDetailsComponent, ViewPDfComponent, ViewRenewalPDfComponent } from './app.component';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormBuilder, FormsModule,ReactiveFormsModule } from '@angular/forms';
@@ -37,10 +37,10 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { GlobalService } from 'src/service/global.service';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
 @NgModule({
   declarations: [
-    AppComponent,RegisterComponent,AdminLoginComponent,HomeComponent,NewUserComponent,HeaderComponent,DownloadComponent,StudentDetailsComponent,RelectedStudentDetailsComponent,FilterlistPipe,InnerHeaderComponent,ViewPDfComponent,ResetPwDComponent
+    AppComponent,RegisterComponent,AdminLoginComponent,HomeComponent,NewUserComponent,HeaderComponent,DownloadComponent,StudentDetailsComponent,RelectedStudentDetailsComponent,FilterlistPipe,InnerHeaderComponent,ViewPDfComponent,ResetPwDComponent,RenewalComponent,RenewalLoginComponent,RenewalUserComponent,RenewHomeComponent,ViewRenewalPDfComponent,DownloadRenewappComponent,RenewalDetailsComponent,RejectedRenewalComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +75,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     NzProgressModule,
     NzPopconfirmModule,
     NzDatePickerModule,
-    NzTagModule
+    NzSwitchModule
   ],
   providers: [FormBuilder,GlobalService,
   {provide: NZ_I18N, useValue: en_US}],

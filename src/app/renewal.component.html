@@ -79,7 +79,9 @@
 <div>
 <div>
   <div class="container" style="padding-left:120px;">
-    <h2 class="text-center">ONLINE GRADUATE REGSITRATION</h2>
+    <!-- <nz-spin nzSimple [nzSize]="'large'" *ngIf="loading"></nz-spin> -->
+    <!-- <button (click)="click('error')">test</button> -->
+    <h2 class="text-center">ONLINE GRADUATE RENEWAL</h2>
     <form [formGroup]="form" class="mb-4" (ngSubmit)="submitform()">
       <nz-form-item  style=" font-size: 18px !important;font-family: serif;">
         <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Name in full <br> (as entered in the
@@ -166,7 +168,7 @@
           <input nz-input class="space" placeholder="Date" formControlName="date_of_birth" type="date">
         </nz-form-control>
       </nz-form-item> -->
-      <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
+      <!-- <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
         <div style="width:93%;">
           <nz-table [nzData]="['']" [nzShowPagination]="false">
             <thead>
@@ -193,7 +195,7 @@
             </tbody>
           </nz-table>
         </div>
-      </nz-form-item>
+      </nz-form-item> -->
       <nz-form-item class="mt-3" style=" font-size: 18px !important;    font-family: serif;">
         <div class="col-md-4 text-justify"><span class="text-danger"><b>*</b></span>Present Occupation</div>
         <div class="col-md-1"></div>
@@ -392,7 +394,7 @@
               <!-- <td> <img [src]="address_proof" height="100" width="100" *ngIf="address_proof && !uploadloading2" style="border: solid #6f6f6f55 2px;"></td> -->
               <td><img *ngIf="address" src="{{address}}" height="100" width="100"></td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td>3</td>
               <td> Degree/Provisional Certificate</td>
               <td>
@@ -402,11 +404,10 @@
                   <nz-progress [nzPercent]="99.9" [nzStrokeColor]="{ '0%': '#108ee9', '100%': '#87d068' }" nzStatus="active" *ngIf="uploadloading3"></nz-progress>                 
                 </div>
               </td>
-              <!-- <td> <img [src]="degree_certificate" height="100" width="100" *ngIf="degree_certificate && !uploadloading3" style="border: solid #6f6f6f55 2px;"></td> -->
               <td><img *ngIf="deg_img" src="{{deg_img}}" height="100" width="100"></td>
-            </tr>
+            </tr> -->
             <tr>
-              <td>4</td>
+              <td>3</td>
               <td> Applicant Signature</td>
               <td>
                 <div class="clearfix text-center">
@@ -419,7 +420,7 @@
               <td><img *ngIf="signature_img" src="{{signature_img}}" height="100" width="100"></td>
             </tr>
             <tr>
-              <td>5</td>
+              <td>4</td>
               <td> Applicant Photo</td>
               <td>
                 <div class="clearfix text-center">
@@ -432,7 +433,7 @@
              <td><img *ngIf="photo_img" src="{{photo_img}}" height="100" width="100"></td>
             </tr>
             <tr>
-              <td>6</td>
+              <td>5</td>
               <td> DD Image</td>
               <td>
                 <div class="clearfix text-center">
@@ -451,10 +452,8 @@
         <div class="d-flex mt-2">
           <input formControlName="declaration" type="checkbox" id="declaration" (ngModelChange)="Dectrigger($event)">
           <span  style="font-size: 17px; font-family: serif;">
-            &nbsp; &nbsp; &nbsp; <b>I hereby declare that I have not Registered as a Graduate of the Bharathiar University
-            previously and I request you to kindly register my name. If it is found that I have registered earlier my
-            previous and present registration may be cancelled. I will abide by the rules and regulations of the
-            Bharathiar University
+            &nbsp; &nbsp; &nbsp; <b>I hereby declare that I have registered as a graduant of the bharathiar university
+            previously and I request you to kindly renew my name. I will be abide by the rules and regulations of the Bharathiar University
           </b></span>
         </div>
       </div>

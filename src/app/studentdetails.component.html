@@ -58,7 +58,11 @@
               </a>
                 <ul style="padding-left: 55px;">
                   <li class="submenu">
-                    <a (click)="StdDetails()" > Registered List
+                    <a (click)="StdDetails()" > New User List
+                    </a>
+                  </li>
+                  <li class="submenu">
+                    <a (click)="StdRewnewalDetails()" > Renewal List
                     </a>
                   </li>
                  </ul>
@@ -81,19 +85,13 @@
     <!-- <div class="ml-2 mb-2">
       <button nz-button type="button" nzType="primary" (click)="download()">Download All Data(Zip)</button>
     </div> -->
+    <h2 class="text-center mb-4"><u>New User List</u></h2>
     <div>
+      <span>If any Remarks in the Application change Remark column button as marked(<i class="fa fa-check" aria-hidden="true"></i>)</span>
       <nz-tabset>
         <nz-tab nzTitle="Selected List">
-          <div class="float-right pb-4 col-md-2">
-             <!-- <div class="search-hero col-md-3">
-                <nz-select class="space align mb-4" nzAllowClear nzPlaceHolder="Search by District"
-                [(ngModel)]="district" style="width: 100%;">
-                <nz-option class="mb-4" nzLabel="Coimbatore" nzValue="coimbatore"></nz-option>
-                <nz-option class="mb-4" nzLabel="Erode" nzValue="erode"></nz-option>
-                <nz-option class="mb-4" nzLabel="The Nilgiris" nzValue="nilgiris"></nz-option>
-                <nz-option class="mb-4" nzLabel="Tirupur" nzValue="tirupur"></nz-option>
-              </nz-select>
-            </div> -->
+          <div class="float-right pb-4 col-md-5 d-flex">
+            <button nz-button class="mr-4" type="button" nzType="primary" (click)="refresh()">Refresh</button>
             <nz-input-group [nzSuffix]="suffixIconSearch">
               <input nz-input type="text" name="search" [(ngModel)]="name" 
               placeholder="Search">
@@ -104,58 +102,58 @@
             </div>
           <nz-table #basicTable [nzData]="select" [nzLoading]="loading" (nzPageIndexChange)="getSelected()"
           [nzScroll]="{ y: '1150px', x: '240px' }"
-          [nzWidthConfig]="['100px','110px','100px','140px','100px','100px','120px','100px','100px','100px','100px','100px','100px','100px','100px']">
+          [nzWidthConfig]="['150px','150px','150px','150px','150px','150px','120px','150px','150px','200px','120px','150px','150px','150px','150px','220px']">
             <thead>
               <tr>
-                <th >Name
+                <th ><span>Name</span>
                  
                 </th>
-                <th >Application No
+                <th ><span>Application No</span>
                   
                 </th>
-                <th >Aadhar Number
+                <th ><span>Aadhar Number</span>
                 
                 </th>
-                <th >Father's/Husband's Name
+                <th ><span>Father's/Husband's Name</span>
                  
                 </th>
-                <th >Mobile Number
+                <th ><span>Mobile Number</span>
                  
-                <th >Name of the Degree
+                <th ><span>Name of the Degree</span>
                   
                 </th>
-                <th >Name of the University
+                <th ><span>Name of the University</span>
                   
                 </th>
-                <th >Year of Passing
+                <th ><span>Year of Passing</span>
                  
                 </th>
-                <th >Occupation
+                <th ><span>Occupation</span>
                  
                 </th>
-                <th>Address</th>
-                <th>District</th>
-                <th>Aadhar proof</th>
-                <th>Adress Proof</th>
-                <th>Degree Certificate</th>
-                <th>Download Application</th>
-                <th>Remark</th>
+                <th><span>Address</span></th>
+                <th><span>District</span></th>
+                <th><span>Aadhar proof</span></th>
+                <th><span>Adress Proof</span></th>
+                <th><span>Degree Certificate</span></th>
+                <th><span>Download Application</span></th>
+                <th><span>Remark</span></th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let data of basicTable.data | filterlist:name||district||applicationNumber">
-                <td>{{ data.name }}</td>
+                <td><span>{{ data.name }}</span></td>
                 <td><span *ngIf="data.application_no">{{ data.application_no }}</span><span
                   *ngIf="!data.application_no"> - </span></td>
-                <td>{{ data.aadhar_number }}</td>
-                <td>{{ data.father_or_husband_name }}</td>
-                <td>{{ data.mobile_no }}</td>
-                <td>{{ data.degree_name || '-' }}</td>
-                <td>{{ data.university || '-' }}</td>
-                <td>{{ data.year_of_passing || '-' }}</td>
-                <td>{{ data.occupation }}</td>
-                <td>{{ data.present_address }}</td>
-                <td>{{ data.district }}</td>
+                <td><span>{{ data.aadhar_number }}</span></td>
+                <td><span>{{ data.father_or_husband_name }}</span></td>
+                <td><span>{{ data.mobile_no }}</span></td>
+                <td><span>{{ data.degree_name || '-' }}</span></td>
+                <td><span>{{ data.university || '-' }}</span></td>
+                <td><span>{{ data.year_of_passing || '-' }}</span></td>
+                <td><span>{{ data.occupation }}</span></td>
+                <td><span>{{ data.present_address }}</span></td>
+                <td><span>{{ data.district }}</span></td>
                 <td><span *ngIf="data.aadhar_proof">
                     <a [href]="getaadhar(data.aadhar_proof)" target="_blank">{{data.aadhar_proof}}</a>
                   </span>
@@ -183,111 +181,18 @@
                     <i nz-icon nzType="download" nzTheme="outline"></i>
                     </button></span>
                 </td>
+                <td>
+                  <textarea rows="2" nz-input [formControl]="remark" placeholder="Enter Reason Here...">{{data.remark}}</textarea><br/><br/>
+                  <nz-switch [ngModel]="false" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate" (ngModelChange)="Switch($event,data.id)"></nz-switch>
+                  <ng-template #checkedTemplate><i nz-icon nzType="check"></i></ng-template>
+                  <ng-template #unCheckedTemplate><i nz-icon nzType="close"></i></ng-template>
+                </td>
               </tr>
             </tbody>
           </nz-table>
 
           <ng-template #indicatorTemplate><i nz-icon nzType="loading"></i></ng-template>
           <nz-spin nzSimple [nzIndicator]="indicatorTemplate" *ngIf="loading"> </nz-spin>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu1="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search Aadhar No" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu2="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu3="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu4="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu5="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu6="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu7="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
-          <nz-dropdown-menu #menu8="nzDropdownMenu">
-            <div class="ant-table-filter-dropdown">
-              <div class="search-box">
-                <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" />
-                <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
-                  Search
-                </button>
-                <button nz-button nzSize="small" (click)="reset()">Reset</button>
-              </div>
-            </div>
-          </nz-dropdown-menu>
         </nz-tab>
         <nz-tab nzTitle="Rejected List" class="justify-content-end">
           <app-rejectedstudent></app-rejectedstudent>
