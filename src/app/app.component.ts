@@ -15,10 +15,11 @@ import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
 declare function myFunction(aadhar:any):any ;
 import { GlobalService } from 'src/service/global.service';
 import { formatDate } from '@angular/common';
+declare var $: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class AppComponent {
   constructor(private router: Router) {
@@ -37,13 +38,14 @@ export class AppComponent {
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 
 export class HomeComponent {
   agreedata = new FormControl('', [Validators.required]);
   user:any= {}
   getuser: any;
+  response: any;
   constructor( private router: Router, private httpClient: HttpClient,private elRef: ElementRef, private renderer: Renderer2,private currentUser: GlobalService) {
     // this.api = `${environment.api_url}/upload`
     this.user = localStorage.getItem('userdata')
@@ -58,6 +60,13 @@ export class HomeComponent {
     }
     this.router.navigate(['/registration'])
   }
+get(){
+  let api = `${environment.api_url}/api/edit/${this.getuser.id}`;
+        this.httpClient.get(api).subscribe((res: any) => {
+         console.log(res)
+        this.response = res
+        });
+}
   Regsiter(){
     this.router.navigate(['/registration']);
   }
@@ -88,14 +97,20 @@ export class HomeComponent {
   }
  
   ngOnInit() {
-
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
+      this.get()
   }
   
 }
 @Component({
   selector: 'app-innerheader',
   templateUrl: './innerheader.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class InnerHeaderComponent  {
 
@@ -103,7 +118,7 @@ export class InnerHeaderComponent  {
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class HeaderComponent {
   adminlogin: any;
@@ -139,7 +154,7 @@ export class HeaderComponent {
 @Component({
   selector: 'app-adminlogin',
   templateUrl: './adminlogin.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 
 export class AdminLoginComponent {
@@ -235,7 +250,7 @@ export class AdminLoginComponent {
 @Component({
   selector: 'app-registration',
   templateUrl: './register.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 @Injectable()
@@ -388,6 +403,12 @@ export class RegisterComponent {
     this.isEnglish = !this.isEnglish;
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     this.presentaddress.get('state').setValue('Tamil Nadu')
     this.sameaddress.get('same_state').setValue('Tamil Nadu')
     if (this.form.controls.aadhar_number.valid) {
@@ -1208,7 +1229,7 @@ declare var jsPDF: any;
 @Component({
   selector: 'app-download',
   templateUrl: './downloadpdf.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class DownloadComponent {
   id: any;
@@ -1230,6 +1251,12 @@ export class DownloadComponent {
     this.getuser = JSON.parse(this.user); 
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     let api = `${environment.api_url}/api/edit/${this.getuser.id}`;
     this.http.get(api).subscribe((res: any) => {
       this.url = res.data
@@ -1274,7 +1301,7 @@ export class DownloadComponent {
 @Component({
   selector: 'app-rejectedstudent',
   templateUrl: './rejectedstudent.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class RelectedStudentDetailsComponent {
   rejected: any;
@@ -1291,6 +1318,7 @@ export class RelectedStudentDetailsComponent {
   getuser: any;
   constructor(private httpClient: HttpClient,private notification: NzNotificationService) { }
   ngOnInit() {
+    
     this.getrejected()
     this.user = localStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
@@ -1367,7 +1395,7 @@ export type ChartOptions = {
 @Component({
   selector: 'app-studentdetails',
   templateUrl: './studentdetails.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class StudentDetailsComponent {
   select: any;
@@ -1380,6 +1408,7 @@ export class StudentDetailsComponent {
     scaleShowVerticalLines: false,
     responsive: true
   };
+  isCollapsed=false
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
   public chartOptions1: Partial<ChartOptions> = {};
@@ -1571,6 +1600,12 @@ refresh(){
     this.listOfDisplayData = this.select.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     this.getSelected()
     this.GetChart()
     this.GetChart1()
@@ -1580,7 +1615,7 @@ refresh(){
 @Component({
   selector: 'app-newuser',
   templateUrl: './newuser.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class NewUserComponent {
   validateForm: FormGroup;
@@ -1699,7 +1734,7 @@ export class NewUserComponent {
 @Component({
   selector: 'app-viewpdf',
   templateUrl: './viewpdf.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class ViewPDfComponent {
   url: any;
@@ -1719,6 +1754,12 @@ export class ViewPDfComponent {
     console.log('loggeduserreg',this.getuser)
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let api = `${environment.api_url}/api/edit/${this.getuser.id}`;
     this.http.get(api).subscribe((res: any) => {
@@ -1764,7 +1805,7 @@ function getISOWeek(result: Date): any {
 @Component({
   selector: 'app-forgotpass',
   templateUrl: './forgotpass.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class ResetPwDComponent {
   user:any;
@@ -1899,7 +1940,7 @@ export class ResetPwDComponent {
 @Component({
   selector: 'app-renewal',
   templateUrl: './renewal.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 @Injectable()
@@ -2050,6 +2091,12 @@ export class RenewalComponent {
     this.isEnglish = !this.isEnglish;
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     this.presentaddress.get('state').setValue('Tamil Nadu')
     this.sameaddress.get('same_state').setValue('Tamil Nadu')
     if (this.form.controls.aadhar_number.valid) {
@@ -2825,7 +2872,7 @@ export class RenewalComponent {
 @Component({
   selector: 'app-renewallogin',
   templateUrl: './renewallogin.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 
 export class RenewalLoginComponent {
@@ -2928,7 +2975,7 @@ export class RenewalLoginComponent {
 @Component({
   selector: 'app-renewaluser',
   templateUrl: './renewaluser.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class RenewalUserComponent {
   validateForm: FormGroup;
@@ -3053,7 +3100,7 @@ export class RenewalUserComponent {
 @Component({
   selector: 'app-renewhome',
   templateUrl: './renewhome.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 
 export class RenewHomeComponent {
@@ -3104,7 +3151,12 @@ export class RenewHomeComponent {
   }
  
   ngOnInit() {
-
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
   }
   
 }
@@ -3112,7 +3164,7 @@ export class RenewHomeComponent {
 @Component({
   selector: 'app-viewrenewalpdf',
   templateUrl: './viewrenewalpdf.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class ViewRenewalPDfComponent {
   url: any;
@@ -3132,6 +3184,12 @@ export class ViewRenewalPDfComponent {
     console.log('loggeduserreg',this.getuser)
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
     let api = `${environment.api_url}/api/editrenew/${this.getuser.id}`;
     this.http.get(api).subscribe((res: any) => {
@@ -3172,7 +3230,7 @@ export class ViewRenewalPDfComponent {
 @Component({
   selector: 'app-downloadrenewal',
   templateUrl: './downloadrenewalpdf.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class DownloadRenewappComponent {
   id: any;
@@ -3194,6 +3252,12 @@ export class DownloadRenewappComponent {
     this.getuser = JSON.parse(this.user); 
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     let api = `${environment.api_url}/api/editrenew/${this.getuser.id}`;
     this.http.get(api).subscribe((res: any) => {
       this.url = res.data
@@ -3257,7 +3321,7 @@ export type ChartOptions1 = {
 @Component({
   selector: 'app-studentrenewal',
   templateUrl: './studentrenewal.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class RenewalDetailsComponent {
   select: any;
@@ -3464,6 +3528,12 @@ Switch(event:any,data:any){
     this.listOfDisplayData = this.select.filter((item: DataItem) => item.name.indexOf(this.searchValue) !== -1);
   }
   ngOnInit() {
+    $("#close-sidebar").click(function() {
+      $(".page-wrapper").removeClass("toggled");
+      });
+      $("#show-sidebar").click(function() {
+      $(".page-wrapper").addClass("toggled");
+      });
     this.getSelected()
     this.GetChart()
     this.GetChart1()
@@ -3472,7 +3542,7 @@ Switch(event:any,data:any){
 @Component({
   selector: 'app-rejectedrenewal',
   templateUrl: './rejectedrenewal.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.css','./app.component.scss'],
 })
 export class RejectedRenewalComponent {
   rejected: any;
@@ -3544,4 +3614,12 @@ export class RejectedRenewalComponent {
     this.remark = data.remark
     console.log("insideloop",data,event)
     }
+}
+
+@Component({
+  selector: 'app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./app.component.css','./app.component.scss'],
+})
+export class FooterComponent {
 }

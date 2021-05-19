@@ -1,16 +1,17 @@
-<div class="page-wrapper chiller-theme toggled" nextEl>
+<div class="page-wrapper chiller-theme toggled">
   <app-innerheader></app-innerheader>
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#" id="show">
+  <button id="show-sidebar" class="btn btn-sm btn-dark" >
     <i class="fas fa-bars"></i>
-  </a>
+  </button>
   <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content">
       <div class="sidebar-brand">
-        <a style="font-size:20px">Scholar</a>
+        <a style="font-size:20px" *ngIf="getuser.role === 'graduant'">Graduant</a>
+        <a style="font-size:20px" *ngIf="getuser.role === 'authority'">Authority</a>
 
-        <!-- <div id="close-sidebar">
+        <div id="close-sidebar">
           <button id ="close" ><i class="fa fa-close"></i></button>
-        </div> -->
+        </div>
       </div>
       <div class="sidebar-header">
         <div class="user-pic">
@@ -76,8 +77,8 @@
       </div>
     </div>
   </nav>
-<div>
- <div class="container mt-4" style="padding-left:160px;">
+  <main class="page-content toggled">
+    <div class="ml-4">
    <h5 class="text-center"><u><b>INSTRUCTIONS FOR ONLINE GRADUATES REGISTRATION </b></u> </h5>
    <ul class="mt-4" style=" padding-left: 50px;">
      <li class="mt-4" style= "list-style: decimal;">
@@ -132,6 +133,6 @@
   </div>
  </div>
 
- </div>
+</main>
 
  

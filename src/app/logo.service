@@ -1,6 +1,0 @@
-
-
-uploadLogo(logo: FormData): Observable<any>{
-  const headers = new HttpHeaders({'Content-Type': 'application/json'});
-  return this.http.post('http://homestead.test/api/logo, logo, {headers: headers});
-}

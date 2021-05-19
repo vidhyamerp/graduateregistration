@@ -1,17 +1,17 @@
-
 <div class="page-wrapper chiller-theme toggled">
   <app-innerheader></app-innerheader>
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#" id="show">
+  <button id="show-sidebar" class="btn btn-sm btn-dark">
     <i class="fas fa-bars"></i>
-  </a>
+  </button>
   <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
+    <div class="sidebar-content" style="color:#fff">
       <div class="sidebar-brand">
-        <a style="font-size:20px">Applicant</a>
+        <a style="font-size:20px" *ngIf="getuser.role === 'graduant'">Graduant</a>
+        <a style="font-size:20px" *ngIf="getuser.role === 'authority'">Authority</a>
 
-        <!-- <div id="close-sidebar">
-          <button id ="close"><i class="fa fa-close"></i></button>
-        </div> -->
+        <div id="close-sidebar">
+          <button id ="close" ><i class="fa fa-close"></i></button>
+        </div>
       </div>
       <div class="sidebar-header">
         <div class="user-pic">
@@ -31,192 +31,188 @@
         <ul>
           <li *ngIf="getuser.role != 'authority'">
             <a>
-              <i class="fa"  style="font-size:20px"><b>A</b></i>
+              <i class="fa" style="font-size:20px"><b>A</b></i>
               <span>Application</span>
             </a>
-              <ul style="padding-left: 55px;">
-                <li class="submenu">
-                  <a (click)="Regsiter()" > Entry
-                  </a>
-                </li>
-                <li class="submenu">
-                  <a (click)="viewDetails()" > View
-                  </a>
-                </li>
-                <li>
-                  <a (click)="download()" > Print</a>
-                </li>
-                <li>
-                  <a (click)="Instruction()" > Instructions</a>
-                </li>
-              </ul>
+            <ul style="padding-left: 55px;">
+              <li class="submenu">
+                <a (click)="Regsiter()"> Entry
+                </a>
+              </li>
+              <li class="submenu">
+                <a (click)="viewDetails()"> View
+                </a>
+              </li>
+              <li>
+                <a (click)="download()"> Print</a>
+              </li>
+              <li>
+                <a (click)="Instruction()"> Instructions</a>
+              </li>
+            </ul>
           </li>
           <li *ngIf="getuser.role === 'authority'">
-              <a>
-                <i class="fa"  style="font-size:20px"><b>A</b></i>
-                <span>View Details</span>
-              </a>
-                <ul style="padding-left: 55px;">
-                  <li class="submenu">
-                    <a (click)="StdDetails()" > New User List
-                    </a>
-                  </li>
-                  <li class="submenu">
-                    <a (click)="StdRewnewalDetails()" > Renewal List
-                    </a>
-                  </li>
-                 </ul>
-            </li>
+            <a>
+              <i class="fa" style="font-size:20px"><b>A</b></i>
+              <span>View Details</span>
+            </a>
+            <ul style="padding-left: 55px;">
+              <li class="submenu">
+                <a (click)="StdDetails()"> New User List
+                </a>
+              </li>
+              <li class="submenu">
+                <a (click)="StdRewnewalDetails()"> Renewal List
+                </a>
+              </li>
+            </ul>
+          </li>
           <li>
             <a (click)="logout()">
               <i class="fa fa-power-off" style="font-size:20px"></i>
               <span>Logout</span>
-            </a> 
-            </li>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
-<div>
-<div>
-  <div style="padding-left:300px;">
-<div>
-  <div class="mt-4 col-md-12">
-    <!-- <div class="ml-2 mb-2">
-      <button nz-button type="button" nzType="primary" (click)="download()">Download All Data(Zip)</button>
-    </div> -->
-    <h2 class="text-center mb-4"><u>New User List</u></h2>
-    <div>
-      <span>If any Remarks in the Application change Remark column button as marked(<i class="fa fa-check" aria-hidden="true"></i>)</span>
-      <nz-tabset>
-        <nz-tab nzTitle="Selected List">
-          <div class="float-right pb-4 col-md-5 d-flex">
-            <button nz-button class="mr-4" type="button" nzType="primary" (click)="refresh()">Refresh</button>
-            <nz-input-group [nzSuffix]="suffixIconSearch">
-              <input nz-input type="text" name="search" [(ngModel)]="name" 
-              placeholder="Search">
-            </nz-input-group>
-            <ng-template #suffixIconSearch>
-              <i nz-icon nzType="search"></i>
-            </ng-template>
+  <main class="page-content toggled">
+    <div class="ml-4">
+      <div class="text-center ">
+        <h2 class="mb-4 "><u>New User List</u></h2>
+      </div>
+        <span>If any Remarks in the Application change Remark column button as marked(<i class="fa fa-check"
+            aria-hidden="true"></i>)</span>
+        <nz-tabset>
+          <nz-tab nzTitle="Selected List">
+            <div class="float-right pb-4 col-md-5 d-flex">
+              <button nz-button class="mr-4" type="button" nzType="primary" (click)="refresh()">Refresh</button>
+              <nz-input-group [nzSuffix]="suffixIconSearch">
+                <input nz-input type="text" name="search" [(ngModel)]="name" placeholder="Search">
+              </nz-input-group>
+              <ng-template #suffixIconSearch>
+                <i nz-icon nzType="search"></i>
+              </ng-template>
             </div>
-          <nz-table #basicTable [nzData]="select" [nzLoading]="loading" (nzPageIndexChange)="getSelected()"
-          [nzScroll]="{ y: '1150px', x: '240px' }"
-          [nzWidthConfig]="['150px','150px','150px','150px','150px','150px','120px','150px','150px','200px','120px','150px','150px','150px','150px','220px']">
-            <thead>
-              <tr>
-                <th ><span>Name</span>
-                 
-                </th>
-                <th ><span>Application No</span>
-                  
-                </th>
-                <th ><span>Aadhar Number</span>
-                
-                </th>
-                <th ><span>Father's/Husband's Name</span>
-                 
-                </th>
-                <th ><span>Mobile Number</span>
-                 
-                <th ><span>Name of the Degree</span>
-                  
-                </th>
-                <th ><span>Name of the University</span>
-                  
-                </th>
-                <th ><span>Year of Passing</span>
-                 
-                </th>
-                <th ><span>Occupation</span>
-                 
-                </th>
-                <th><span>Address</span></th>
-                <th><span>District</span></th>
-                <th><span>Aadhar proof</span></th>
-                <th><span>Adress Proof</span></th>
-                <th><span>Degree Certificate</span></th>
-                <th><span>Download Application</span></th>
-                <th><span>Remark</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of basicTable.data | filterlist:name||district||applicationNumber">
-                <td><span>{{ data.name }}</span></td>
-                <td><span *ngIf="data.application_no">{{ data.application_no }}</span><span
-                  *ngIf="!data.application_no"> - </span></td>
-                <td><span>{{ data.aadhar_number }}</span></td>
-                <td><span>{{ data.father_or_husband_name }}</span></td>
-                <td><span>{{ data.mobile_no }}</span></td>
-                <td><span>{{ data.degree_name || '-' }}</span></td>
-                <td><span>{{ data.university || '-' }}</span></td>
-                <td><span>{{ data.year_of_passing || '-' }}</span></td>
-                <td><span>{{ data.occupation }}</span></td>
-                <td><span>{{ data.present_address }}</span></td>
-                <td><span>{{ data.district }}</span></td>
-                <td><span *ngIf="data.aadhar_proof">
-                    <a [href]="getaadhar(data.aadhar_proof)" target="_blank">{{data.aadhar_proof}}</a>
-                  </span>
-                  <span *ngIf="!data.aadhar_proof">
-                    {{'-'}}
-                  </span>
-                </td>
-                <td><span *ngIf="data.address_proof">
-                    <a [href]="getaadhar(data.address_proof)" target="_blank">{{data.address_proof}}</a>
-                  </span>
-                  <span *ngIf="!data.address_proof">
-                    {{'-'}}
-                  </span>
-                </td>
-                <td><span *ngIf="data.deg_provitional_cerificate">
-                    <a [href]="getaadhar(data.deg_provitional_cerificate)"
-                      target="_blank">{{data.deg_provitional_cerificate}}</a>
-                  </span>
-                  <span *ngIf="!data.deg_provitional_cerificate">
-                    {{'-'}}
-                  </span>
-                </td>
-                <td>
-                  <span *ngIf="data.id"> <button type="button" class="btn btn-primary" (click)="downloadAsPDF(data.id)" >
-                    <i nz-icon nzType="download" nzTheme="outline"></i>
-                    </button></span>
-                </td>
-                <td>
-                  <textarea rows="2" nz-input [formControl]="remark" placeholder="Enter Reason Here...">{{data.remark}}</textarea><br/><br/>
-                  <nz-switch [ngModel]="false" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate" (ngModelChange)="Switch($event,data.id)"></nz-switch>
-                  <ng-template #checkedTemplate><i nz-icon nzType="check"></i></ng-template>
-                  <ng-template #unCheckedTemplate><i nz-icon nzType="close"></i></ng-template>
-                </td>
-              </tr>
-            </tbody>
-          </nz-table>
+            <nz-table #basicTable [nzData]="select" [nzLoading]="loading" (nzPageIndexChange)="getSelected()"
+              [nzScroll]="{ y: 'auto', x: 'auto' }"
+              [nzWidthConfig]="['150px','150px','150px','150px','150px','150px','120px','150px','150px','200px','120px','150px','150px','150px','150px','220px']">
+              <thead>
+                <tr>
+                  <th><span>Name</span>
 
-          <ng-template #indicatorTemplate><i nz-icon nzType="loading"></i></ng-template>
-          <nz-spin nzSimple [nzIndicator]="indicatorTemplate" *ngIf="loading"> </nz-spin>
-        </nz-tab>
-        <nz-tab nzTitle="Rejected List" class="justify-content-end">
-          <app-rejectedstudent></app-rejectedstudent>
-        </nz-tab>
-        <nz-tab nzTitle="Analysis Based on District Wise" class="justify-content-end">
-          <div class="row">
-            <div class="col-md-12">
-              <div id="chart">
-                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
-                  [responsive]="chartOptions.responsive"></apx-chart>
+                  </th>
+                  <th><span>Application No</span>
+
+                  </th>
+                  <th><span>Aadhar Number</span>
+
+                  </th>
+                  <th><span>Father's/Husband's Name</span>
+
+                  </th>
+                  <th><span>Mobile Number</span>
+
+                  <th><span>Name of the Degree</span>
+
+                  </th>
+                  <th><span>Name of the University</span>
+
+                  </th>
+                  <th><span>Year of Passing</span>
+
+                  </th>
+                  <th><span>Occupation</span>
+
+                  </th>
+                  <th><span>Address</span></th>
+                  <th><span>District</span></th>
+                  <th><span>Aadhar proof</span></th>
+                  <th><span>Adress Proof</span></th>
+                  <th><span>Degree Certificate</span></th>
+                  <th><span>Download Application</span></th>
+                  <th><span>Remark</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of basicTable.data | filterlist:name||district||applicationNumber">
+                  <td><span>{{ data.name }}</span></td>
+                  <td><span *ngIf="data.application_no">{{ data.application_no }}</span><span
+                      *ngIf="!data.application_no"> - </span></td>
+                  <td><span>{{ data.aadhar_number }}</span></td>
+                  <td><span>{{ data.father_or_husband_name }}</span></td>
+                  <td><span>{{ data.mobile_no }}</span></td>
+                  <td><span>{{ data.degree_name || '-' }}</span></td>
+                  <td><span>{{ data.university || '-' }}</span></td>
+                  <td><span>{{ data.year_of_passing || '-' }}</span></td>
+                  <td><span>{{ data.occupation }}</span></td>
+                  <td><span>{{ data.present_address }}</span></td>
+                  <td><span>{{ data.district }}</span></td>
+                  <td><span *ngIf="data.aadhar_proof">
+                      <a [href]="getaadhar(data.aadhar_proof)" target="_blank">{{data.aadhar_proof}}</a>
+                    </span>
+                    <span *ngIf="!data.aadhar_proof">
+                      {{'-'}}
+                    </span>
+                  </td>
+                  <td><span *ngIf="data.address_proof">
+                      <a [href]="getaadhar(data.address_proof)" target="_blank">{{data.address_proof}}</a>
+                    </span>
+                    <span *ngIf="!data.address_proof">
+                      {{'-'}}
+                    </span>
+                  </td>
+                  <td><span *ngIf="data.deg_provitional_cerificate">
+                      <a [href]="getaadhar(data.deg_provitional_cerificate)"
+                        target="_blank">{{data.deg_provitional_cerificate}}</a>
+                    </span>
+                    <span *ngIf="!data.deg_provitional_cerificate">
+                      {{'-'}}
+                    </span>
+                  </td>
+                  <td>
+                    <span *ngIf="data.id"> <button type="button" class="btn btn-primary"
+                        (click)="downloadAsPDF(data.id)">
+                        <i nz-icon nzType="download" nzTheme="outline"></i>
+                      </button></span>
+                  </td>
+                  <td>
+                    <textarea rows="2" nz-input [formControl]="remark"
+                      placeholder="Enter Reason Here...">{{data.remark}}</textarea><br /><br />
+                    <nz-switch [ngModel]="false" [nzCheckedChildren]="checkedTemplate"
+                      [nzUnCheckedChildren]="unCheckedTemplate" (ngModelChange)="Switch($event,data.id)"></nz-switch>
+                    <ng-template #checkedTemplate><i nz-icon nzType="check"></i></ng-template>
+                    <ng-template #unCheckedTemplate><i nz-icon nzType="close"></i></ng-template>
+                  </td>
+                </tr>
+              </tbody>
+            </nz-table>
+
+            <ng-template #indicatorTemplate><i nz-icon nzType="loading"></i></ng-template>
+            <nz-spin nzSimple [nzIndicator]="indicatorTemplate" *ngIf="loading"> </nz-spin>
+          </nz-tab>
+          <nz-tab nzTitle="Rejected List" class="justify-content-end">
+            <app-rejectedstudent></app-rejectedstudent>
+          </nz-tab>
+          <nz-tab nzTitle="Analysis Based on District Wise" class="justify-content-end">
+            <div class="row">
+              <div class="col-md-12">
+                <div id="chart">
+                  <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
+                    [responsive]="chartOptions.responsive"></apx-chart>
+                </div>
               </div>
             </div>
-          </div>
-        </nz-tab>
-        <nz-tab nzTitle="Analysis Based on Selected/Rejected" class="justify-content-end">
-          <div class="col-md-12">
-            <div id="chart">
-              <apx-chart [series]="chartOptions1.series" [chart]="chartOptions1.chart" [labels]="chartOptions1.labels"
-                [responsive]="chartOptions1.responsive"></apx-chart>
+          </nz-tab>
+          <nz-tab nzTitle="Analysis Based on Selected/Rejected" class="justify-content-end">
+            <div class="col-md-12">
+              <div id="chart">
+                <apx-chart [series]="chartOptions1.series" [chart]="chartOptions1.chart" [labels]="chartOptions1.labels"
+                  [responsive]="chartOptions1.responsive"></apx-chart>
+              </div>
             </div>
-          </div>
-        </nz-tab>
-      </nz-tabset>
-    </div>
-  </div>
-</div>
-</div>
+          </nz-tab>
+        </nz-tabset>
+      </div>
+ </main>

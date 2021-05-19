@@ -1,17 +1,18 @@
 
 <div class="page-wrapper chiller-theme toggled">
     <app-innerheader></app-innerheader>
-    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#" id="show">
+    <button id="show-sidebar" class="btn btn-sm btn-dark">
       <i class="fas fa-bars"></i>
-    </a>
+    </button>
     <nav id="sidebar" class="sidebar-wrapper">
       <div class="sidebar-content">
         <div class="sidebar-brand">
-          <a style="font-size:20px">Applicant</a>
+          <a style="font-size:20px" *ngIf="getuser.role === 'graduant'">Graduant</a>
+          <a style="font-size:20px" *ngIf="getuser.role === 'authority'">Authority</a>
   
-          <!-- <div id="close-sidebar">
-            <button id ="close"><i class="fa fa-close"></i></button>
-          </div> -->
+          <div id="close-sidebar">
+            <button id ="close" ><i class="fa fa-close"></i></button>
+          </div>
         </div>
         <div class="sidebar-header">
           <div class="user-pic">
@@ -77,14 +78,14 @@
         </div>
       </div>
     </nav>
-  <div>
-  <div>
-    <div class="container" style="padding-left:170px;" *ngIf="!url || url.is_submit === 0">
+    <main class="page-content toggled">
+      <div class="ml-4">
+    <!-- <div *ngIf="!url || url.is_submit === 0">
     <h2>Plese Register First!</h2>
-    </div>
-    <div class="container" style="padding-left:170px;" *ngIf="url.is_submit === 1">
+    </div> -->
+    <!-- <div  *ngIf="url.is_submit === 1"> -->
             <div >
-            <table class="table table-bordered" >
+            <table class="table table-bordered table-responsive" >
                 <tbody>
                 <tr>
                     <td colspan="2">Application No</td>
@@ -198,6 +199,5 @@
                 </tbody>
               </table>
             </div>
-            </div>
-            </div>
-  
+       </div>
+       </main>
