@@ -1,12 +1,12 @@
 <div>
   <app-header></app-header>
   <div class="container mt-4">
-    <div class="row">
+    <div class="row mb-4">
       <div class="col-md-4"></div>
       <div class="col-md-4">
     <div class="main-div">
       <div class="text-center pt-4">
-        <h3>New User Login</h3>
+        <h3>User Login</h3>
       </div>
       <div class="text-center pt-3" *ngIf="failed">
         <span class="alert alert-danger">Invalid Credentials!</span>
@@ -62,14 +62,18 @@
           <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'"
             type="submit" style="border-radius:6px;font-size:17px" [nzLoading]="loginloading"><b>Login</b></button>
         </div>
-        <div class="d-flex mt-1">
+        <div class="parent mt-1">
           <a [routerLink]="['/passwordreset']">Forgot Password</a>
-          <a [routerLink]="['/newuser']" style="padding-left: 60px;">New User</a>
+          <a [routerLink]="['/newuser']" class="child">New User</a>
         </div>
       </form>
     </div>
     <div class="col-md-4"></div>
     </div>
   </div>
+</div>
+<div class="text-center bg-gray p-2">
+  <b style="font-size:14px">Designed and developed by : ERP team, Bharathiar University , Coimbatore 641046<br/>
+    erp@buc.edu.in , 91-422-2428360</b>
 </div>
 </div>

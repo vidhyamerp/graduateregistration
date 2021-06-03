@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent, RegisterComponent,AdminLoginComponent, HomeComponent,DownloadComponent,StudentDetailsComponent, NewUserComponent, ViewPDfComponent, ResetPwDComponent, RenewalComponent, RenewalLoginComponent, RenewalUserComponent, RenewHomeComponent, ViewRenewalPDfComponent, DownloadRenewappComponent, RenewalDetailsComponent } from './app.component';
+import { AppComponent, RegisterComponent,AdminLoginComponent, HomeComponent,DownloadComponent,StudentDetailsComponent, NewUserComponent, ViewPDfComponent, ResetPwDComponent,RenewalDetailsComponent } from './app.component';
 
 
 const routes: Routes = [
@@ -17,12 +17,6 @@ const routes: Routes = [
       { path: 'newuser', component: NewUserComponent },
       { path: 'home', component: HomeComponent },
       { path: 'passwordreset', component: ResetPwDComponent },
-      { path: 'renewal', component: RenewalComponent },
-      { path: 'renewallogin', component: RenewalLoginComponent },
-      { path: 'renewaluser', component: RenewalUserComponent },
-      { path: 'renewhome', component: RenewHomeComponent },
-      { path: 'viewrenewalpdf', component: ViewRenewalPDfComponent }, 
-      { path: 'downloadrenewalpdf', component: DownloadRenewappComponent },
       { path: 'studentrenewaldetails', component: RenewalDetailsComponent },
       // { path: 'success', component: SuccessComponent }
     ]},

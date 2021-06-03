@@ -6,7 +6,7 @@
   <nav id="sidebar" class="sidebar-wrapper">
     <div class="sidebar-content">
       <div class="sidebar-brand">
-        <a style="font-size:20px" *ngIf="getuser.role === 'graduant'">Graduant</a>
+        <a style="font-size:20px" *ngIf="getuser.role === 'graduant'">Graduate</a>
         <a style="font-size:20px" *ngIf="getuser.role === 'authority'">Authority</a>
 
         <div id="close-sidebar">
@@ -77,10 +77,10 @@
       </div>
     </div>
   </nav>
-  <main class="page-content toggled">
+  <main class="page-content toggled mb-4 pb-4">
     <div class="ml-4">
     <div *ngIf="!url || url.is_submit === 0">
-      <h2>Plese Complete Registration!</h2>
+      <h2>Please Complete Registration!</h2>
     </div>
     <div *ngIf="url.is_submit === 1">
       <div class="text-center">
@@ -111,6 +111,22 @@
               </td>
             </tr>
             <tr>
+              <td colspan="2">Is there a change of name?</td>
+              <td>
+                <span *ngIf="url.name_change === 1"><b>YES</b></span>
+                <span *ngIf="url.name_change === 0"><b>NO</b></span>
+              </td>
+            </tr>
+            <tr *ngIf="url.name_change === 1">
+              <td colspan="2">Communication for Change of Name</td>
+              <td>
+                <div><span><b>Communication No:</b> {{url.communication_number}}</span><br/>
+                  <span><b>Date of Name Change:</b> {{url.name_change_date | date: 'dd-MM-yyyy'}}</span><br/>
+                  <span><b>Proof of Name Change</b> <img *ngIf="url.name_change_docs" src="{{name_change_proof}}" height=50 width=60></span><br/>
+                </div>
+              </td>
+            </tr>
+            <tr>
               <td colspan="2">Father's/Husband's Name</td>
               <td>
                 {{url.father_or_husband_name }}
@@ -123,9 +139,9 @@
               </td>
             </tr>
             <tr>
-              <td colspan="2">Aadhar Card Number</td>
+              <td colspan="2">Date of Birth</td>
               <td>
-                {{url.dob}}
+                {{url.dob |  date: 'dd-MM-yyyy'}}
               </td>
             </tr>
             <tr>
@@ -154,9 +170,15 @@
               </td>
             </tr>
             <tr>
-              <td colspan="2">Present Address</td>
+              <td colspan="2">Communication Address</td>
               <td>
                 {{url.present_address}}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">Residential Address</td>
+              <td>
+                {{url.residential_add}}
               </td>
             </tr>
             <tr>
@@ -174,11 +196,19 @@
                 </div>
               </td>
             </tr>
+            <tr *ngIf="url.dd_check === 0">
+              <td colspan="2">Payment Details</td>
+              <td>
+                <div>
+                  <span>Paid via Online Payment Gateway</span>
+                </div>
+              </td>
+            </tr>
             <tr>
             <tr>
-              <td colspan="2">Whether,the original cerificate
-                or copy of the degree Cerificate or provisional certificate duly attested by gazetted
-                officer,Syndicate/Senate Member of Barathiyar university in proof of qualification is attested.</td>
+              <td colspan="2">Whether,the original certificate
+                or copy of the degree certificate or provisional certificate duly attested by Gazetted
+                Gfficer,Syndicate/Senate Member of Bharathiar University in proof of qualification is attested.</td>
               <td><span *ngIf="url.certificate_decl === 1">YES</span><span *ngIf="url.certificate_decl === 0">NO</span>
               </td>
 
@@ -225,3 +255,8 @@
     </div>
     </div>
   </main>
+  <div class="text-center bg-gray p-2">
+    <b style="font-size:14px">Designed and developed by : ERP team, Bharathiar University , Coimbatore 641046<br/>
+      erp@buc.edu.in , 91-422-2428360</b>
+  </div>
+  </div>

@@ -64,7 +64,7 @@ get(){
   let api = `${environment.api_url}/api/edit/${this.getuser.id}`;
         this.httpClient.get(api).subscribe((res: any) => {
          console.log(res)
-        this.response = res
+        this.response = res.data
         });
 }
   Regsiter(){
@@ -324,6 +324,10 @@ export class RegisterComponent {
   uploadloading6: boolean = false;
   dd_img: any;
   today: any;
+  show_gateway: boolean = false;
+  name_change_tri: boolean = false;
+  name_change_upload: boolean = false;
+  name_docs: any;
   constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService,private activatedRoute: ActivatedRoute,private i18n: NzI18nService) {
     this.user = localStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
@@ -366,7 +370,11 @@ export class RegisterComponent {
       year_of_passing: [''],
       user_id:[''],
       dd_image:[],
-      date_of_submission:[]
+      date_of_submission:[],
+      name_change:[false],
+      name_change_docs:[],
+      communication_number:[''],
+      name_change_date:[]
     });
     // if(this.fetch){
     //   this.addQuantity()
@@ -385,13 +393,13 @@ export class RegisterComponent {
   onChange(result: Date): void {
     console.log('onChange: ', result);
   }
+  
   onKey(event: any) { // without type info
     let value = ''
    value += event.target.value;
    console.log(value)
    if(value != ''){
    this.result = myFunction(value);
-    console.log('popup',this.result)
    }
   }
   getWeek(result: Date): void {
@@ -402,6 +410,39 @@ export class RegisterComponent {
     this.i18n.setLocale(this.isEnglish ? zh_CN : en_US);
     this.isEnglish = !this.isEnglish;
   }
+  // clickpay(){
+  //   const httpOptions : any    = {
+  //     headers: new HttpHeaders({
+  //       //'Content-Type':  'application/json',
+  //       'Access-Control-Allow-Headers': 'Content-Type,Accept,Access-Control-Allow-Origin,Autherization',
+  //       'Access-Control-Allow-Methods': 'POST,GET',
+  //       'Access-Control-Allow-Origin': 'https://www.tekprocess.co.in/'
+  //     })
+  //   };
+  //   let api = `https://www.tekprocess.co.in/mobile/paynimoV2.req`;
+  //      this.http.post(api,{
+  //       "merchant": {
+  //         "identifier": "L3348"
+  //       },
+  //       "payment": {
+  //         "instruction": {}
+  //       },
+  //       "transaction": {
+  //         "deviceIdentifier": "S",
+  //         "type": "002",
+  //         "currency": "INR",
+  //         "identifier": "1516163889655",
+  //         "dateTime": "17-01-2018",
+  //         "subType": "002",
+  //         "requestType": "TSI"
+  //       },
+  //       "consumer": {
+  //         "identifier": "c90001008"
+  //       }
+  //     },httpOptions).subscribe((res: any) => {
+  //          console.log("sss",res)
+  //         });
+  // }
   ngOnInit() {
     $("#close-sidebar").click(function() {
       $(".page-wrapper").removeClass("toggled");
@@ -419,6 +460,7 @@ export class RegisterComponent {
          console.log(res)
          if(res.data){
          this.fetch  = res.data
+         this.form.controls.id.setValue(this.fetch.id)
          this.form.controls.name.setValue(this.getuser.name)
          this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
          this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
@@ -430,6 +472,15 @@ export class RegisterComponent {
          this.form.controls.bank_name.setValue(this.fetch.bank_name)
          this.form.controls.dob.setValue(this.fetch.dob)
          this.form.controls.date.setValue(this.fetch.date)
+         this.form.controls.communication_number.setValue(this.fetch.communication_number)
+         this.form.controls.name_change_date.setValue(this.fetch.name_change_date)
+         this.form.controls.name_change_docs.setValue(this.fetch.name_change_docs)
+         if(this.fetch.name_change === 0){
+          this.form.controls.name_change.setValue('0')
+          }
+          if(this.fetch.name_change === 1){
+           this.form.controls.name_change.setValue('1')
+           }
          if(this.fetch.dd_check === 0){
          this.form.controls.dd_check.setValue('0')
          }
@@ -481,6 +532,9 @@ export class RegisterComponent {
          if(this.fetch.address_proof){
           this.address = environment.image_url + this.fetch.address_proof
         }
+        if(this.fetch.name_change_docs){
+          this.name_docs = environment.image_url + this.fetch.name_change_docs
+        }
         if(this.fetch.aadhar_proof){
           this.aadhar_img = environment.image_url + this.fetch.aadhar_proof
         }
@@ -513,10 +567,11 @@ export class RegisterComponent {
             this.qualifications.get('university_name').setValue(res.university[j]);
             this.qualifications.get('year_passing').setValue(res.year_of_passing[j]);
           }
-        }else{
-          this.addQuantity()
         }
-      }  
+      } 
+      if(res.degree_name === null || !res.degree_name){
+        this.addQuantity()
+      } 
         });
   }
   Fetch(){
@@ -530,6 +585,7 @@ export class RegisterComponent {
         this.form.controls.name.setValue(this.getuser.name) 
          this.form.controls.aadhar_number.setValue(this.response.aadhar_no)
         //  this.form.controls.dob.setValue(this.response.dob)
+        this.form.controls.id.setValue(this.fetch.id)
          this.form.controls.father_or_husband_name.setValue(this.response.careof) 
           this.sameaddress.get('same_address_1').setValue(this.response.house)
           this.sameaddress.get('same_address_2').setValue(this.response.street)
@@ -586,6 +642,15 @@ export class RegisterComponent {
     this.router.navigate(['']);
     localStorage.clear();
   }
+  triggername(e: any) {
+    console.log(e)
+    if (e === '1') {
+      this.name_change_tri = true
+    }
+    else {
+      this.name_change_tri = false
+    }
+  }
   triggerdetails(e: any) {
     console.log(e)
     if (e === '1') {
@@ -599,10 +664,40 @@ export class RegisterComponent {
     console.log(e)
     if (e === '1') {
       this.show_dd_details = true
+      this.show_gateway = false
     }
     else {
       this.show_dd_details = false
+      this.show_gateway = true
     }
+  }
+  namechange1(files: FileList) {
+    this.name_change_upload = true;
+    this.fileToUpload = files.item(0);
+    let dd_image = new FormData();
+    dd_image.append('file', this.fileToUpload, this.fileToUpload.name);
+    // console.log(files)
+    this.http.post(environment.api_url+'/api/upload', dd_image).subscribe((res: any) => {
+      console.log(res);
+      if (res.data) {
+        this.name_docs = environment.image_url + res.file_name
+        this.form.controls.name_change_docs.setValue(res.file_name)
+        this.name_change_upload = false;
+        let type: string = 'success'
+        console.log('oops', res.errors)
+        this.notification.create(
+          type,
+          'Success!!',
+          'File uploaded Successfully!')
+      }
+      else{
+        this.notification.create(
+          'error',
+          'Failed!!',
+          res.errors.file)
+      }
+    });
+    return false;
   }
   cancel(): void {
     this.msg.info('click cancel');
@@ -956,6 +1051,10 @@ export class RegisterComponent {
   //save the data
 
   async save(){
+    if(this.result === 'failed'){
+      window.alert('Incorrect Aadhar Number!')
+     return 
+    }
     this.loading = true;
     this.form.controls.districts.setValue(this.sameaddress.get('same_district').value)
     this.form.controls.user_id.setValue(this.getuser.id)
@@ -994,7 +1093,7 @@ export class RegisterComponent {
     this.http.post(url, this.form.value,dd).subscribe((res: any) => {
       this.response = res
       this.loading = false;
-      if(res){
+      if(res.data){
         let type: string = 'success';
        let message = 'Data saved Successfully';
        this.notification.create(
@@ -1003,10 +1102,6 @@ export class RegisterComponent {
          message)
        }
       console.log("response", this.response)
-      if(res.degree_name){
-        this.form.controls.degree_name.setValue(res.degree_name)
-          this.addQuantity()
-      }
       if(res.university){
         this.form.controls.name_of_degree.setValue(res.university)
         
@@ -1018,6 +1113,7 @@ export class RegisterComponent {
       if (this.response.data) {
         this.fetch  = res.data
         //  this.form.controls.name.setValue(this.fetch.name)
+        this.form.controls.id.setValue(this.fetch.id)
          this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
          this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
          this.form.controls.declaration.setValue(this.fetch.declaration)
@@ -1027,12 +1123,21 @@ export class RegisterComponent {
          this.form.controls.amount.setValue(this.fetch.amount)
          this.form.controls.bank_name.setValue(this.fetch.bank_name)
          this.form.controls.dob.setValue(this.fetch.dob)
+         this.form.controls.communication_number.setValue(this.fetch.communication_number)
+         this.form.controls.name_change_date.setValue(this.fetch.name_change_date)
+         this.form.controls.name_change_docs.setValue(this.fetch.name_change_docs)
          this.form.controls.date.setValue(this.fetch.date)
          if(this.fetch.dd_check === 0){
          this.form.controls.dd_check.setValue('0')
          }
          if(this.fetch.dd_check === 1){
           this.form.controls.dd_check.setValue('1')
+          }
+          if( this.fetch.name_change === 0){
+            this.form.controls.name_change.setValue('0')
+          }
+          if( this.fetch.name_change === 1){
+            this.form.controls.name_change.setValue('1')
           }
           if(this.fetch.certificate_decl === 0){
             this.form.controls.certificate_decl.setValue('0')
@@ -1096,7 +1201,7 @@ export class RegisterComponent {
         //    this.submitbtn = false;
         //    this.form.disable()
         //  
-        if(res.degree_name != null){
+        if(res.degree_name != null && res.degree_name.length){
           let i = res.degree_name.length
           for(var j=0;j<=i-1;j++){
             console.log("details",j)
@@ -1104,17 +1209,12 @@ export class RegisterComponent {
             this.qualifications.get('degree_name').setValue(res.degree_name[j]);
             this.qualifications.get('university_name').setValue(res.university[j]);
             this.qualifications.get('year_passing').setValue(res.year_of_passing[j]);
-        this.id = this.response.data.id
-      }
-    }
-    }
-    else{
-      this.addQuantity()
-      this.loading = false;
-      this.qualifications.get('degree_name').setValue('');
-      this.qualifications.get('university_name').setValue('');
-      this.qualifications.get('year_passing').setValue('');
-    }
+          }
+        }
+      } 
+      // if(res.degree_name === null || !res.degree_name){
+      //   this.addQuantity()
+      // } 
       if (res.errors) {
         let errormessage = ''
         if (res.errors.aadhar_number) {
@@ -1125,6 +1225,12 @@ export class RegisterComponent {
         }
         if (res.errors.mail_id) {
           errormessage = res.errors.mail_id
+        }
+        if (res.errors.communication_number) {
+          errormessage = res.errors.communication_number
+        }
+        if (res.errors.year_of_passing) {
+          errormessage = res.errors.year_of_passing
         }
         let type: string = 'error'
         console.log('oops', res.errors)
@@ -1139,6 +1245,10 @@ export class RegisterComponent {
   //submit the data
 
   async submitform() {
+    if(this.result === 'failed'){
+      window.alert('Incorrect Aadhar Number!')
+     return 
+    }
     this.submitloading = true
     if (!this.form.controls.declaration.value) {
       window.alert('Please check Agree the self declaration')
@@ -1179,6 +1289,12 @@ export class RegisterComponent {
         console.log("ele",degree)
       });
       dd = this.result
+      this.form.controls.name.setValue(this.getuser.name)
+      this.form.controls.user_id.setValue(this.getuser.id)
+      this.form.controls.mail_id.setValue(this.getuser.email)
+      this.form.controls.user_id.setValue(this.getuser.id)
+      // this.form.controls.id.setValue(this.fetch.id)
+      this.form.controls.mobile_no.setValue(this.getuser.mobile_no)
     let url = `${environment.api_url}/api/store`;
     this.http.post(url, this.form.value,dd).subscribe((res: any) => {
       this.response = res
@@ -1186,6 +1302,11 @@ export class RegisterComponent {
       console.log("response", this.response)
       if (this.response.data) {
         // console.log("welcome")
+        let type: string = 'success'
+        this.notification.create(
+          type,
+          'Error!!',
+          'Application Submitted Successfully!!')
         this.router.navigate(['/downloadpdf/'])
         this.id = this.response.data.id
       }
@@ -1212,8 +1333,17 @@ export class RegisterComponent {
         if (res.errors.photo) {
           errormessage = res.errors.photo
         }
+        if (res.errors.dob) {
+          errormessage = res.errors.dob
+        }
         if (res.errors.signature) {
           errormessage = res.errors.signature
+        }
+        if (res.errors.year_of_passing) {
+          errormessage = res.errors.year_of_passing
+        }
+        if (res.errors.gender) {
+          errormessage = res.errors.gender
         }
         let type: string = 'error'
         console.log('oops', res.errors)
@@ -1245,6 +1375,7 @@ export class DownloadComponent {
   dd_image:any;
   @ViewChild('pdfTable', {static: false}) pdfTable!: ElementRef;
   user: any;
+  name_change_proof: any;
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
     this.user = localStorage.getItem('userdata')
@@ -1266,6 +1397,7 @@ export class DownloadComponent {
       this.add_proof = environment.image_url + this.url.address_proof
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
       this.dd_image = environment.image_url + this.url.dd_image
+      this.name_change_proof = environment.image_url + this.url.name_change_docs
       console.log("repsosn",this.url)
     });
   }
@@ -1747,6 +1879,7 @@ export class ViewPDfComponent {
   id!: string | null;
   user: any;
   dd_image: any;
+  name_change_proof: any;
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
     this.user = localStorage.getItem('userdata')
@@ -1770,6 +1903,7 @@ export class ViewPDfComponent {
       this.add_proof = environment.image_url + this.url.address_proof
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
       this.dd_image = environment.image_url + this.url.dd_image
+      this.name_change_proof = environment.image_url + this.url.name_change_docs
       console.log("repsosn",this.url)
     });
   }
@@ -1854,6 +1988,9 @@ export class ResetPwDComponent {
         this.resetform.controls[i].updateValueAndValidity();
         this.resetloading = false
       }
+      if(this.resetform.invalid){
+        this.resetloading = false
+      }
       let url = `${environment.api_url}/api/resetpwd`;
       this.http.post(url, this.resetform.value).subscribe((res: any) => {
         this.response = res
@@ -1878,1425 +2015,6 @@ export class ResetPwDComponent {
           }
       });
     }
-}
-
-// @Component({
-//   selector: 'app-forgotpass',
-//   templateUrl: './forgotpass.component.html',
-//   styleUrls: ['./app.component.css']
-// })
-// export class ResetProcessComponent {
-//   user:any;
-//   getuser:any = {};
-//  pwdform = new FormGroup({})
-//   response: any;
-//   resetloading:boolean = false
-//   constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
-//     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
-//     this.user = localStorage.getItem('userdata')
-//     this.getuser = JSON.parse(this.user); 
-//     this.pwdform = this.fb.group({
-//       reset_pwd: ['', [Validators.required]],
-//     });
-//   }
-//   async submitForm() {
-//     this.resetloading = true
-//     for (const i in this.pwdform.controls) {
-//       this.pwdform.controls[i].markAsDirty();
-//       this.pwdform.controls[i].updateValueAndValidity();
-//       this.resetloading = false
-//     }
-//     var res = [];
-//     var email =localStorage.getItem('resetemail')
-//     let url = `${environment.api_url}/api/resetpwd`;
-//     res.push(email,url)
-//     this.http.post(url, res).subscribe((res: any) => {
-//       this.response = res
-//       if(res.data){
-//       this.resetloading = false
-//       console.log("response", this.response)
-//       if (this.response.success) {
-//         let type: string = 'success'
-//         this.notification.create(
-//           type,
-//           'Success!!',
-//           'PassWord Changed Successfully!')
-//         }
-//      this.router.navigate([''])
-//       }
-//       if(res.error){
-//         let type: string = 'error'
-//         this.notification.create(
-//           type,
-//           'Failed!!',
-//           res.error)
-//         }
-//     });
-//   }
-// }
-
-
-
-@Component({
-  selector: 'app-renewal',
-  templateUrl: './renewal.component.html',
-  styleUrls: ['./app.component.css','./app.component.scss'],
-  encapsulation: ViewEncapsulation.None
-})
-@Injectable()
-export class RenewalComponent {
-  @Input('editdata') editdata!: string;
-  fb = new FormBuilder()
-  form = new FormGroup({
-  });
-  public signaturePadOptions: Object = {
-    'minWidth': 2,
-    'canvasWidth': 200,
-    'canvasHeight': 100
-  };
-  text!: string;
-
-  sameaddress: any
-  yourErrorName: boolean = false
-  presentaddress: any;
-  isVisible = false;
-  isConfirmLoading = false;
-  show_dd_details: boolean = false
-  qualifications: any;
-  change: any;
-  showtick: any;
-  present_add!: string;
-  same_add!: string;
-  response: any;
-  progress!: number;
-  infoMessage: any;
-  isUploading: boolean = false;
-  file!: File;
-  imageUrl: string | ArrayBuffer =
-    "https://bulma.io/images/placeholders/480x480.png";
-  fileName: string = "No file selected";
-  uploader: any;
-  url: any;
-  Show: boolean = false
-  percentDone!: number;
-  uploadSuccess!: boolean;
-  file_path: any;
-  fileToUpload!: File | any;
-  uploadloading: boolean = false
-  aadhar: any;
-  address_proof: any;
-  degree_certificate: any;
-  photo: any;
-  signature: any;
-  uploadloading2: boolean = false
-  uploadloading3: boolean = false
-  uploadloading4: boolean = false
-  uploadloading5: boolean = false
-  id: any;
-  user: any = {};
-  getuser: any;
-  result: any;
-  fetch: any;
-  address: any;
-  aadhar_img: any;
-  deg_img: any;
-  signature_img: any;
-  photo_img: any;
-  file_name: any;
-  filetrue: boolean = false;
-  isEnglish = false;
-  aadhar_xml: any;
-  savebtn: boolean = true;
-  submitbtn: boolean = true;
-  loading: boolean = false;
-  submitloading:boolean = false;
-  paymentlink:any;
-  uploadloading6: boolean = false;
-  dd_img: any;
-  today: string;
-  constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService,private activatedRoute: ActivatedRoute,private i18n: NzI18nService) {
-    this.user = localStorage.getItem('userdata')
-    this.getuser = JSON.parse(this.user); 
-    console.log('loggeduserreg',this.getuser)
-    this.form = this.fb.group({
-      id:[''],
-      name: ['', Validators.required],
-      dob: ['', [Validators.required]],
-      aadhar_number: ['', Validators.required],
-      father_or_husband_name: ['', Validators.required],
-      present_address: this.fb.array([]),
-      declaration: [false, Validators.required],              
-      mobile_no: ['', Validators.required],
-      occupation: ['', Validators.required],
-      qualification: this.fb.array([]),
-      same_add: [false,Validators.required],
-      residential_add: this.fb.array([]),
-      challan_no: [''],
-      amount: [''],
-      bank_name: [''],
-      date: [''],
-      dd_check: [],
-      certificate_decl: [],
-      // aadhar_decl: [],
-      gender: ['', Validators.required],
-      // sign_decl: [],
-      // photo_decl: [],
-      residential_decl: [],
-      mail_id: ['', [Validators.email, Validators.required]],
-      address_proof: ['',Validators.required],
-      aadhar_proof: ['',Validators.required],
-      // deg_provitional_cerificate: ['',Validators.required],
-      signature: ['',Validators.required],
-      photo:['',Validators.required],
-      original_add1: [''],
-      original_add2: [''],
-      districts: [''],
-      // name_of_degree: [''],
-      // name_of_university: [''],
-      // year_of_passing: [''],
-      user_id:[''],
-      dd_image:[],
-      date_of_submission:[],
-    });
-    this.addAddress()
-    this.addResAddress()
-    this.paymentlink = environment.api_url + '/api/payment';
-    this.paymentlink = environment.api_url + '/api/payment'
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    this.today = dd + '-' + mm + '-' + yyyy;
-    console.log("today",this.today)
-    this.form.controls.date_of_submission.setValue(this.today)
-  }
-  onChange(result: Date): void {
-    console.log('onChange: ', result);
-  }
-  onKey(event: any) { // without type info
-    let value = ''
-   value += event.target.value;
-   console.log(value)
-   if(value != ''){
-   this.result = myFunction(value);
-    console.log('popup',this.result)
-   }
-  }
-  getWeek(result: Date): void {
-    console.log('week: ', getISOWeek(result));
-  }
-
-  changeLanguage(): void {
-    this.i18n.setLocale(this.isEnglish ? zh_CN : en_US);
-    this.isEnglish = !this.isEnglish;
-  }
-  ngOnInit() {
-    $("#close-sidebar").click(function() {
-      $(".page-wrapper").removeClass("toggled");
-      });
-      $("#show-sidebar").click(function() {
-      $(".page-wrapper").addClass("toggled");
-      });
-    this.presentaddress.get('state').setValue('Tamil Nadu')
-    this.sameaddress.get('same_state').setValue('Tamil Nadu')
-    if (this.form.controls.aadhar_number.valid) {
-      this.showtick = 'success'
-    }
-    let api = `${environment.api_url}/api/editrenew/${this.getuser.id}`;
-        this.http.get(api).subscribe((res: any) => {
-         console.log(res)
-         if(res.data){
-         this.fetch  = res.data
-         this.form.controls.name.setValue(this.getuser.name)
-         this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
-         this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
-         this.form.controls.declaration.setValue(this.fetch.declaration)
-         this.form.controls.mobile_no.setValue(this.fetch.mobile_no)
-         this.form.controls.occupation.setValue(this.fetch.occupation)
-         this.form.controls.challan_no.setValue(this.fetch.challan_no)
-         this.form.controls.amount.setValue(this.fetch.amount)
-         this.form.controls.bank_name.setValue(this.fetch.bank_name)
-         this.form.controls.dob.setValue(this.fetch.dob)
-         this.form.controls.date.setValue(this.fetch.date)
-         if(this.fetch.dd_check === 0){
-         this.form.controls.dd_check.setValue('0')
-         }
-         if(this.fetch.dd_check === 1){
-          this.form.controls.dd_check.setValue('1')
-          }
-          if(this.fetch.certificate_decl === 0){
-            this.form.controls.certificate_decl.setValue('0')
-            }
-          if(this.fetch.certificate_decl === 1){
-            this.form.controls.certificate_decl.setValue('1')
-            }
-            if(this.fetch.same_add === 0){
-              this.form.controls.same_add.setValue(false)
-              }
-            if(this.fetch.same_add === 1){
-              this.form.controls.same_add.setValue(true)
-              }
-         if (this.fetch.present_address.indexOf(',') > -1) 
-         { 
-          let obj = this.fetch.present_address.split(',');
-          console.log("fext",obj)
-          this.presentaddress.get('address_1').setValue(obj[0])
-          this.presentaddress.get('address_2').setValue(obj[1])
-          this.presentaddress.get('city').setValue(obj[2])
-          this.presentaddress.get('district').setValue(obj[3])
-          this.presentaddress.get('state').setValue(obj[4])
-          this.presentaddress.get('pincode').setValue(obj[5])
-        }
-        if (this.fetch.residential_add.indexOf(',') > -1) 
-         { 
-          let obj1 = this.fetch.residential_add.split(',');
-          console.log("fext",obj1)
-          this.sameaddress.get('same_address_1').setValue(obj1[0])
-          this.sameaddress.get('same_address_2').setValue(obj1[1])
-          this.sameaddress.get('same_city').setValue(obj1[2])
-          this.sameaddress.get('same_district').setValue(obj1[3])
-          this.sameaddress.get('same_state').setValue(obj1[4])
-          this.sameaddress.get('same_pincode').setValue(obj1[5])
-        }
-         this.form.controls.gender.setValue(this.fetch.gender)
-         if(this.form.controls.same_add.value === 1){
-         this.form.controls.same_add.setValue(true)
-         }
-         this.form.controls.mail_id.setValue(this.fetch.mail_id)
-         if(this.fetch.address_proof){
-          this.address = environment.image_url + this.fetch.address_proof
-        }
-        if(this.fetch.aadhar_proof){
-          this.aadhar_img = environment.image_url + this.fetch.aadhar_proof
-        }
-        // if(this.fetch.deg_provitional_cerificate){
-        //   this.deg_img = environment.image_url + this.fetch.deg_provitional_cerificate
-        // }
-        if(this.fetch.signature){
-          this.signature_img = environment.image_url + this.fetch.signature
-        } if(this.fetch.photo){
-          this.photo_img = environment.image_url + this.fetch.photo
-        }     
-        this.form.controls.address_proof.setValue(this.fetch.address_proof)
-        this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
-        this.form.controls.signature.setValue(this.fetch.signature)
-        this.form.controls.photo.setValue(this.fetch.photo)
-         this.form.controls.districts.setValue(this.fetch.districts)
-         this.form.controls.dob.setValue(this.fetch.dob)
-         if(this.fetch.same_add === 1){
-          this.form.controls.same_add.setValue(true)
-          }
-        if(this.fetch.same_add === 0){
-          this.form.controls.same_add.setValue(false)
-          } 
-      }  
-        });
-  }
-  Fetch(){
-    let params = new HttpParams();
-    params = params.append('file_name', this.file_name);
-    params = params.append('user_id', this.getuser.id);
-    params = params.append('aadhar', this.form.controls.aadhar_number.value);
-      let api = `${environment.api_url}/api/extract`;
-      this.http.get(api,{params:params}).subscribe((res: any) => {
-        this.response = res.data
-        this.form.controls.name.setValue(this.getuser.name) 
-         this.form.controls.aadhar_number.setValue(this.response.aadhar_no)
-        //  this.form.controls.dob.setValue(this.response.dob)
-         this.form.controls.father_or_husband_name.setValue(this.response.careof) 
-          this.sameaddress.get('same_address_1').setValue(this.response.house)
-          this.sameaddress.get('same_address_2').setValue(this.response.street)
-          this.sameaddress.get('same_city').setValue(this.response.city)
-          this.sameaddress.get('same_district').setValue(this.response.dist)
-          this.sameaddress.get('same_state').setValue(this.response.state)
-          this.sameaddress.get('same_pincode').setValue(this.response.pc)
-          if(this.response.gender === 'F'){
-            this.form.controls.gender.setValue('female')
-          }
-         else{
-            this.form.controls.gender.setValue('male')
-          }
-        console.log("response", this.response)
-        if(res.validate){
-          let type: string = 'success'
-          this.notification.create(
-            type,
-            'Success!!',
-            'Data Fetched Successfully!')
-          }
-          if(res.failed){
-            let type: string = 'error'
-            this.notification.create(
-              type,
-              'Failed!!',
-              'Please Attach Xml Aadhar File!')
-            }
-      });
-  }
-  // Trigger(){
-  //   this.result = myFunction(this.form.controls.aadhar_number.value);
-  //   console.log('popup',this.result)
-  // }
-  Regsiter(){
-    this.router.navigate(['/renewal']);
-  }
-  viewDetails(){
-    this.router.navigate(['/viewrenewalpdf']);
-  }
-  download(){
-    this.router.navigate(['/downloadrenewalpdf']);
-  }
-  Instruction(){
-    this.router.navigate(['/renewhome']);
-  }
-  StdDetails(){
-    this.router.navigate(['/studentdetails']);
-  }
-  StdRewnewalDetails(){
-    this.router.navigate(['/studentrenewaldetails']);
-  }
-  logout(){
-    this.router.navigate(['']);
-    localStorage.clear();
-  }
-  triggerdetails(e: any) {
-    console.log(e)
-    if (e === '1') {
-      this.show_dd_details = true
-    }
-    else {
-      this.show_dd_details = false
-    }
-  }
-  triggerdetails1(e: any) {
-    console.log(e)
-    if (e === '1') {
-      this.show_dd_details = true
-    }
-    else {
-      this.show_dd_details = false
-    }
-  }
-  cancel(): void {
-    this.msg.info('click cancel');
-  }
-
-  qualification(): FormArray {
-    return this.form.get("qualification") as FormArray
-  }
-  presentAddress(): FormArray {
-    return this.form.get("present_address") as FormArray
-  }
-  ResAddress(): FormArray {
-    return this.form.get("residential_add") as FormArray
-  }
-  addResAddress() {
-    this.ResAddress().push(this.newResAddress());
-  }
-  addAddress() {
-    this.presentAddress().push(this.newAddress());
-  }
-
-  aadharpost(files: FileList) {
-    // this.uploadloading_a = true;
-    this.fileToUpload = files.item(0);
-    let aadhar_xml = new FormData();
-    aadhar_xml.append('file', this.fileToUpload, this.fileToUpload.name);
-    // console.log(files)
-    this.http.post(environment.api_url+'/api/aadharupload', aadhar_xml).subscribe((res: any) => {
-      console.log(res);
-      if(res){
-      this.file_name = res.file_name
-      this.filetrue = true
-      }
-      if (res.data) {
-        this.aadhar_xml = res.data
-        this.uploadloading = false;
-        let type: string = 'success'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Success!!',
-          'File uploaded Successfully!')
-      }
-      else{
-        this.notification.create(
-          'error',
-          'Failed!!',
-          res.errors.file)
-      }
-    });
-    return false;
-  }
-  postMethod6(files: FileList) {
-    this.uploadloading6 = true;
-    this.fileToUpload = files.item(0);
-    let dd_image = new FormData();
-    dd_image.append('file', this.fileToUpload, this.fileToUpload.name);
-    // console.log(files)
-    this.http.post(environment.api_url+'/api/upload', dd_image).subscribe((res: any) => {
-      console.log(res);
-      if (res.data) {
-        this.dd_img = environment.image_url + res.file_name
-        this.form.controls.dd_image.setValue(res.file_name)
-        this.uploadloading6 = false;
-        let type: string = 'success'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Success!!',
-          'File uploaded Successfully!')
-      }
-      else{
-        this.notification.create(
-          'error',
-          'Failed!!',
-          res.errors.file)
-      }
-    });
-    return false;
-  }
-  postMethod1(files: FileList) {
-    this.uploadloading = true;
-    this.fileToUpload = files.item(0);
-    let aadhar = new FormData();
-    aadhar.append('file', this.fileToUpload, this.fileToUpload.name);
-    // console.log(files)
-    this.http.post(environment.api_url+'/api/upload', aadhar).subscribe((res: any) => {
-      console.log(res);
-      if (res.data) {
-        this.aadhar_img = environment.image_url + res.file_name
-        console.log('aadhra',this.aadhar_img)
-        this.form.controls.aadhar_proof.setValue(res.file_name)
-        this.uploadloading = false;
-        let type: string = 'success'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Success!!',
-          'File uploaded Successfully!')
-      }
-      else{
-        this.notification.create(
-          'error',
-          'Failed!!',
-          res.errors.file)
-      }
-    });
-    return false;
-  }
-  postMethod2(files: FileList) {
-    this.uploadloading2 = true;
-    this.fileToUpload = files.item(0);
-    let address_proof = new FormData();
-    address_proof.append('file', this.fileToUpload, this.fileToUpload.name);
-    this.http.post(environment.api_url+'/api/upload', address_proof).subscribe((res: any) => {
-      console.log(res);
-      if (res.data) {
-        this.uploadloading2 = false;
-        this.address = environment.image_url + res.file_name
-        this.form.controls.address_proof.setValue(res.file_name)
-        this.uploadloading2 = false;
-        let type: string = 'success'
-        this.notification.create(
-          type,
-          'Sucess!!',
-          'File uploaded Successfully!')
-      }
-      else{
-        this.notification.create(
-          'error',
-          'Failed!!',
-          res.errors.file)
-      }
-    });
-    return false;
-  }
-  postMethod3(files: FileList) {
-    this.uploadloading3 = true;
-    this.fileToUpload = files.item(0);
-    let degree_certificate = new FormData();
-    degree_certificate.append('file', this.fileToUpload, this.fileToUpload.name);
-    this.http.post(environment.api_url+'/api/upload', degree_certificate).subscribe((res: any) => {
-      console.log(res);
-      if (!res.data) {
-        this.uploadloading3 = true;
-      }
-      if (res.data) {
-        this.deg_img = environment.image_url + res.file_name
-        this.form.controls.deg_provitional_cerificate.setValue(res.file_name)
-        this.uploadloading3 = false;
-        let type: string = 'success'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Sucess!!',
-          'File uploaded Successfully!')
-      }
-      else{
-        this.notification.create(
-          'error',
-          'Failed!!',
-          res.errors.file)
-      }
-    });
-    return false;
-  }
-  postMethod4(files: FileList) {
-    this.uploadloading4 = true;
-    this.fileToUpload = files.item(0);
-    let photo = new FormData();
-    photo.append('file', this.fileToUpload, this.fileToUpload.name);
-    this.http.post(environment.api_url+'/api/upload', photo).subscribe((res: any) => {
-      console.log(res);
-      if (!res.data) {
-        this.uploadloading4 = true;
-      }
-      if (res.data) {
-        this.photo_img = environment.image_url + res.file_name
-        this.form.controls.photo.setValue(res.file_name)
-        this.uploadloading4 = false;
-        let type: string = 'success'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Sucess!!',
-          'File uploaded Successfully!')
-      }
-      else{
-        this.notification.create(
-          'error',
-          'Failed!!',
-          res.errors.file)
-      }
-    });
-    return false;
-  }
-  postMethod5(files: FileList) {
-    this.uploadloading5 = true;
-    this.fileToUpload = files.item(0);
-    let signature = new FormData();
-    signature.append('file', this.fileToUpload, this.fileToUpload.name);
-    this.http.post(environment.api_url+'/api/upload', signature).subscribe((res: any) => {
-      console.log(res);
-      if (!res.data) {
-        this.uploadloading5 = true;
-      }
-      if (res.data) {
-        this.signature_img = environment.image_url + res.file_name
-        this.form.controls.signature.setValue(res.file_name)
-        this.uploadloading5 = false;
-        let type: string = 'success'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Sucess!!',
-          'File uploaded Successfully!')
-      }
-      else{
-        this.notification.create(
-          'error',
-          'Failed!!',
-          res.errors.file)
-      }
-    });
-    return false;
-  }
-  newQuantity(): FormGroup {
-    this.qualifications = this.fb.group({
-      degree_name: '',
-      university_name: '',
-      year_passing: ''
-    })
-    return this.qualifications
-  }
-  newAddress(): FormGroup {
-    this.presentaddress = this.fb.group({
-      address_1: ['', Validators.required],
-      address_2: ['', Validators.required],
-      city: ['', Validators.required],
-      district: ['', Validators.required],
-      state: ['', Validators.required],
-      pincode: ['', Validators.required],
-    })
-    return this.presentaddress
-  }
-  newResAddress(): FormGroup {
-    this.sameaddress = this.fb.group({
-      same_address_1: ['', Validators.required],
-      same_address_2: ['', Validators.required],
-      same_city: ['', Validators.required],
-      same_district: ['', Validators.required],
-      same_state: ['', Validators.required],
-      same_pincode: ['', Validators.required],
-    })
-    return this.sameaddress
-  }
-  addQuantity() {
-    this.qualification().push(this.newQuantity());
-  }
-
-  removeQuantity(i: number) {
-    this.qualification().removeAt(i);
-  }
-  ngOnChanges() {
-    console.log(this.form.controls.same_add.value)
-    this.form.controls.sam
-  }
-
-  trigger(e: any) {
-    console.log(e)
-    if (e === true) {
-      this.presentaddress.get('address_1').setValue(this.sameaddress.get('same_address_1').value)
-      this.presentaddress.get('address_2').setValue(this.sameaddress.get('same_address_2').value)
-      this.presentaddress.get('city').setValue(this.sameaddress.get('same_city').value)
-      this.presentaddress.get('district').setValue(this.sameaddress.get('same_district').value)
-      this.presentaddress.get('state').setValue(this.sameaddress.get('same_state').value)
-      this.presentaddress.get('pincode').setValue(this.sameaddress.get('same_pincode').value)
-    }
-    else {
-      this.presentaddress.get('address_1').setValue(null)
-      this.presentaddress.get('address_2').setValue(null)
-      this.presentaddress.get('city').setValue(null)
-      this.presentaddress.get('district').setValue(null)
-      this.presentaddress.get('state').setValue(null)
-      this.presentaddress.get('pincode').setValue(null)
-    }
-  }
-  showModal(): void {
-    this.isVisible = true;
-  }
-  showUploadList = {
-    showPreviewIcon: true,
-    showRemoveIcon: false,
-  };
-  handleOk(): void {
-    console.log('Button ok clicked!');
-    this.isVisible = false;
-    this.form.enable()
-  }
-
-  handleCancel(): void {
-    console.log('Button cancel clicked!');
-    this.isVisible = false;
-    this.form.enable()
-  }
-
-  uploadAndProgress(files: File[]) {
-    console.log("myfilw", files)
-    var formData = new FormData();
-    Array.from(files).forEach(f => formData.append('file', f))
-
-    this.http.post(environment.api_url+'/api/upload', formData, { reportProgress: true, observe: 'events' })
-      .subscribe((event: any) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          this.percentDone = Math.round(100 * event.loaded / event.total);
-        } else if (event instanceof HttpResponse) {
-          this.uploadSuccess = true;
-        }
-        if (event.data) {
-          this.file_path = event.data
-          console.log("mypath", event)
-        }
-      });
-  }
-  click(type: any) {
-    this.notification.create(
-      type,
-      'Error!!',
-      'welocme'
-    );
-  }
-  Dectrigger(e: any) {
-    console.log(e)
-    this.change = e
-    if (this.change) {
-      for (const i in this.form.controls) {
-        this.form.controls[i].markAsDirty();
-        this.form.controls[i].updateValueAndValidity();
-      }
-      for (const i in this.presentaddress.controls) {
-        this.presentaddress.controls[i].markAsDirty();
-        this.presentaddress.controls[i].updateValueAndValidity();
-      }
-      for (const i in this.sameaddress.controls) {
-        this.sameaddress.controls[i].markAsDirty();
-        this.sameaddress.controls[i].updateValueAndValidity();
-      }
-    }
-  }
-
-  //save the data
-
-  async save(){
-    this.loading = true;
-    this.form.controls.districts.setValue(this.sameaddress.get('same_district').value)
-    this.form.controls.user_id.setValue(this.getuser.id)
-    this.form.controls.mail_id.setValue(this.getuser.email)
-    this.form.controls.mobile_no.setValue(this.getuser.mobile_no)
-    console.log(this.presentaddress.controls)
-    if (this.presentaddress.controls) {
-      this.present_add = this.presentaddress.controls.address_1.value + ',' + this.presentaddress.controls.address_2.value + ',' + this.presentaddress.controls.city.value + ',' + this.presentaddress.controls.district.value + ',' + this.presentaddress.controls.state.value + ',' + this.presentaddress.controls.pincode.value;
-      // dd.original_add1 = this.present_add
-    }
-    if (this.sameaddress.controls) {
-      this.same_add = this.sameaddress.controls.same_address_1.value + ',' + this.sameaddress.controls.same_address_2.value + ',' + this.sameaddress.controls.same_city.value + ',' + this.sameaddress.controls.same_district.value + ',' + this.sameaddress.controls.same_state.value + ',' + this.sameaddress.controls.same_pincode.value;
-      // dd.original_add2 = this.same_add
-    }
-    var result = []
-    result = this.form.controls.present_address.value
-    const json = this.form.controls.present_address.value
-    let data = JSON.stringify(json);
-    const obj = JSON.parse(data);
-    console.log(obj)  
-    let dd = this.result
-    let url = `${environment.api_url}/api/renewalsave`;
-    this.http.post(url, this.form.value,dd).subscribe((res: any) => {
-      this.response = res
-      this.loading = false;
-      if(res){
-        let type: string = 'success';
-       let message = 'Data saved Successfully';
-       this.notification.create(
-         type,
-         'Success!!',
-         message)
-       }
-      console.log("response", this.response)
-      if(res.degree_name){
-        this.form.controls.degree_name.setValue(res.degree_name)
-          this.addQuantity()
-      }
-      if(res.university){
-        this.form.controls.name_of_degree.setValue(res.university)
-        
-      }
-      if(res.year_of_passing){
-        this.form.controls.year_of_passing.setValue(res.year_of_passing)
-      }
-       
-      if (this.response.data) {
-        this.fetch  = res.data
-        //  this.form.controls.name.setValue(this.fetch.name)
-         this.form.controls.aadhar_number.setValue(this.fetch.aadhar_number)
-         this.form.controls.father_or_husband_name.setValue(this.fetch.father_or_husband_name)
-         this.form.controls.declaration.setValue(this.fetch.declaration)
-         this.form.controls.mobile_no.setValue(this.fetch.mobile_no)
-         this.form.controls.occupation.setValue(this.fetch.occupation)
-         this.form.controls.challan_no.setValue(this.fetch.challan_no)
-         this.form.controls.amount.setValue(this.fetch.amount)
-         this.form.controls.bank_name.setValue(this.fetch.bank_name)
-         this.form.controls.dob.setValue(this.fetch.dob)
-         this.form.controls.date.setValue(this.fetch.date)
-         if(this.fetch.dd_check === 0){
-         this.form.controls.dd_check.setValue('0')
-         }
-         if(this.fetch.dd_check === 1){
-          this.form.controls.dd_check.setValue('1')
-          }
-          if(this.fetch.certificate_decl === 0){
-            this.form.controls.certificate_decl.setValue('0')
-            }
-          if(this.fetch.certificate_decl === 1){
-            this.form.controls.certificate_decl.setValue('1')
-            }
-         if (this.fetch.present_address.indexOf(',') > -1) 
-         { 
-          let obj = this.fetch.present_address.split(',');
-          console.log("fext",obj)
-          this.presentaddress.get('address_1').setValue(obj[0])
-          this.presentaddress.get('address_2').setValue(obj[1])
-          this.presentaddress.get('city').setValue(obj[2])
-          this.presentaddress.get('district').setValue(obj[3])
-          this.presentaddress.get('state').setValue(obj[4])
-          this.presentaddress.get('pincode').setValue(obj[5])
-        }
-        if (this.fetch.residential_add.indexOf(',') > -1) 
-         { 
-          let obj = this.fetch.residential_add.split(',');
-          console.log("fext",obj)
-          this.sameaddress.get('same_address_1').setValue(obj[0])
-          this.sameaddress.get('same_address_2').setValue(obj[1])
-          this.sameaddress.get('same_city').setValue(obj[2])
-          this.sameaddress.get('same_district').setValue(obj[3])
-          this.sameaddress.get('same_state').setValue(obj[4])
-          this.sameaddress.get('same_pincode').setValue(obj[5])
-        }
-         this.form.controls.gender.setValue(this.fetch.gender)
-         if(this.form.controls.same_add.value === 1){
-         this.form.controls.same_add.setValue(true)
-         }
-         this.form.controls.mail_id.setValue(this.fetch.mail_id)
-         if(this.fetch.address_proof){
-          this.address = environment.image_url + this.fetch.address_proof
-        }
-        if(this.fetch.aadhar_proof){
-          this.aadhar_img = environment.image_url + this.fetch.aadhar_proof
-        }
-        if(this.fetch.deg_provitional_cerificate){
-          this.deg_img = environment.image_url + this.fetch.deg_provitional_cerificate
-        }
-        if(this.fetch.signature){
-          this.signature_img = environment.image_url + this.fetch.signature
-        } if(this.fetch.photo){
-          this.photo_img = environment.image_url + this.fetch.photo
-        }     
-        this.form.controls.address_proof.setValue(this.fetch.address_proof)
-        this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
-        this.form.controls.signature.setValue(this.fetch.signature)
-        this.form.controls.photo.setValue(this.fetch.photo)
-         this.form.controls.districts.setValue(this.fetch.districts)
-         this.form.controls.dob.setValue(this.fetch.dob)
-        //  if(this.fetch.is_submit === '1'){
-        //    this.savebtn = false;
-        //    this.submitbtn = false;
-        //    this.form.disable()
-        //  
-          let i = res.degree_name.length
-          for(var j=0;j<=i-1;j++){
-            console.log("details",j)
-            this.addQuantity()
-            this.qualifications.get('degree_name').setValue(res.degree_name[j]);
-            this.qualifications.get('university_name').setValue(res.university[j]);
-            this.qualifications.get('year_passing').setValue(res.year_of_passing[j]);
-        this.id = this.response.data.id
-      }
-    }
-    else{
-      this.addQuantity()
-      this.loading = false;
-      this.qualifications.get('degree_name').setValue('');
-      this.qualifications.get('university_name').setValue('');
-      this.qualifications.get('year_passing').setValue('');
-    }
-      if (res.errors) {
-        let errormessage = ''
-        if (res.errors.aadhar_number) {
-          errormessage = res.errors.aadhar_number
-        }
-        if (res.errors.mobile_no) {
-          errormessage = res.errors.mobile_no
-        }
-        if (res.errors.mail_id) {
-          errormessage = res.errors.mail_id
-        }
-        let type: string = 'error'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Error!!',
-          errormessage)
-      }
-      this.loading = false;
-    });
-  }
-
-  //submit the data
-
-  async submitform() {
-    this.submitloading = true
-    if (!this.form.controls.declaration.value) {
-      window.alert('Please check Agree the self declaration')
-      this.submitloading = false
-      return
-    }
-    let dd:any;
-    if(this.fetch){
-    this.form.controls.id.setValue(this.fetch.id)
-    }
-      this.form.controls.districts.setValue(this.sameaddress.get('same_district').value)
-      console.log(this.presentaddress.controls)
-      if (this.presentaddress.controls) {
-        this.present_add = this.presentaddress.controls.address_1.value + ',' + this.presentaddress.controls.address_2.value + ',' + this.presentaddress.controls.city.value + ',' + this.presentaddress.controls.district.value + ',' + this.presentaddress.controls.state.value + ',' + this.presentaddress.controls.pincode.value;
-        // dd.original_add1 = this.present_add
-      }
-      if (this.sameaddress.controls) {
-        this.same_add = this.sameaddress.controls.same_address_1.value + ',' + this.sameaddress.controls.same_address_2.value + ',' + this.sameaddress.controls.same_city.value + ',' + this.sameaddress.controls.same_district.value + ',' + this.sameaddress.controls.same_state.value + ',' + this.sameaddress.controls.same_pincode.value;
-        // dd.original_add2 = this.same_add
-      }
-      var result = []
-      result = this.form.controls.present_address.value
-      const json = this.form.controls.present_address.value
-      let data = JSON.stringify(json);
-      const obj = JSON.parse(data);
-      console.log(obj)
-      dd = this.result
-    let url = `${environment.api_url}/api/renewalstore`;
-    this.http.post(url, this.form.value,dd).subscribe((res: any) => {
-      this.response = res
-      this.submitloading = false
-      console.log("response", this.response)
-      if (this.response.data) {
-        // console.log("welcome")
-        this.router.navigate(['/downloadrenewalpdf/'])
-        this.id = this.response.data.id
-      }
-      if (res.errors) {
-        let errormessage = ''
-        if (res.errors.aadhar_number) {
-          errormessage = res.errors.aadhar_number
-        }
-        if (res.errors.mobile_no) {
-          errormessage = res.errors.mobile_no
-        }
-        if (res.errors.mail_id) {
-          errormessage = res.errors.mail_id
-        }
-        if (res.errors.aadhar_proof) {
-          errormessage = res.errors.aadhar_proof
-        }
-        if (res.errors.address_proof) {
-          errormessage = res.errors.address_proof
-        }
-        if (res.errors.deg_provitional_cerificate) {
-          errormessage = res.errors.deg_provitional_cerificate
-        }
-        if (res.errors.photo) {
-          errormessage = res.errors.photo
-        }
-        if (res.errors.signature) {
-          errormessage = res.errors.signature
-        }
-        let type: string = 'error'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Error!!',
-          errormessage)
-      }
-    });
-  }
-}
-
-
-@Component({
-  selector: 'app-renewallogin',
-  templateUrl: './renewallogin.component.html',
-  styleUrls: ['./app.component.css','./app.component.scss'],
-})
-
-export class RenewalLoginComponent {
-  validateForm = new FormGroup({})
-  emailerror: boolean = false;
-  passerror: boolean = false;
-  response: any;
-  id: any;
-  failed: any;
-  loginloading:boolean = false;
-  constructor(private fb: FormBuilder,private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService) {
-    this.validateForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
-      user_type: ['renewal'],
-      remember: [true]
-    });
-  }
-  ngOnInit() { }
-  Reset(){
-    this.router.navigate(['/passwordreset'])
-  }
-  Renewallogin(){
-    this.router.navigate(['/renewallogin'])
-  }
-   viewDetails(){
-    this.router.navigate(['/viewrenewalpdf']);
-  }
-  Login(){
-    this.router.navigate(['']);
-  }
-  async submitForm() {
-    this.loginloading = true
-    console.log(this.validateForm)
-    for (const i in this.validateForm.controls) {
-      this.validateForm.controls[i].markAsDirty();
-      this.validateForm.controls[i].updateValueAndValidity();
-      // this.loginloading = false;
-    }
-    // if (this.validateForm.valid) {
-    //   this.router.navigate(['/studentdetails'])
-    // } else {
-    //   return
-    // }
-    console.log(this.validateForm.value)
-    let url = `${environment.api_url}/api/renewallogin`;
-    this.http.post(url, this.validateForm.value).subscribe((res: any) => {
-      this.response = res
-      this.loginloading = false;
-      console.log("response", this.response)
-      if (this.response.data) {
-        this.id = this.response.data
-        if(this.id.role != 'authority'){
-        let api = `${environment.api_url}/api/editrenew/${this.id.id}`;
-        this.http.get(api).subscribe((res: any) => {
-         console.log(res)
-         if(res.data){
-            localStorage.setItem('userdata', JSON.stringify(this.id));
-          this.router.navigate(['/renewal'])
-         }
-        //  if(res.data.is_submit === 1){
-        //   this.router.navigate(['/viewdetails'])
-        //  }
-         else{
-          this.router.navigate(['/renewhome'])
-          localStorage.setItem('userdata', JSON.stringify(this.id));
-         }
-        });
-        this.currentUser.setUser(this.id);
-        localStorage.setItem('userdata', JSON.stringify(this.id));
-      }
-      else{
-        this.router.navigate(['/studentdetails'])
-        this.currentUser.setUser(this.id);
-        localStorage.setItem('userdata', JSON.stringify(this.id));
-      }
-    }
-     else {
-        this.failed = this.response.falied
-      }
-    });
-  
-  // ValidateEmail(control: AbstractControl) {
-  //   if (control.value === 'adminbu@gmail.com') {
-  //     return false;
-  //   } else {
-  //     return { emailExists: true };
-  //   }
-  // }
-  // ValidatePassword(control: AbstractControl) {
-  //   if (control.value === 'bu@1234') {
-  //     return false;
-  //   } else {
-  //     return { passExists: true };
-  //   }
-  // }
-  }
-}
-
-@Component({
-  selector: 'app-renewaluser',
-  templateUrl: './renewaluser.component.html',
-  styleUrls: ['./app.component.css','./app.component.scss'],
-})
-export class RenewalUserComponent {
-  validateForm: FormGroup;
-  response: any;
-  id: any;
-  regloading:boolean = false;
-  otploading: boolean = false;
-  constructor(private fb: FormBuilder, private router: Router, private http: HttpClient, private notification: NzNotificationService) {
-    this.validateForm = this.fb.group({
-      name: ['', [Validators.required], [this.userNameAsyncValidator]],
-      email: ['', [Validators.email, Validators.required]],
-      mobile_no: ['', [Validators.required]],
-      otp:['',[Validators.required]],
-      user_type: ['new_user'],
-      password: ['', [Validators.required]],
-      confirm: ['', [this.confirmValidator]],
-    });
-  }
-  Getotp() {
-    this.otploading = true
-      let url = `${environment.api_url}/api/renew_reg_otp`;
-        this.http.post(url,{email:this.validateForm.controls.email.value}).subscribe((res: any) => {
-          if(res){
-            this.otploading = false
-                if (res.data) {
-                  let type: string = 'success'
-                  this.notification.create(
-                    type,
-                    'Success!!',
-                    'OTP is Send to Your Email!')
-                  }
-               if (res.failed) {
-                let type: string = 'error'
-                this.notification.create(
-                  type,
-                  'Failed!!',
-                  'Invalid OTP Please Enter Correct OTP!')
-                }
-                }
-              });
-    }
-  submitForm() {
-    this.regloading = true;
-    for (const key in this.validateForm.controls) {
-      this.validateForm.controls[key].markAsDirty();
-      this.validateForm.controls[key].updateValueAndValidity();
-    }
-    console.log(this.validateForm.value)
-    let url = `${environment.api_url}/api/storerenewaluser`;
-    this.http.post(url, this.validateForm.value).subscribe((res: any) => {
-      this.response = res
-      this.regloading = false
-      console.log("response", this.response)
-      if (this.response.data) {
-        this.id = this.response
-        this.router.navigate(['/renewallogin'])
-      }
-      if(res.success){
-        let type: string = 'success'
-        this.notification.create(
-          type,
-          'Success!!',
-          'Registration Completed Successfully!!')
-      }
-      if (res.errors) {
-        let errormessage = ''
-        if (res.errors.mobile_no) {
-          errormessage = res.errors.mobile_no
-        }
-        if (res.errors.email) {
-          errormessage = res.errors.email
-        }
-        let type: string = 'error'
-        console.log('oops', res.errors)
-        this.notification.create(
-          type,
-          'Error!!',
-          errormessage)
-      }
-      if (res.failed) {
-        let type: string = 'error'
-        this.notification.create(
-          type,
-          'Failed!!',
-          'Invalid OTP!')
-      }
-    });
-  }
-  Renewallogin(){
-    this.router.navigate(['/renewallogin'])
-  }
-  validateConfirmPassword(): void {
-    setTimeout(() => this.validateForm.controls.confirm.updateValueAndValidity());
-  }
-
-  userNameAsyncValidator = (control: FormControl) =>
-    new Observable((observer: Observer<ValidationErrors | null>) => {
-      setTimeout(() => {
-        if (control.value === 'JasonWood') {
-          // you have to return `{error: true}` to mark it as an error event
-          observer.next({ error: true, duplicated: true });
-        } else {
-          observer.next(null);
-        }
-        observer.complete();
-      }, 1000);
-    });
-
-  confirmValidator = (control: FormControl): { [s: string]: boolean } => {
-    if (!control.value) {
-      return { error: true, required: true };
-    } else if (control.value !== this.validateForm.controls.password.value) {
-      return { confirm: true, error: true };
-    }
-    return {};
-  };
-  Login(){
-    this.router.navigate(['/']);
-  }
-}
-
-@Component({
-  selector: 'app-renewhome',
-  templateUrl: './renewhome.component.html',
-  styleUrls: ['./app.component.css','./app.component.scss'],
-})
-
-export class RenewHomeComponent {
-  agreedata = new FormControl('', [Validators.required]);
-  user:any= {}
-  getuser: any;
-  constructor( private router: Router, private httpClient: HttpClient,private elRef: ElementRef, private renderer: Renderer2,private currentUser: GlobalService) {
-    // this.api = `${environment.api_url}/upload`
-    this.user = localStorage.getItem('userdata')
-    this.getuser = JSON.parse(this.user); 
-    console.log('loggedusermy',this.getuser)
-  }
-  
-  async registernew() {
-    if (!this.agreedata.value) {
-      window.alert('Please Agree to Continue')
-      return
-    }
-    this.router.navigate(['/renewal'])
-  }
-  Regsiter(){
-    this.router.navigate(['/renewal']);
-  }
-  viewDetails(){
-    this.router.navigate(['/viewrenewalpdf']);
-  }
-  download(){
-    this.router.navigate(['/downloadrenewalpdf']);
-  }
-  Instruction(){
-    this.router.navigate(['/renewhome']);
-  }
-  StdDetails(){
-    this.router.navigate(['/studentdetails']);
-  }
-  StdRewnewalDetails(){
-    this.router.navigate(['/studentrenewaldetails']);
-  }
-  logout(){
-    this.router.navigate(['']);
-    localStorage.clear();
-  }
-  agree(e: any) {
-    if (e) {
-      console.log(e)
-    }
-    console.log('else')
-  }
- 
-  ngOnInit() {
-    $("#close-sidebar").click(function() {
-      $(".page-wrapper").removeClass("toggled");
-      });
-      $("#show-sidebar").click(function() {
-      $(".page-wrapper").addClass("toggled");
-      });
-  }
-  
-}
-
-@Component({
-  selector: 'app-viewrenewalpdf',
-  templateUrl: './viewrenewalpdf.component.html',
-  styleUrls: ['./app.component.css','./app.component.scss'],
-})
-export class ViewRenewalPDfComponent {
-  url: any;
-  getuser:any = {};
-  photo:any;
-  sign:any;
-  degree:any;
-  add_proof:any;
-  aadhar_proof:any;
-  id!: string | null;
-  user: any;
-  dd_image: any;
-  constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
-    // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
-    this.user = localStorage.getItem('userdata')
-    this.getuser = JSON.parse(this.user); 
-    console.log('loggeduserreg',this.getuser)
-  }
-  ngOnInit() {
-    $("#close-sidebar").click(function() {
-      $(".page-wrapper").removeClass("toggled");
-      });
-      $("#show-sidebar").click(function() {
-      $(".page-wrapper").addClass("toggled");
-      });
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
-    let api = `${environment.api_url}/api/editrenew/${this.getuser.id}`;
-    this.http.get(api).subscribe((res: any) => {
-      this.url = res.data
-      this.photo = environment.image_url + this.url.photo
-      this.sign = environment.image_url + this.url.signature
-      this.degree = environment.image_url + this.url.deg_provitional_cerificate
-      this.add_proof = environment.image_url + this.url.address_proof
-      this.aadhar_proof = environment.image_url + this.url.aadhar_proof
-      this.dd_image = environment.image_url + this.url.dd_image
-      console.log("repsosn",this.url)
-    });
-  }
-  Regsiter(){
-    this.router.navigate(['/renewal']);
-  }
-  viewDetails(){
-    this.router.navigate(['/viewrenewalpdf']);
-  }
-  download(){
-    this.router.navigate(['/downloadrenewalpdf']);
-  }
-  Instruction(){
-    this.router.navigate(['/renewhome']);
-  }
-  StdDetails(){
-    this.router.navigate(['/studentdetails']);
-  }
-  StdRewnewalDetails(){
-    this.router.navigate(['/studentrenewaldetails']);
-  }
-  logout(){
-    this.router.navigate(['']);
-    localStorage.clear();
-  }
-}
-
-@Component({
-  selector: 'app-downloadrenewal',
-  templateUrl: './downloadrenewalpdf.component.html',
-  styleUrls: ['./app.component.css','./app.component.scss'],
-})
-export class DownloadRenewappComponent {
-  id: any;
-  html: any
-  show: any
-  url: any;
-  getuser:any = {};
-  photo:any;
-  sign:any;
-  degree:any;
-  add_proof:any;
-  aadhar_proof:any;
-  dd_image:any;
-  @ViewChild('pdfTable', {static: false}) pdfTable!: ElementRef;
-  user: any;
-  constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
-    // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
-    this.user = localStorage.getItem('userdata')
-    this.getuser = JSON.parse(this.user); 
-  }
-  ngOnInit() {
-    $("#close-sidebar").click(function() {
-      $(".page-wrapper").removeClass("toggled");
-      });
-      $("#show-sidebar").click(function() {
-      $(".page-wrapper").addClass("toggled");
-      });
-    let api = `${environment.api_url}/api/editrenew/${this.getuser.id}`;
-    this.http.get(api).subscribe((res: any) => {
-      this.url = res.data
-      this.photo = environment.image_url + this.url.photo
-      this.sign = environment.image_url + this.url.signature
-      this.degree = environment.image_url + this.url.deg_provitional_cerificate
-      this.add_proof = environment.image_url + this.url.address_proof
-      this.aadhar_proof = environment.image_url + this.url.aadhar_proof
-      this.dd_image = environment.image_url + this.url.dd_image
-      console.log("repsosn",this.url)
-    });
-  }
-    Regsiter(){
-    this.router.navigate(['/renewal']);
-  }
-  viewDetails(){
-    this.router.navigate(['/viewrenewalpdf']);
-  }
-  download(){
-    this.router.navigate(['/downloadrenewalpdf']);
-  }
-  Instruction(){
-    this.router.navigate(['/renewhome']);
-  }
-  StdDetails(){
-    this.router.navigate(['/studentdetails']);
-  }
-  StdRewnewalDetails(){
-    this.router.navigate(['/studentrenewaldetails']);
-  }
-  logout(){
-    this.router.navigate(['']);
-    localStorage.clear();
-  }
-  
-  public downloadAsPDF() {
-       let api = `${environment.api_url}/api/downloadrenewalPDF/${this.getuser.id}`;
-       window.open(api)
-  }
 }
 
 

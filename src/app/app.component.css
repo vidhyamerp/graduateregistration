@@ -53,7 +53,13 @@ input {
   padding-left: 10px;
   width: 102%;
 }
-
+.parent {
+  display: flex;
+}
+.child {
+  margin-left: auto;
+  order: 2;
+}
 /* .input[type='radio'], .ant-form-item input[type='checkbox'] {
   width: 30px !important;
   height: 18px  !important;
@@ -270,10 +276,10 @@ button {
     display: inline-block;
   }
 
-  nz-spin {
+  /* nz-spin {
     display: inline-block;
     margin-right: 16px;
-  }
+  } */
 
   .search-box {
     padding: 8px;
@@ -351,3 +357,15 @@ button {
   .ant-layout-header{
     background: #fff !important;
   }
+  .bg-gray{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #d2d3d6;
+    text-align: center;
+    height: 50px;
+    font-size: 15px;
+  }
+
+  
