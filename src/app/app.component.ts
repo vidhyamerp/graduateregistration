@@ -1978,6 +1978,13 @@ export class ResetPwDComponent {
                   'Failed!!',
                   'Invalid OTP Please Enter Correct OTP!')
                 }
+                if (res.error) {
+                  let type: string = 'error'
+                  this.notification.create(
+                    type,
+                    'Failed!!',
+                    res.error)
+                  }
                 }
               });
     }
@@ -2011,7 +2018,7 @@ export class ResetPwDComponent {
           this.notification.create(
             type,
             'Failed!!',
-            'InCorrect OTP Please Enter Correct OTP!')
+            'Invalid OTP Please Enter Correct OTP!')
           }
       });
     }
