@@ -1978,7 +1978,7 @@ export class ResetPwDComponent {
                   'Failed!!',
                   'Invalid OTP Please Enter Correct OTP!')
                 }
-                if (res.error) {
+                if (res.error) { 
                   let type: string = 'error'
                   this.notification.create(
                     type,
