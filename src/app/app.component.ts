@@ -30,7 +30,7 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    if(localStorage.getItem('userdata')){
+    if(sessionStorage.getItem('userdata')){
          
     }
    }
@@ -46,9 +46,11 @@ export class HomeComponent {
   user:any= {}
   getuser: any;
   response: any;
+  receiptdata: any;
+  receipturl: any;
   constructor( private router: Router, private httpClient: HttpClient,private elRef: ElementRef, private renderer: Renderer2,private currentUser: GlobalService) {
     // this.api = `${environment.api_url}/upload`
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     console.log('loggedusermy',this.getuser)
   }
@@ -85,9 +87,21 @@ get(){
   StdRewnewalDetails(){
     this.router.navigate(['/studentrenewaldetails']);
   }
+  delete_cookie(name:any,value:any,days:any) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  }
   logout(){
     this.router.navigate(['']);
-    localStorage.clear();
+    sessionStorage.clear();
+    this.delete_cookie("user_id",null,null);
+    this.delete_cookie("email",null,null);
+    this.delete_cookie("mobile_no",null,null);
   }
   agree(e: any) {
     if (e) {
@@ -104,8 +118,21 @@ get(){
       $(".page-wrapper").addClass("toggled");
       });
       this.get()
+      this.GetReceipt()
   }
-  
+  GetReceipt() {
+    let api = `${environment.api_url}/api/checkpaymentregister/${this.getuser.id}`;
+    this.httpClient.get(api).subscribe((res: any) => {
+     this.receiptdata = res.data
+     
+    });
+  }
+  receipt(){
+    if(this.receiptdata){
+      this.receipturl = `${environment.api_url}/api/downloadreceipt/${this.getuser.id}`;
+      window.open(this.receipturl)
+    }
+  }
 }
 @Component({
   selector: 'app-innerheader',
@@ -180,6 +207,25 @@ export class AdminLoginComponent {
    viewDetails(){
     this.router.navigate(['/viewdetails']);
   }
+   setCookie(id:any,value:any,days:any) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = id + "=" + (value || "")  + expires + "; path=/";
+}
+ getCookie(name:any) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
   async submitForm() {
     this.loginloading = true
     console.log(this.validateForm)
@@ -206,7 +252,10 @@ export class AdminLoginComponent {
         this.http.get(api).subscribe((res: any) => {
          console.log(res)
          if(res.data){
-            localStorage.setItem('userdata', JSON.stringify(this.id));
+          sessionStorage.setItem('userdata', JSON.stringify(this.id));
+          this.setCookie("user_id",this.id.id,30);
+          this.setCookie("email",res.data.email,30);
+          this.setCookie("mobile_no",res.data.mobile_no,30);
           this.router.navigate(['/registration'])
          }
         //  if(res.data.is_submit === 1){
@@ -214,16 +263,25 @@ export class AdminLoginComponent {
         //  }
          else{
           this.router.navigate(['/home'])
-          localStorage.setItem('userdata', JSON.stringify(this.id));
+          sessionStorage.setItem('userdata', JSON.stringify(this.id));
+          this.setCookie("user_id",res.data.id,30);
+          this.setCookie("email",res.data.email,30);
+          this.setCookie("mobile_no",res.data.mobile_no,30);
          }
         });
         this.currentUser.setUser(this.id);
-        localStorage.setItem('userdata', JSON.stringify(this.id));
+        sessionStorage.setItem('userdata', JSON.stringify(this.id));
+        this.setCookie("user_id",res.data.id,30);
+        this.setCookie("email",res.data.email,30);
+        this.setCookie("mobile_no",res.data.mobile_no,30);
       }
       else{
         this.router.navigate(['/studentdetails'])
         this.currentUser.setUser(this.id);
-        localStorage.setItem('userdata', JSON.stringify(this.id));
+        sessionStorage.setItem('userdata', JSON.stringify(this.id));
+        this.setCookie("user_id",res.data.id,30);
+        this.setCookie("email",res.data.email,30);
+        this.setCookie("mobile_no",res.data.mobile_no,30);
       }
     }
      else {
@@ -328,8 +386,12 @@ export class RegisterComponent {
   name_change_tri: boolean = false;
   name_change_upload: boolean = false;
   name_docs: any;
+  monthname: any;
+  year: any;
+  receiptdata: any;
+  receipturl: any;
   constructor(private http: HttpClient, private router: Router, private msg: NzMessageService, private notification: NzNotificationService,private currentUser: GlobalService,private activatedRoute: ActivatedRoute,private i18n: NzI18nService) {
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     console.log('loggeduserreg',this.getuser)
     this.form = this.fb.group({
@@ -369,7 +431,9 @@ export class RegisterComponent {
       name_of_university: [''],
       year_of_passing: [''],
       user_id:[''],
-      dd_image:[],
+      dd_proof_or_payment_receipt:[],
+      registration_number:[],
+      session:[''],
       date_of_submission:[],
       name_change:[false],
       name_change_docs:[],
@@ -381,7 +445,7 @@ export class RegisterComponent {
     // }
     this.addAddress()
     this.addResAddress()
-    this.paymentlink = environment.api_url + '/api/payment'
+    this.paymentlink = environment.api_url + '/api/payment/registration'
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -389,11 +453,40 @@ export class RegisterComponent {
     this.today = dd + '-' + mm + '-' + yyyy;
     console.log("today",this.today)
     this.form.controls.date_of_submission.setValue(this.today)
+    console.log("getmonth",mm);
+    this.year = yyyy
+    if(mm === '07'){
+      this.monthname = 'JULY' + '' + yyyy;
+      console.log(this.monthname)
+      this.form.controls.session.setValue('Session  : '+ this.monthname)
+    }
+    if(mm === '08'){
+      this.monthname = 'AUGUST' + '' + yyyy;
+      this.form.controls.session.setValue('Session  : '+ this.monthname)
+    }
+    if(this.getuser.district){
+      // this.presentaddress.get('district').disable();
+      this.presentaddress.get('district').setValue(this.getuser.district);
+      // this.sameaddress.get('same_district').disable();
+      this.sameaddress.get('same_district').setValue(this.getuser.district);
+    }
   }
   onChange(result: Date): void {
     console.log('onChange: ', result);
   }
-  
+  redirect(){
+    window.open(this.paymentlink, '_blank', 'height=600,width=device-width')
+  }
+  getCookie(name:any) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
   onKey(event: any) { // without type info
     let value = ''
    value += event.target.value;
@@ -450,8 +543,11 @@ export class RegisterComponent {
       $("#show-sidebar").click(function() {
       $(".page-wrapper").addClass("toggled");
       });
+      this.GetReceipt() 
     this.presentaddress.get('state').setValue('Tamil Nadu')
+    // this.presentaddress.get('state').disable()
     this.sameaddress.get('same_state').setValue('Tamil Nadu')
+    // this.sameaddress.get('same_state').disable()
     if (this.form.controls.aadhar_number.valid) {
       this.showtick = 'success'
     }
@@ -506,8 +602,8 @@ export class RegisterComponent {
           this.presentaddress.get('address_1').setValue(obj[0])
           this.presentaddress.get('address_2').setValue(obj[1])
           this.presentaddress.get('city').setValue(obj[2])
-          this.presentaddress.get('district').setValue(obj[3])
-          this.presentaddress.get('state').setValue(obj[4])
+          this.presentaddress.get('district').setValue(this.getuser.district)
+          this.presentaddress.get('state').setValue('TAMIL NADU')
           this.presentaddress.get('pincode').setValue(obj[5])
         }
         if (this.fetch.residential_add.indexOf(',') > -1) 
@@ -517,8 +613,8 @@ export class RegisterComponent {
           this.sameaddress.get('same_address_1').setValue(obj[0])
           this.sameaddress.get('same_address_2').setValue(obj[1])
           this.sameaddress.get('same_city').setValue(obj[2])
-          this.sameaddress.get('same_district').setValue(obj[3])
-          this.sameaddress.get('same_state').setValue(obj[4])
+          this.sameaddress.get('same_district').setValue(this.getuser.district)
+          this.sameaddress.get('same_state').setValue('TAMIL NADU')
           this.sameaddress.get('same_pincode').setValue(obj[5])
         }
          this.form.controls.gender.setValue(this.fetch.gender)
@@ -545,14 +641,20 @@ export class RegisterComponent {
           this.signature_img = environment.image_url + this.fetch.signature
         } if(this.fetch.photo){
           this.photo_img = environment.image_url + this.fetch.photo
-        }     
+        }  
+        if(this.fetch.dd_proof_or_payment_receipt){
+          this.dd_img = environment.image_url + this.fetch.dd_proof_or_payment_receipt
+        }    
         this.form.controls.address_proof.setValue(this.fetch.address_proof)
         this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
         this.form.controls.deg_provitional_cerificate.setValue(this.fetch.deg_provitional_cerificate)
         this.form.controls.signature.setValue(this.fetch.signature)
         this.form.controls.photo.setValue(this.fetch.photo)
+        this.form.controls.dd_proof_or_payment_receipt.setValue(this.fetch.dd_proof_or_payment_receipt)
          this.form.controls.districts.setValue(this.fetch.districts)
          this.form.controls.dob.setValue(this.fetch.dob)
+         this.form.controls.registration_number.setValue(this.fetch.registration_number)
+         this.today = this.fetch.date_of_submission
         //  if(this.fetch.is_submit === '1'){
         //    this.savebtn = false;
         //    this.submitbtn = false;
@@ -574,6 +676,19 @@ export class RegisterComponent {
       } 
         });
   }
+  GetReceipt() {
+    let api = `${environment.api_url}/api/checkpaymentregister/${this.getuser.id}`;
+    this.http.get(api).subscribe((res: any) => {
+     this.receiptdata = res.data
+     
+    });
+  }
+  receipt(){
+    if(this.receiptdata){
+      this.receipturl = `${environment.api_url}/api/downloadreceipt/${this.getuser.id}`;
+      window.open(this.receipturl)
+    }
+  }
   Fetch(){
     let params = new HttpParams();
     params = params.append('file_name', this.file_name);
@@ -590,7 +705,7 @@ export class RegisterComponent {
           this.sameaddress.get('same_address_1').setValue(this.response.house)
           this.sameaddress.get('same_address_2').setValue(this.response.street)
           this.sameaddress.get('same_city').setValue(this.response.city)
-          this.sameaddress.get('same_district').setValue(this.response.dist)
+          // this.sameaddress.get('same_district').setValue(this.response.dist)
           this.sameaddress.get('same_state').setValue(this.response.state)
           this.sameaddress.get('same_pincode').setValue(this.response.pc)
           if(this.response.gender === 'F'){
@@ -632,15 +747,30 @@ export class RegisterComponent {
   Instruction(){
     this.router.navigate(['/home']);
   }
+  Receipt(){
+    this.router.navigate(['/receipt']);
+  }
   StdDetails(){
     this.router.navigate(['/studentdetails']);
   }
   StdRewnewalDetails(){
     this.router.navigate(['/studentrenewaldetails']);
   }
+  delete_cookie(name:any,value:any,days:any) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  }
   logout(){
     this.router.navigate(['']);
-    localStorage.clear();
+    sessionStorage.clear();
+    this.delete_cookie("user_id",null,null);
+    this.delete_cookie("email",null,null);
+    this.delete_cookie("mobile_no",null,null);
   }
   triggername(e: any) {
     console.log(e)
@@ -660,17 +790,17 @@ export class RegisterComponent {
       this.show_dd_details = false
     }
   }
-  triggerdetails1(e: any) {
-    console.log(e)
-    if (e === '1') {
-      this.show_dd_details = true
-      this.show_gateway = false
-    }
-    else {
-      this.show_dd_details = false
-      this.show_gateway = true
-    }
-  }
+  // triggerdetails1(e: any) {
+  //   console.log(e)
+  //   if (e === '1') {
+  //     this.show_dd_details = false
+  //     this.show_gateway = true
+  //   }
+  //   if (e === '0') {
+  //     this.show_dd_details = true
+  //     this.show_gateway = false
+  //   }
+  // }
   namechange1(files: FileList) {
     this.name_change_upload = true;
     this.fileToUpload = files.item(0);
@@ -760,7 +890,7 @@ export class RegisterComponent {
       console.log(res);
       if (res.data) {
         this.dd_img = environment.image_url + res.file_name
-        this.form.controls.dd_image.setValue(res.file_name)
+        this.form.controls.dd_proof_or_payment_receipt.setValue(res.file_name)
         this.uploadloading6 = false;
         let type: string = 'success'
         console.log('oops', res.errors)
@@ -1119,6 +1249,7 @@ export class RegisterComponent {
          this.form.controls.declaration.setValue(this.fetch.declaration)
          this.form.controls.mobile_no.setValue(this.fetch.mobile_no)
          this.form.controls.occupation.setValue(this.fetch.occupation)
+         this.form.controls.dd_proof_or_payment_receipt.setValue(this.fetch.dd_proof_or_payment_receipt)
          this.form.controls.challan_no.setValue(this.fetch.challan_no)
          this.form.controls.amount.setValue(this.fetch.amount)
          this.form.controls.bank_name.setValue(this.fetch.bank_name)
@@ -1152,8 +1283,8 @@ export class RegisterComponent {
           this.presentaddress.get('address_1').setValue(obj[0])
           this.presentaddress.get('address_2').setValue(obj[1])
           this.presentaddress.get('city').setValue(obj[2])
-          this.presentaddress.get('district').setValue(obj[3])
-          this.presentaddress.get('state').setValue(obj[4])
+          this.presentaddress.get('district').setValue(this.getuser.district);
+          this.presentaddress.get('state').setValue('TAMIL NADU')
           this.presentaddress.get('pincode').setValue(obj[5])
         }
         if (this.fetch.residential_add.indexOf(',') > -1) 
@@ -1163,8 +1294,8 @@ export class RegisterComponent {
           this.sameaddress.get('same_address_1').setValue(obj[0])
           this.sameaddress.get('same_address_2').setValue(obj[1])
           this.sameaddress.get('same_city').setValue(obj[2])
-          this.sameaddress.get('same_district').setValue(obj[3])
-          this.sameaddress.get('same_state').setValue(obj[4])
+          this.sameaddress.get('same_district').setValue(this.getuser.district);
+          this.sameaddress.get('same_state').setValue("TAMIL NADU")
           this.sameaddress.get('same_pincode').setValue(obj[5])
         }
          this.form.controls.gender.setValue(this.fetch.gender)
@@ -1188,6 +1319,9 @@ export class RegisterComponent {
           this.signature_img = environment.image_url + this.fetch.signature
         } if(this.fetch.photo){
           this.photo_img = environment.image_url + this.fetch.photo
+        }   
+        if(this.fetch.dd_proof_or_payment_receipt){
+          this.dd_img = environment.image_url + this.fetch.dd_proof_or_payment_receipt
         }     
         this.form.controls.address_proof.setValue(this.fetch.address_proof)
         this.form.controls.aadhar_proof.setValue(this.fetch.aadhar_proof)
@@ -1195,7 +1329,9 @@ export class RegisterComponent {
         this.form.controls.signature.setValue(this.fetch.signature)
         this.form.controls.photo.setValue(this.fetch.photo)
          this.form.controls.districts.setValue(this.fetch.districts)
+         this.form.controls.registration_number.setValue(this.fetch.registration_number)
          this.form.controls.dob.setValue(this.fetch.dob)
+         this.today = this.fetch.date_of_submission
         //  if(this.fetch.is_submit === '1'){
         //    this.savebtn = false;
         //    this.submitbtn = false;
@@ -1255,6 +1391,11 @@ export class RegisterComponent {
       this.submitloading = false
       return
     }
+    // if(!this.receiptdata){
+    //   window.alert('Please pay registration fee, before submitting!')
+    //   this.submitloading = false
+    //   return
+    // }
     let dd:any;
     if(this.fetch){
     this.form.controls.id.setValue(this.fetch.id)
@@ -1310,6 +1451,16 @@ export class RegisterComponent {
         this.router.navigate(['/downloadpdf/'])
         this.id = this.response.data.id
       }
+      if(res.payment_pending){
+        let errormessage = ''
+          errormessage = res.payment_pending
+          let type: string = 'error'
+          console.log('oops', res.errors)
+          this.notification.create(
+            type,
+            'Error!!',
+            errormessage)
+      }
       if (res.errors) {
         let errormessage = ''
         if (res.errors.aadhar_number) {
@@ -1341,6 +1492,9 @@ export class RegisterComponent {
         }
         if (res.errors.year_of_passing) {
           errormessage = res.errors.year_of_passing
+        }
+        if (res.errors.dd_proof_or_payment_receipt) {
+          errormessage = res.errors.dd_proof_or_payment_receipt
         }
         if (res.errors.gender) {
           errormessage = res.errors.gender
@@ -1376,9 +1530,11 @@ export class DownloadComponent {
   @ViewChild('pdfTable', {static: false}) pdfTable!: ElementRef;
   user: any;
   name_change_proof: any;
+  receiptdata: any;
+  receipturl: any;
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
   }
   ngOnInit() {
@@ -1396,10 +1552,25 @@ export class DownloadComponent {
       this.degree = environment.image_url + this.url.deg_provitional_cerificate
       this.add_proof = environment.image_url + this.url.address_proof
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
-      this.dd_image = environment.image_url + this.url.dd_image
+      this.dd_image = environment.image_url + this.url.dd_proof_or_payment_receipt
       this.name_change_proof = environment.image_url + this.url.name_change_docs
       console.log("repsosn",this.url)
     });
+    this.GetReceipt()
+  }
+  GetReceipt() {
+    let api = `${environment.api_url}/api/checkpaymentregister/${this.getuser.id}`;
+    this.http.get(api).subscribe((res: any) => {
+     this.receiptdata = res.data
+     
+    });
+  }
+  receipt(){
+    if(this.receiptdata){
+      this.receipturl = `${environment.api_url}/api/downloadreceipt/${this.getuser.id}`;
+      window.open(this.receipturl)
+    }
+    
   }
     Regsiter(){
     this.router.navigate(['/registration']);
@@ -1419,9 +1590,21 @@ export class DownloadComponent {
   StdRewnewalDetails(){
     this.router.navigate(['/studentrenewaldetails']);
   }
+  delete_cookie(name:any,value:any,days:any) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  }
   logout(){
     this.router.navigate(['']);
-    localStorage.clear();
+    sessionStorage.clear();
+    this.delete_cookie("user_id",null,null);
+    this.delete_cookie("email",null,null);
+    this.delete_cookie("mobile_no",null,null);
   }
   
   public downloadAsPDF() {
@@ -1452,7 +1635,7 @@ export class RelectedStudentDetailsComponent {
   ngOnInit() {
     
     this.getrejected()
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     console.log('loggeduserreg',this.getuser)
   }
@@ -1565,7 +1748,7 @@ export class StudentDetailsComponent {
   getuser: any;
   remark = new FormControl('');
   constructor(private fb: FormBuilder, private router: Router, private http: HttpClient, private notification: NzNotificationService) {
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     console.log('loggeduserreg',this.getuser)
   }
@@ -1638,9 +1821,21 @@ refresh(){
   StdRewnewalDetails(){
     this.router.navigate(['/studentrenewaldetails']);
   }
+  delete_cookie(name:any,value:any,days:any) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  }
   logout(){
     this.router.navigate(['']);
-    localStorage.clear();
+    sessionStorage.clear();
+    this.delete_cookie("user_id",null,null);
+    this.delete_cookie("email",null,null);
+    this.delete_cookie("mobile_no",null,null);
   }
  
   GetChart() {
@@ -1759,6 +1954,7 @@ export class NewUserComponent {
     this.validateForm = this.fb.group({
       name: ['', [Validators.required], [this.userNameAsyncValidator]],
       email: ['', [Validators.email, Validators.required]],
+      district: ['', [Validators.required]],
       mobile_no: ['', [Validators.required]],
       otp:['',[Validators.required]],
       password: ['', [Validators.required]],
@@ -1776,7 +1972,7 @@ export class NewUserComponent {
                   this.notification.create(
                     type,
                     'Success!!',
-                    'OTP is Send to Your Email!')
+                    'OTP is Sent to Your Email!')
                   }
                if (res.failed) {
                 let type: string = 'error'
@@ -1784,6 +1980,14 @@ export class NewUserComponent {
                   type,
                   'Failed!!',
                   'Invalid OTP Please Enter Correct OTP!')
+                }
+                if (res.errors.email) {
+                  let errormessage = res.errors.email
+                  let type: string = 'error'
+                this.notification.create(
+                  type,
+                  'Error!!',
+                  errormessage)
                 }
                 }
               });
@@ -1880,13 +2084,16 @@ export class ViewPDfComponent {
   user: any;
   dd_image: any;
   name_change_proof: any;
+  receiptdata: any;
+  receipturl: any;
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     console.log('loggeduserreg',this.getuser)
   }
   ngOnInit() {
+    this.GetReceipt()
     $("#close-sidebar").click(function() {
       $(".page-wrapper").removeClass("toggled");
       });
@@ -1902,10 +2109,24 @@ export class ViewPDfComponent {
       this.degree = environment.image_url + this.url.deg_provitional_cerificate
       this.add_proof = environment.image_url + this.url.address_proof
       this.aadhar_proof = environment.image_url + this.url.aadhar_proof
-      this.dd_image = environment.image_url + this.url.dd_image
+      this.dd_image = environment.image_url + this.url.dd_proof_or_payment_receipt
       this.name_change_proof = environment.image_url + this.url.name_change_docs
       console.log("repsosn",this.url)
     });
+  }
+  GetReceipt() {
+    let api = `${environment.api_url}/api/checkpaymentregister/${this.getuser.id}`;
+    this.http.get(api).subscribe((res: any) => {
+     this.receiptdata = res.data
+     
+    });
+  }
+  receipt(){
+    if(this.receiptdata){
+      this.receipturl = `${environment.api_url}/api/downloadreceipt/${this.getuser.id}`;
+      window.open(this.receipturl)
+    }
+    
   }
   Regsiter(){
     this.router.navigate(['/registration']);
@@ -1925,9 +2146,21 @@ export class ViewPDfComponent {
   StdRewnewalDetails(){
     this.router.navigate(['/studentrenewaldetails']);
   }
+  delete_cookie(name:any,value:any,days:any) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  }
   logout(){
     this.router.navigate(['']);
-    localStorage.clear();
+    sessionStorage.clear();
+    this.delete_cookie("user_id",null,null);
+    this.delete_cookie("email",null,null);
+    this.delete_cookie("mobile_no",null,null);
   }
  
 }
@@ -1950,7 +2183,7 @@ export class ResetPwDComponent {
   otploading:boolean= false
   constructor(private fb: FormBuilder,private http: HttpClient, private activatedRoute: ActivatedRoute, private sanitizer: DomSanitizer,private router: Router,private notification: NzNotificationService) {
     // this.html = dom.sanitize(SecurityContext.HTML, "<h1>Sanitize</h1><script>attackerCode()</script>");
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     this.resetform = this.fb.group({
       reset_pwd: ['', [Validators.required]],
@@ -1969,7 +2202,7 @@ export class ResetPwDComponent {
                   this.notification.create(
                     type,
                     'Success!!',
-                    'OTP is Send to Your Email!')
+                    'OTP is Sent to Your Email!')
                   }
                if (res.failed) {
                 let type: string = 'error'
@@ -2083,7 +2316,7 @@ export class RenewalDetailsComponent {
   getuser: any;
   remark = new FormControl('');
   constructor(private httpClient: HttpClient, private router: Router, private notification: NzNotificationService) {
-    this.user = localStorage.getItem('userdata')
+    this.user = sessionStorage.getItem('userdata')
     this.getuser = JSON.parse(this.user); 
     console.log('loggeduserreg',this.getuser)
   }
@@ -2156,11 +2389,22 @@ Switch(event:any,data:any){
   StdRewnewalDetails(){
     this.router.navigate(['/studentrenewaldetails']);
   }
+  delete_cookie(name:any,value:any,days:any) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  }
   logout(){
     this.router.navigate(['']);
-    localStorage.clear();
+    sessionStorage.clear();
+    this.delete_cookie("user_id",null,null);
+    this.delete_cookie("email",null,null);
+    this.delete_cookie("mobile_no",null,null);
   }
- 
   GetChart() {
     let api = `${environment.api_url}/api/renewpiechart`;
     this.httpClient.get(api).subscribe((res: any) => {

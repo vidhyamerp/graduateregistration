@@ -60,6 +60,18 @@
               </nz-form-control>
             </nz-form-item>
             <nz-form-item>
+              <nz-form-label [nzSpan]="11" nzRequired>District</nz-form-label>
+              <nz-form-control [nzSpan]="20" nzHasFeedback nzErrorTip="District is Required!" class="pl-2">
+              <select class="form-control" formControlName="district">
+                <option value="">Select Distrcit</option>
+                <option  value="Coimbatore">Coimbatore</option>
+                <option  value="Erode">Erode</option>
+                <option  value="Nilgiris">The Nilgiris</option>
+                <option value="Tirupur">Tirupur</option>
+              </select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
               <nz-form-label [nzSpan]="11" nzRequired>Password</nz-form-label>
               <nz-form-control [nzSpan]="20" nzHasFeedback nzErrorTip="Please input your password!">
                 <input nz-input type="password" formControlName="password"
@@ -89,11 +101,13 @@
 
         </div>
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <div style="margin-top:180px" class="alert alert-info ml-4 p-2">If you click <b>"Get OTP"</b> button, the OTP will be sent to your email id.<br/>
+            If you cannot see OTP in your mailbox, please see in your spam folder.</div>
         </div>
       </div>
       <div class="text-center bg-gray p-2">
-        <b style="font-size:14px">Designed and developed by : ERP team, Bharathiar University , Coimbatore 641046<br/>
-          erp@buc.edu.in , 91-422-2428360</b>
+        <b style="font-size:14px">Designed and developed by : ERP team, Bharathiar University, Coimbatore 641046<br/>
+          erp@buc.edu.in, 91-422-2428360</b>
       </div>
     </div>

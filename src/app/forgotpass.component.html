@@ -30,17 +30,17 @@
                 Not a valid pattern!
               </ng-container> -->
             </ng-template>
+            <div class="col-md-12">Click here<button nz-button class="btn btn-primary mb-4" type="button" (click)="Getotp()"
+              [nzLoading]="otploading">GET OTP</button></div>
             <nz-form-item>
               <nz-form-control nzErrorTip="OTP is Required!" style=" font-size: 18px !important;font-family: serif;"
-                class="col-md-7">
+                class="col-md-12">
                 <nz-input-group nzPrefixIcon="eye" style="font-size: 1.53em;">
                   <input type="text" nz-input formControlName="otp" placeholder="Enter OTP"
                     style=" font-size: 18px !important;font-family: serif;" />
                 </nz-input-group>
                 <!-- <div *ngIf="emailerror" class="text-danger">Invalid Email!</div> -->
               </nz-form-control>
-              <div class="col-md-5"><button nz-button class="btn btn-primary mt-3" type="button" (click)="Getotp()"
-                  [nzLoading]="otploading">GET OTP</button></div>
             </nz-form-item>
             <nz-form-item class="pt-2">
               <nz-form-control nzErrorTip="Password is Required!"
@@ -63,7 +63,7 @@
     </div>
   </div>
   <div class="text-center bg-gray p-2">
-    <b style="font-size:14px">Designed and developed by : ERP team, Bharathiar University , Coimbatore 641046<br/>
-      erp@buc.edu.in , 91-422-2428360</b>
+    <b style="font-size:14px">Designed and developed by : ERP team, Bharathiar University, Coimbatore 641046<br/>
+      erp@buc.edu.in, 91-422-2428360</b>
   </div>
 </div>
