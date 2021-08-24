@@ -1759,7 +1759,7 @@ export class StudentDetailsComponent {
   return str
   }
   public downloadAsPDF(id:any) {
-    let api = `${environment.api_url}/api/downloadIndividual/${id}`;
+    let api = `${environment.api_url}/api/downloadnewIndividual/${id}`;
     window.open(api)
 }
 refresh(){
@@ -2327,7 +2327,7 @@ export class RenewalDetailsComponent {
   return str
   }
   public downloadAsPDF(id:any) {
-    let api = `${environment.api_url}/api/downloadIndividual/${id}`;
+    let api = `${environment.api_url}/api/downloadrenewIndividual/${id}`;
     window.open(api)
 }
 refresh(){
