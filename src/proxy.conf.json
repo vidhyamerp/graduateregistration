@@ -1,7 +1,7 @@
 {
     "/backend/*":{
         "target": "http://localhost/graduatebackend/public/api",
-        "secure": false,
+        "secure": true,
         "logLevel": "debug"
     }
 }

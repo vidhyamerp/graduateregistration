@@ -46,7 +46,7 @@
               <li>
                 <a (click)="download()"> Print</a>
               </li>
-              <li *ngIf="receiptdata && receiptdata.id">
+              <li *ngIf="receiptdata && receiptdata.id && receiptdata.status ==='success'">
                 <a (click)="receipt()"> Receipt</a>
               </li>
               <li>

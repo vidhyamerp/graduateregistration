@@ -227,7 +227,7 @@ export class AdminLoginComponent {
     return null;
 }
   async submitForm() {
-    this.loginloading = true
+    
     console.log(this.validateForm)
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
@@ -242,10 +242,12 @@ export class AdminLoginComponent {
     console.log(this.validateForm.value)
     let url = `${environment.api_url}/api/login`;
     this.http.post(url, this.validateForm.value).subscribe((res: any) => {
+      this.loginloading = true
       this.response = res
-      this.loginloading = false;
+     
       console.log("response", this.response)
       if (this.response.data) {
+        this.loginloading = false
         this.id = this.response.data
         if(this.id.role != 'authority'){
         let api = `${environment.api_url}/api/edit/${this.id.id}`;
@@ -286,6 +288,7 @@ export class AdminLoginComponent {
     }
      else {
         this.failed = this.response.falied
+        this.loginloading = false;
       }
     });
   
@@ -1910,7 +1913,7 @@ refresh(){
       };
     });
   }
-  downloadpdf() {
+  downloadbulk() {
     let api = `${environment.api_url}/api/bulkdownload`;
     window.open(api)
     // this.httpClient.get(api).subscribe((res: any) => {
@@ -2477,7 +2480,7 @@ Switch(event:any,data:any){
       };
     });
   }
-  downloadpdf() {
+  downloadbulk() {
     let api = `${environment.api_url}/api/bulkdownload`;
     window.open(api)
     // this.httpClient.get(api).subscribe((res: any) => {

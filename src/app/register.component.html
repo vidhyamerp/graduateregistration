@@ -43,7 +43,7 @@
                 <li>
                   <a (click)="download()" > Print</a>
                 </li>
-                <li *ngIf="receiptdata && receiptdata.id">
+                <li *ngIf="receiptdata && receiptdata.id && receiptdata.status ==='success' ">
                   <a (click)="receipt()"> Receipt</a>
                 </li>
                 <li>
@@ -451,7 +451,11 @@
         <div class="col-md-4 text-justify mb-2"><span class="text-danger"></span>Online Payment</div>
         <div class="col-md-1"></div>
         <div class="col-md-4">
-          <a style="color:blue !important" onclick="window.open('http://budca.in/erp/links/public/api/payment/registration', '_blank', 'location=yes,height=570,width=device-width,scrollbars=yes,status=yes');" >Click here to pay amount</a>
+          <div *ngIf="receiptdata && receiptdata.id && receiptdata.status != 'success'"><a style="color:blue !important" onclick="window.open('http://gr.b-u.ac.in/erp/links/public/api/payment/registration', '_blank', 'location=yes,height=570,width=device-width,scrollbars=yes,status=yes');" >Click here to pay amount</a>
+            </div>
+            <div *ngIf="receiptdata && receiptdata.id && receiptdata.status ==='success'">
+              <span><b>Paid</b></span>
+            </div>
           <!-- <a [href]="paymentlink" target="_blank">Click here to pay amount</a> -->
         
         </div>
